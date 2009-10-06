@@ -1,0 +1,26 @@
+<use name=FWCore/Framework>
+<use name=DataFormats/ParticleFlowReco>
+<use name=DataFormats/DTRecHit>
+<use name=DataFormats/L1GlobalTrigger>
+<use name=DataFormats/CSCDigi>
+<use name=CondFormats/L1TObjects>
+<use name=Geometry/DTGeometry>
+<use name=Geometry/CSCGeometry>
+<use name=Geometry/RPCGeometry>
+<use name=Geometry/CaloGeometry>
+<use name=Geometry/TrackerGeometryBuilder>
+<use name=TrackingTools/TransientTrack>
+<use name=TrackPropagation/SteppingHelixPropagator>
+<use name=ISpy/Services>
+<use name=Iguana/Utilities>
+<use name=HLTrigger/HLTcore>
+<use name=PhysicsTools/PatUtils>
+
+<use name=boost>
+<use name=clhep>
+
+<use name=SimDataFormats/TrackingAnalysis>
+
+<flags CPPFLAGS='$(patsubst %,-DCMSSW_2_2_X,$(findstring CMSSW_2_2,$(SCRAM_PROJECTVERSION)))'>
+
+<flags EDM_PLUGIN=1>

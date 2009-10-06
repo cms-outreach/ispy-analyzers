@@ -1,0 +1,17 @@
+#ifndef ANALYZER_ISPY_PFREC_TRACK_H
+#define ANALYZER_ISPY_PFREC_TRACK_H
+
+# include "FWCore/Framework/interface/EDAnalyzer.h"
+
+class ISpyPFRecTrack : public edm::EDAnalyzer
+{
+public:
+  explicit ISpyPFRecTrack(const edm::ParameterSet&);
+  virtual ~ISpyPFRecTrack(void) {}
+    
+  virtual void analyze(const edm::Event&, const edm::EventSetup&);
+private:
+  edm::InputTag inputTag_;
+};
+
+#endif // ANALYZER_ISPY_PFREC_TRACK_H

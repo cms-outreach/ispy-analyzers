@@ -1,3 +1,14 @@
+2009-10-06  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* *.h, *.cc, BuildFile, MakeVisAnalyzer.py: Migrated from
+	VisReco/Analyzer. Paths updated. Systematically removed Iguana,
+	not to confuse both packages. Vis* renamed to ISpy*.
+	* python/ISpy*.py: Former Vis*.py renamed.
+	* ISpyService.h, ISpyService.cc: Former IguanaService.h,
+	IguanaService.cc renamed. All related classes updated.
+	* ISpyNetProducer.h: Former IguanaNetProducer.h renamed.
+	* .admin/developers: Migrated from VisReco/Analyzer.
+	
 2009-10-05 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* VisSuperCluster: add

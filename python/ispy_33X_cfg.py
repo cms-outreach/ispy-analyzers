@@ -61,6 +61,8 @@ process.load('ISpy.Analyzers.ISpyGsfTrack_cfi')
 process.load('ISpy.Analyzers.ISpyPhoton_cfi')
 process.load('ISpy.Analyzers.ISpyElectron_cfi')
 process.load('ISpy.Analyzers.ISpyGsfElectron_cfi')
+process.load('ISpy.Analyzers.ISpyPreshowerCluster_cfi')
+process.load('ISpy.Analyzers.ISpyCaloCluster_cfi')
 process.load('ISpy.Analyzers.ISpySuperCluster_cfi')
 
 process.ISpyCSCSegment.iSpyCSCSegmentTag = cms.InputTag("cscSegments")
@@ -73,38 +75,40 @@ process.ISpySiStripDigi.iSpySiStripDigiTag = cms.InputTag('siStripDigis:ZeroSupp
 process.ISpyTrackingRecHit.iSpyTrackingRecHitTag = cms.InputTag('generalTracks')
 
 process.iSpy = cms.Path(process.ISpyEvent*
-                       process.ISpyTrack*
-                       process.ISpyTrackingRecHit*
-                       process.ISpyCSCSegment*
-                       process.ISpyCSCWireDigi*
-                       process.ISpyCSCStripDigi*
-                       process.ISpyCSCRecHit2D*
-                       process.ISpyCaloTower*
-                       process.ISpyDTRecSegment4D*
-                       process.ISpyDTDigi*
-                       process.ISpyDTRecHit*
-                       process.ISpyRPCRecHit*
-                       process.ISpyEBRecHit*
-                       process.ISpyEERecHit*
-                       process.ISpyESRecHit*
-                       process.ISpyHBRecHit*
-                       process.ISpyHERecHit*
-                       process.ISpyHFRecHit*
-                       process.ISpyHORecHit*
-                       process.ISpyMET*
-                       process.ISpySiPixelCluster*
-                       process.ISpySiPixelRecHit*
-                       process.ISpySiStripCluster*
-                       process.ISpySiStripDigi*
-                       process.ISpyJet*
-                       process.ISpyTrackingParticle*
-                       process.ISpyTriggerEvent*
-                       process.ISpyL1GlobalTriggerReadoutRecord*
-                       process.ISpyMuon*
-                       process.ISpyElectron*
-                       process.ISpyGsfElectron*
-                       process.ISpyPhoton*
-                       process.ISpyGsfTrack*
-                       process.ISpySuperCluster)
+                        process.ISpyTrack*
+                        process.ISpyTrackingRecHit*
+                        process.ISpyCSCSegment*
+                        process.ISpyCSCWireDigi*
+                        process.ISpyCSCStripDigi*
+                        process.ISpyCSCRecHit2D*
+                        process.ISpyCaloTower*
+                        process.ISpyDTRecSegment4D*
+                        process.ISpyDTDigi*
+                        process.ISpyDTRecHit*
+                        process.ISpyRPCRecHit*
+                        process.ISpyEBRecHit*
+                        process.ISpyEERecHit*
+                        process.ISpyESRecHit*
+                        process.ISpyHBRecHit*
+                        process.ISpyHERecHit*
+                        process.ISpyHFRecHit*
+                        process.ISpyHORecHit*
+                        process.ISpyMET*
+                        process.ISpySiPixelCluster*
+                        process.ISpySiPixelRecHit*
+                        process.ISpySiStripCluster*
+                        process.ISpySiStripDigi*
+                        process.ISpyJet*
+                        process.ISpyTrackingParticle*
+                        process.ISpyTriggerEvent*
+                        process.ISpyL1GlobalTriggerReadoutRecord*
+                        process.ISpyMuon*
+                        process.ISpyElectron*
+                        process.ISpyGsfElectron*
+                        process.ISpyPhoton*
+                        process.ISpyGsfTrack*
+                        process.ISpyPreshowerCluster*
+                        process.ISpyCaloCluster*
+                        process.ISpySuperCluster)
 
 process.schedule = cms.Schedule(process.iSpy)

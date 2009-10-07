@@ -64,6 +64,17 @@ ISpyESRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
 
   if (collection.isValid ())
   {	    
+    std::string product = "ESRecHits "
+                          + edm::TypeID (typeid (EcalRecHitCollection)).friendlyClassName() + ":"
+                          + inputTag_.label() + ":"
+                          + inputTag_.instance() + ":"
+                          + inputTag_.process();
+
+    IgCollection& products = storage->getCollection("Products_V1");
+    IgProperty PROD = products.addProperty("Product", std::string());
+    IgCollectionItem item = products.create();
+    item[PROD] = product;
+
     IgCollection &recHits = storage->getCollection("ESRecHits_V1");
     IgProperty E = recHits.addProperty("energy", 0.0);
     IgProperty ETA = recHits.addProperty("eta", 0.0);

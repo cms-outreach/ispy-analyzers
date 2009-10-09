@@ -1,3 +1,8 @@
+2009-10-09 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* VisTriggerEvent.cc: add more information and 
+	fix iteration over trigger objects
+
 2009-10-07 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* VisSuperCluster: add rec hit fractions

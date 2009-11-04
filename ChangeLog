@@ -1,3 +1,7 @@
+2009-11-04 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyMuon.cc, ISpyPATMuon.cc: fix cast problem w/charge
+
 2009-10-09 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* VisTriggerEvent.cc: add more information and 

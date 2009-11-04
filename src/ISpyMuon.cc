@@ -118,7 +118,6 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgCollection& points = storage_->getCollection("Points_V1");
   IgProperty POS = points.addProperty("pos", IgV3d());
 
-
   // NOTE: TM What are these used for?
   IgCollection& detIds = storage_->getCollection("DetIds_V1");
   IgProperty DETID = detIds.addProperty ("detid", int(0));
@@ -128,10 +127,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   for (reco::MuonCollection::const_iterator it = collection->begin(), end = collection->end(); 
        it != end; ++it) 
   {
-    // NOTE: TM Are these valid for all tracks?
-    //float charge = (*it).charge();
-    //double eta = (*it).eta();
-    //double phi = (*it).phi();
+    int charge = (*it).charge();
 
     if ( (*it).track().isNonnull() ) // Tracker
     {
@@ -141,7 +137,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
         addDetIds(it, imuon, DETID, detIds, muonDetIds);
 
       imuon[T_PT] = (*it).track()->pt();
-      imuon[T_CHARGE] = static_cast<double>((*it).track()->charge());
+      imuon[T_CHARGE] = charge;
       imuon[T_RP] = IgV3d((*it).track()->vx()/100.0,
                           (*it).track()->vy()/100.0,
                           (*it).track()->vz()/100.0);
@@ -169,22 +165,23 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
         writeError(error);
       }
     }
-		
+	
     if ( (*it).standAloneMuon().isNonnull() ) // Standalone
     {
       IgCollectionItem imuon = standAloneMuonCollection.create();
       
       if ((*it).isMatchesValid()) 
         addDetIds(it, imuon, DETID, detIds, muonDetIds);
-	    
+	
+      
       imuon[S_PT] = (*it).standAloneMuon()->pt();
-      imuon[S_CHARGE] = static_cast<double>((*it).standAloneMuon()->charge());
+      imuon[S_CHARGE] = charge;
       imuon[S_RP] = IgV3d((*it).standAloneMuon()->vx()/100.0,
                           (*it).standAloneMuon()->vy()/100.0,
                           (*it).standAloneMuon()->vz()/100.0);
       imuon[S_PHI] = (*it).standAloneMuon()->phi();
       imuon[S_ETA] = (*it).standAloneMuon()->eta();
-            
+      
       if ( (*it).standAloneMuon()->innerOk() && (*it).standAloneMuon()->outerOk() )
       {
         IgCollectionItem eitem = extras.create();
@@ -207,11 +204,12 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
 
         trackExtras.associate(imuon, eitem);
       }
+      
 
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, S_CALO_E);
     }
-		
+    
     if ( (*it).combinedMuon().isNonnull() ) // Global
     {
       IgCollectionItem imuon = globalMuonCollection.create();
@@ -220,7 +218,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
         addDetIds(it, imuon, DETID, detIds, muonDetIds);
 
       imuon[G_PT] = (*it).combinedMuon()->pt();
-      imuon[G_CHARGE] = static_cast<double>((*it).combinedMuon()->charge());
+      imuon[G_CHARGE] = charge;
       imuon[G_RP] = IgV3d((*it).combinedMuon()->vx()/100.0,
                           (*it).combinedMuon()->vy()/100.0,
                           (*it).combinedMuon()->vz()/100.0);

@@ -119,7 +119,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       IgCollectionItem imuon = trackerMuonCollection.create();
       
       imuon[T_PT] = (*track).pt();
-      imuon[T_CHARGE] = static_cast<double>((*track).charge());
+      imuon[T_CHARGE] = (*track).charge();
       imuon[T_RP] = IgV3d((*track).vx()/100.0,
                           (*track).vy()/100.0,
                           (*track).vz()/100.0);
@@ -153,7 +153,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       IgCollectionItem imuon = standAloneMuonCollection.create();
           
       imuon[S_PT] = (*standAloneMuon).pt();
-      imuon[S_CHARGE] = static_cast<double>((*standAloneMuon).charge());
+      imuon[S_CHARGE] = (*standAloneMuon).charge();
       imuon[S_RP] = IgV3d((*standAloneMuon).vx()/100.0,
                           (*standAloneMuon).vy()/100.0,
                           (*standAloneMuon).vz()/100.0);
@@ -191,7 +191,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       IgCollectionItem imuon = globalMuonCollection.create();
  
       imuon[G_PT] = (*combinedMuon).pt();
-      imuon[G_CHARGE] = static_cast<double>((*combinedMuon).charge());
+      imuon[G_CHARGE] = (*combinedMuon).charge();
       imuon[G_RP] = IgV3d((*combinedMuon).vx()/100.0,
                           (*combinedMuon).vy()/100.0,
                           (*combinedMuon).vz()/100.0);

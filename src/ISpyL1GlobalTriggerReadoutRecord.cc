@@ -74,7 +74,7 @@ void ISpyL1GlobalTriggerReadoutRecord::analyze(const edm::Event& event, const ed
     const AlgorithmMap amap = menu->gtAlgorithmMap();
 
     const DecisionWord dWord = triggerRecord->decisionWord();
-
+ 
     for( AlgorithmMap::const_iterator mit = amap.begin(), mitEnd = amap.end(); 
 	 mit != mitEnd; ++mit )
     {
@@ -100,7 +100,26 @@ void ISpyL1GlobalTriggerReadoutRecord::analyze(const edm::Event& event, const ed
       const L1GtTriggerMask *trigMaskAlgo = l1GtTmAlgo.product ();
     */
 
+    const TechnicalTriggerWord gtTTWord = triggerRecord->technicalTriggerWord();
 
+    IgCollection& tTrigger = storage->getCollection("TechTrigger_V1");
+	
+    IgProperty TBIT = tTrigger.addProperty("bitNumber", int(0));
+    IgProperty TRESULT = tTrigger.addProperty("result", int(0));
+
+    int tbitNumber = 0;
+    TechnicalTriggerWord::const_iterator GTtbitItr;
+    for(GTtbitItr = gtTTWord.begin(); GTtbitItr != gtTTWord.end(); GTtbitItr++)
+    {
+      IgCollectionItem tt = tTrigger.create();
+      tt[TBIT]  = tbitNumber;
+      if(*GTtbitItr)
+	tt[TRESULT]  = 1;
+      else
+	tt[TRESULT]  = 0;
+	
+      tbitNumber++; 
+    }
 	
     /*
       Are these useful?

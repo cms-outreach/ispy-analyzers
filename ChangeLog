@@ -1,3 +1,8 @@
+2009-11-05  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyL1GlobalTriggerReadoutRecord.cc: Add technical trigger
+	word.
+
 2009-11-04 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyMuon.cc, ISpyPATMuon.cc: fix cast problem w/charge

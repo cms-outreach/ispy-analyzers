@@ -7,10 +7,10 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.VtxSmearedEarly10TeVCollision_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.GlobalTag.globaltag = 'MC_31X_V8::All'
+process.GlobalTag.globaltag = 'MC_31X_V9::All'
 
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring('/store/relval/CMSSW_3_3_0_pre5/RelValTTbar/GEN-SIM-RECO/MC_31X_V8-v1/0004/EA71D4DD-6FAB-DE11-8A7F-001D09F23174.root')
+                            fileNames = cms.untracked.vstring('/store/relval/CMSSW_3_3_2/RelValTTbar/GEN-SIM-RECO/MC_31X_V9-v2/0000/5C3F5451-C6C7-DE11-A478-0026189438E9.root')
 )
 
 from FWCore.MessageLogger.MessageLogger_cfi import *

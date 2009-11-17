@@ -52,12 +52,14 @@ namespace edm {
       const std::string tmpExt_;
       const std::string ext_;
       int		outputMaxEvents_;
+      int		outputMaxTime_;
       bool		outputReport_;	    
       bool		outputRegistry_;	    
       int		eventCounter_;	    
       int		fileCounter_;	    
       int		currentRun_;	    
       int		currentEvent_;
+      lat::Time		nextTime_;
       
       std::string	outputHost_;
       unsigned int	outputPort_;

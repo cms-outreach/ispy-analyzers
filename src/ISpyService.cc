@@ -33,6 +33,7 @@ ISpyService::ISpyService (const ParameterSet& iPSet, ActivityRegistry& iRegistry
     tmpExt_ (iPSet.getUntrackedParameter<std::string>( "tmpFileExtension", std::string(".tmp"))),
     ext_ (iPSet.getUntrackedParameter<std::string>( "outputFileExtension", std::string(".ig"))),
     outputMaxEvents_(iPSet.getUntrackedParameter<int>( "outputMaxEvents", -1)),
+    outputMaxTime_(iPSet.getUntrackedParameter<int>( "outputMaxTime", 3600)),
     outputReport_(iPSet.getUntrackedParameter<bool>( "outputReport", false)),
     outputRegistry_(iPSet.getUntrackedParameter<bool>( "outputRegistry", true)),
     eventCounter_ (0),
@@ -74,6 +75,8 @@ ISpyService::postBeginJob (void)
   if (outputRegistry_) registry ();
   currentFile_[1] = tempFileName (outputESFileName_);
   archives_[1] = archive (currentFile_[1]);
+
+  nextTime_ = Time::current () + TimeSpan (0, 0, 0, outputMaxTime_ /* seconds */, 0);
 }
 
 lat::ZipArchive*
@@ -241,7 +244,8 @@ ISpyService::postEventProcessing (const edm::Event& event, const edm::EventSetup
   delete storages_[1];    
   storages_[1] = 0;
     
-  if (eventCounter_ == outputMaxEvents_)
+  if (eventCounter_ == outputMaxEvents_
+      || Time::current () > nextTime_)
   {
     archives_[0]->close ();
     delete archives_[0];
@@ -249,6 +253,7 @@ ISpyService::postEventProcessing (const edm::Event& event, const edm::EventSetup
     finalize (currentFile_[0]);	
     eventCounter_ = 0;
     fileCounter_++;
+    nextTime_ = Time::current () + TimeSpan (0, 0, 0, outputMaxTime_ /* seconds */, 0);
   }
 }
 	    
@@ -332,10 +337,14 @@ ISpyService::produceEvent(const edm::Event& event, const std::string & name, con
   if(netEvents_.size() > bufferSize_)
   {	    
     netProducer_->lock();
-    std::deque<std::string>::iterator it = netEvents_.begin();
-    netProducer_->removeLocalObject(*it);	    
-    netEvents_.pop_front();
+    for(std::deque<std::string>::iterator it = netEvents_.begin(), itEnd = netEvents_.end();
+	it != itEnd; ++it)
+    {
+      netProducer_->removeLocalObject(*it);	    
+      netEvents_.pop_front();
+    }    
     netProducer_->unlock();
+    netProducer_->sendLocalChanges();
   }
 
   IgNet::Object o;

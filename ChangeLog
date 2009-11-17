@@ -1,3 +1,8 @@
+2009-11-17  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyService.h, ISpyService.cc: Allow closing of ig files by
+	elapsed time.
+
 2009-11-12  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* python/ispy_33X_cfg.py: Update to use data from a CMSSW_3_3_2

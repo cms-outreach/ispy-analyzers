@@ -1,3 +1,14 @@
+2009-11-18  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyTriggerEvent.cc: Always create an HLT trigger
+	collection. Even an empty one. It is needed to correctly filter
+	events on the client side.
+	* BuildFile: Link DataFormats/RPCRecHit to avoid problems with
+	data dictionary.
+	* ispy_BeamSplash_server_cfg.py, ispy_33X_server_cfg.py,
+	ispy_33X_proxy_server_cfg.py: More examples on how to use iSpy
+	producers. 
+
 2009-11-17  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyService.h, ISpyService.cc: Allow closing of ig files by

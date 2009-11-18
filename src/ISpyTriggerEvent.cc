@@ -44,6 +44,19 @@ void ISpyTriggerEvent::analyze(const edm::Event& event, const edm::EventSetup& e
   }
 
   IgDataStorage* storage = config->storage();
+  IgCollection& triggerPaths = storage->getCollection("TriggerPaths_V1");
+
+  // Always create an HLT trigger collection
+  // even an empty one.
+  // It is needed to allow correct event filtering
+  // at the client level.
+  
+  IgProperty NAME = triggerPaths.addProperty("Name", std::string());
+  IgProperty INDEX = triggerPaths.addProperty("Index", int(0));
+  IgProperty WR = triggerPaths.addProperty("WasRun", int(0));
+  IgProperty AC = triggerPaths.addProperty("Accept", int(0));
+  IgProperty ER = triggerPaths.addProperty("Error", int(0));
+  IgProperty OBS = triggerPaths.addProperty("Objects", std::string());
 
   if ( ! hltConfigProvided_ )
   {
@@ -124,15 +137,6 @@ void ISpyTriggerEvent::analyze(const edm::Event& event, const edm::EventSetup& e
   IgProperty ETA = triggerObjects.addProperty("eta", 0.0);
   IgProperty PHI = triggerObjects.addProperty("phi", 0.0);
   IgProperty MASS = triggerObjects.addProperty("mass", 0.0);
-
-  IgCollection& triggerPaths = storage->getCollection("TriggerPaths_V1");
-
-  IgProperty NAME = triggerPaths.addProperty("Name", std::string());
-  IgProperty INDEX = triggerPaths.addProperty("Index", int(0));
-  IgProperty WR = triggerPaths.addProperty("WasRun", int(0));
-  IgProperty AC = triggerPaths.addProperty("Accept", int(0));
-  IgProperty ER = triggerPaths.addProperty("Error", int(0));
-  IgProperty OBS = triggerPaths.addProperty("Objects", std::string());
 
   // This is the number of triggers over which we iterate
   const unsigned int n(hltConfig_.size());

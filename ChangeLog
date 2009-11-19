@@ -1,3 +1,9 @@
+2009-11-19  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyTriggerEvent.h, ISpyTriggerEvent.cc: Move
+	(re-)initialization to beginRun as the HLT config may change from
+	run to run (at most). 
+
 2009-11-18  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyTriggerEvent.cc: Always create an HLT trigger

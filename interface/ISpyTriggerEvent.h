@@ -15,6 +15,8 @@ public:
   virtual ~ISpyTriggerEvent(void) {}
   
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
+  virtual void beginRun(const edm::Run&, const edm::EventSetup&);
+
 private:
   edm::InputTag triggerEventTag_;
   edm::InputTag triggerResultsTag_;

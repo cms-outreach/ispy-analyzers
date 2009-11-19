@@ -25,12 +25,17 @@ ISpyTriggerEvent::ISpyTriggerEvent(const edm::ParameterSet& iConfig)
     triggerResultsTag_(iConfig.getParameter<edm::InputTag>("triggerResultsTag")),
     processName_(iConfig.getParameter<std::string>("processName")),
     hltConfigProvided_(true)
+{}
+
+void
+ISpyTriggerEvent::beginRun(const edm::Run&, const edm::EventSetup&)
 {
   if ( ! hltConfig_.init(processName_) )
     hltConfigProvided_ = false;
 }
 
-void ISpyTriggerEvent::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
+void
+ISpyTriggerEvent::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
   edm::Service<ISpyService> config;
 

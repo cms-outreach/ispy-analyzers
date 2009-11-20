@@ -121,7 +121,8 @@ process.source = cms.Source("PoolSource",
 'file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/malgeri/cmssw/CMSSW_3_3_2/src/DPGAnalysis/Skims/python/BS/BeamSplash_1257638252.root',
 'file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/malgeri/cmssw/CMSSW_3_3_2/src/DPGAnalysis/Skims/python/BS/BeamSplash_1257619442.root',
 'file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/malgeri/cmssw/CMSSW_3_3_2/src/DPGAnalysis/Skims/python/BS/BeamSplash_1257618201.root',
-'file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/malgeri/cmssw/CMSSW_3_3_2/src/DPGAnalysis/Skims/python/BS/BeamSplash_1257655752.root')
+'file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/malgeri/cmssw/CMSSW_3_3_2/src/DPGAnalysis/Skims/python/BS/BeamSplash_1257655752.root'
+)
 )
 
 from FWCore.MessageLogger.MessageLogger_cfi import *
@@ -129,7 +130,7 @@ from FWCore.MessageLogger.MessageLogger_cfi import *
 process.add_(
     cms.Service("ISpyService",
     outputFileName = cms.untracked.string('BeamSplash_online.ig'),
-    outputMaxEvents = cms.untracked.int32 (10),
+    outputMaxEvents = cms.untracked.int32(2),
     online = cms.untracked.bool(True),
     debug = cms.untracked.bool(True)
     )

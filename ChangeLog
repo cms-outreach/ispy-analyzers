@@ -1,9 +1,16 @@
+<<<<<<< ChangeLog
+2009-11-20 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyCSCSegment.cc: quick fix of x,y,z position for splash display
+
+=======
 2009-11-19  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyTriggerEvent.h, ISpyTriggerEvent.cc: Move
 	(re-)initialization to beginRun as the HLT config may change from
 	run to run (at most). 
 
+>>>>>>> 1.10
 2009-11-18  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyTriggerEvent.cc: Always create an HLT trigger

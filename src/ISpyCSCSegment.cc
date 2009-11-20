@@ -95,13 +95,13 @@ ISpyCSCSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
       float halfThickness = det->surface ().bounds ().thickness () / 2.;
 
       float z1 = halfThickness;
-      float x1 = pos.x() + dir.x()*z1/dir.z();
-      float y1 = pos.y() + dir.y()*z1/dir.z();
+      float x1 = pos.x();// + dir.x()*z1/dir.z();
+      float y1 = pos.y();// + dir.y()*z1/dir.z();
       GlobalPoint g1 = det->surface().toGlobal( LocalPoint(x1,y1,z1) );
 
       float z2 = -halfThickness;
-      float x2 = pos.x() + dir.x()*z2/dir.z();
-      float y2 = pos.y() + dir.y()*z2/dir.z();
+      float x2 = pos.x();// + dir.x()*z2/dir.z();
+      float y2 = pos.y();// + dir.y()*z2/dir.z();
       GlobalPoint g2 = det->surface().toGlobal( LocalPoint(x2,y2,z2) );
 		
       float x = g1.x () / 100.0;  // cm -> m

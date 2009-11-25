@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("IGUANA")
-
+process.load("ISpy/Analyzers/ISpy_Producer_cff")
 process.load("Configuration.StandardSequences.Geometry_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load("Configuration.StandardSequences.Reconstruction_cff")
@@ -45,59 +45,4 @@ process.add_(
     )
 )
 
-
-process.load("ISpy.Analyzers.ISpyCaloTower_cfi")
-process.load("ISpy.Analyzers.ISpyCSCSegment_cfi")
-process.load("ISpy.Analyzers.ISpyDTDigi_cfi")
-process.load("ISpy.Analyzers.ISpyDTRecHit_cfi")
-process.load("ISpy.Analyzers.ISpyDTRecSegment4D_cfi")
-process.load("ISpy.Analyzers.ISpyRPCRecHit_cfi")
-process.load("ISpy.Analyzers.ISpyEcalRecHit_cfi")
-process.load("ISpy.Analyzers.ISpyEvent_cfi")
-process.load("ISpy.Analyzers.ISpyEventSetup_cfi")
-process.load("ISpy.Analyzers.ISpyHBRecHit_cfi")
-process.load("ISpy.Analyzers.ISpyHERecHit_cfi")
-process.load("ISpy.Analyzers.ISpyHFRecHit_cfi")
-process.load("ISpy.Analyzers.ISpyHORecHit_cfi")
-process.load("ISpy.Analyzers.ISpyJet_cfi")
-process.load("ISpy.Analyzers.ISpyMET_cfi")
-process.load("ISpy.Analyzers.ISpyMuon_cfi")
-process.load("ISpy.Analyzers.ISpyPixelDigi_cfi")
-process.load("ISpy.Analyzers.ISpySiPixelCluster_cfi")
-process.load("ISpy.Analyzers.ISpySiPixelRecHit_cfi")
-process.load("ISpy.Analyzers.ISpySiStripCluster_cfi")
-process.load("ISpy.Analyzers.ISpySiStripDigi_cfi")
-process.load("ISpy.Analyzers.ISpyTrack_cfi")
-process.load("ISpy.Analyzers.ISpyTrackingRecHit_cfi")
-
-process.ISpyTrack.iSpyTrackTag = cms.InputTag("globalCosmicMuons")
-process.ISpyTrackingRecHit.iSpyTrackingRecHitTag = cms.InputTag("globalCosmicMuons")
-process.ISpySiStripDigi.iSpySiStripDigiTag = cms.InputTag("siStripDigis","ZeroSuppressed")
-process.ISpyMuon.iSpyMuonTag = cms.InputTag("muons")
-
-process.p1 = cms.Path(process.RawToDigi_woGCT*
-                      process.reconstructionCosmics*
-                      process.ISpyEvent*
-                      process.ISpyEventSetup*
-                      process.ISpyTrack*
-                      process.ISpyTrackingRecHit*
-                      process.ISpyCSCSegment*
-                      process.ISpyCaloTower*
-                      process.ISpyDTRecSegment4D*
-                      process.ISpyDTRecHit*
-                      process.ISpyDTDigi*
-                      process.ISpyRPCRecHit*
-                      process.ISpyEcalRecHit*
-                      process.ISpyHBRecHit*
-                      process.ISpyHERecHit*
-                      process.ISpyHFRecHit*
-                      process.ISpyHORecHit*
-                      process.ISpyMET*
-                      process.ISpyMuon*
-                      process.ISpyPixelDigi*
-                      process.ISpySiPixelCluster*
-                      process.ISpySiPixelRecHit*
-                      process.ISpySiStripCluster*
-                      process.ISpySiStripDigi*
-                      process.ISpyJet)
-
+process.p1 = cms.Path(process.iSpy_sequence)

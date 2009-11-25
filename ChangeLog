@@ -3,6 +3,9 @@
 	* python/iSpy_Producer_cff.py: Full iSpy sequence. Examples
 	updated to use it.
 
+	* ISpyEBRecHit.cc, ISpyEERecHit.cc, ISpyESRecHit.cc: Add time 
+	information to the collection.
+
 2009-11-20 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyCSCSegment.cc: quick fix of x,y,z position for splash display

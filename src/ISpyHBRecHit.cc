@@ -78,6 +78,7 @@ ISpyHBRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
     IgProperty E = recHits.addProperty("energy", 0.0);
     IgProperty ETA = recHits.addProperty("eta", 0.0);
     IgProperty PHI = recHits.addProperty("phi", 0.0);
+    IgProperty TIME = recHits.addProperty("time", 0.0);
     IgProperty DETID = recHits.addProperty("detid", int (0));
     IgProperty FRONT_1 = recHits.addProperty("front_1", IgV3d());
     IgProperty FRONT_2 = recHits.addProperty("front_2", IgV3d());
@@ -96,6 +97,7 @@ ISpyHBRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
 	const CaloCellGeometry::CornersVec& corners = cell->getCorners ();
 	const GlobalPoint& pos = cell->getPosition ();
 	float energy = (*it).energy ();
+	float time = (*it).time ();
 	float eta = pos.eta ();
 	float phi = pos.phi ();
 
@@ -103,6 +105,7 @@ ISpyHBRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
 	irechit[E] = static_cast<double>(energy);
 	irechit[ETA] = static_cast<double>(eta);
 	irechit[PHI] = static_cast<double>(phi);
+	irechit[TIME] = static_cast<double>(time);
 	irechit[DETID] = static_cast<int>((*it).detid ());
 	irechit[FRONT_1] = IgV3d(static_cast<double>(corners[0].x()/100.0), 
 				 static_cast<double>(corners[0].y()/100.0), 

@@ -1,3 +1,8 @@
+2009-11-30  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyHBRecHit.cc, ISpyHERecHit.cc, ISpyHORecHit.cc,
+	ISpyHFRecHit.cc: Add time information to the collection.
+
 2009-11-27 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ispy_Collisions09_cfg.py: fix file name

@@ -1,3 +1,8 @@
+2009-12-01  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ispy_33X_online_cfg.py: Online example. 
+	* ISpy_Online_Producer_cff.py: Configuration for online.
+
 2009-11-30  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyHBRecHit.cc, ISpyHERecHit.cc, ISpyHORecHit.cc,

@@ -12,13 +12,14 @@ process.GlobalTag.globaltag = 'GR09_P_V6::All'
 
 process.source = cms.Source("PoolSource",
     fileNames = cms.untracked.vstring('file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/bit40or41skim.root')
+
 )
 
 from FWCore.MessageLogger.MessageLogger_cfi import *
 
 process.add_(
     cms.Service("ISpyService",
-    outputFileName = cms.untracked.string('CollisionCandidates-2009.23.11.ig'),
+    outputFileName = cms.untracked.string('bit40or41skim.ig'),
     outputMaxEvents = cms.untracked.int32(100),
     )
 )

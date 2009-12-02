@@ -25,7 +25,14 @@ ISpyTriggerEvent::ISpyTriggerEvent(const edm::ParameterSet& iConfig)
     triggerResultsTag_(iConfig.getParameter<edm::InputTag>("triggerResultsTag")),
     processName_(iConfig.getParameter<std::string>("processName")),
     hltConfigProvided_(true)
-{}
+{
+  // Force the InputTags specified to have the same process name as given in processName.
+  edm::InputTag tmpEventTag(iConfig.getParameter<edm::InputTag>("triggerEventTag"));
+  triggerEventTag_ = edm::InputTag(tmpEventTag.label(), tmpEventTag.instance(), processName_);
+
+  edm::InputTag tmpResultsTag(iConfig.getParameter<edm::InputTag>("triggerResultsTag"));
+  triggerResultsTag_ = edm::InputTag(tmpResultsTag.label(), tmpResultsTag.instance(), processName_);
+}
 
 void
 ISpyTriggerEvent::beginRun(const edm::Run&, const edm::EventSetup&)

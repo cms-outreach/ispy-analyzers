@@ -1,3 +1,7 @@
+2009-12-03  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyTrack.cc: Add chi2 and the number of degrees of freedom.
+
 2009-12-02  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ispy_33X_COW_online_server_cfg.py: Online configuration to run

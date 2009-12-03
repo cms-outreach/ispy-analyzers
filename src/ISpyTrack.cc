@@ -112,6 +112,8 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
       IgProperty PHI = tracks.addProperty ("phi", 0.0);
       IgProperty ETA = tracks.addProperty ("eta", 0.0);
       IgProperty CHARGE = tracks.addProperty ("charge", int(0));
+      IgProperty CHI2 = tracks.addProperty ("chi2", 0.0);
+      IgProperty NDOF = tracks.addProperty ("ndof", 0.0);
 
       // Create a collection for track extras.
       IgCollection &extras = storage->getCollection ("Extras_V1");
@@ -147,6 +149,8 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
 	item[PHI] = (*track).phi();
 	item[ETA] = (*track).eta ();
 	item[CHARGE] = (*track).charge();
+	item[CHI2] = (*track).chi2();
+	item[NDOF] = (*track).ndof();
 	    
 	if ((*track).innerOk () && (*track).outerOk ())
 	{

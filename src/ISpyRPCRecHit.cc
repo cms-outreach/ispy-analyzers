@@ -103,7 +103,7 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
       float x = xyzLocal.x ();
       float y = xyzLocal.y ();
       float z = xyzLocal.z ();
-      float dx = it->localPositionError ().xx ();
+      float dx = sqrt(it->localPositionError ().xx ());
       float dy = sqrt(it->localPositionError ().yy ());
 
       GlobalPoint gp;

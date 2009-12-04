@@ -1,3 +1,7 @@
+2009-12-04 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyRPCRecHit.cc, ISpyCSCRecHit2D.cc: add missing sqrt
+
 2009-12-03  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyTrack.cc: Add chi2 and the number of degrees of freedom.

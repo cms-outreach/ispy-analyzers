@@ -89,6 +89,7 @@ ISpyTriggerEvent::analyze(const edm::Event& event, const edm::EventSetup& eventS
   Handle<TriggerResults> triggerResults;
   event.getByLabel(triggerResultsTag_, triggerResults);
 
+
   if ( ! triggerEvent.isValid() )
   {
     std::string error = "### Error: TriggerEvent "

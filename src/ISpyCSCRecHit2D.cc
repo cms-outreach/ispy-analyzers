@@ -108,7 +108,7 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
       float y = xyzLocal.y();
       float z = xyzLocal.z();
           
-      float dx = it->localPositionError().xx();
+      float dx = sqrt(it->localPositionError().xx());
       float dy = sqrt(it->localPositionError().yy());
           
       GlobalPoint gp;

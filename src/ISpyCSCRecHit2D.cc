@@ -74,7 +74,7 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
     IgCollectionItem item = products.create();
     item[PROD] = product;
 
-    IgCollection& recHits = storage->getCollection("CSCRecHit2Ds_V1");
+    IgCollection& recHits = storage->getCollection("CSCRecHit2Ds_V2");
 
     IgProperty U1 = recHits.addProperty("u1", IgV3d());
     IgProperty U2 = recHits.addProperty("u2", IgV3d());
@@ -89,6 +89,7 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
     IgProperty CH = recHits.addProperty("chamber", int(0));
     IgProperty LA = recHits.addProperty("layer", int(0));
 
+    IgProperty  T  = recHits.addProperty("tpeak", 0.0);
     IgProperty POS = recHits.addProperty("positionWithinStrip", 0.0);
     IgProperty ERR = recHits.addProperty("errorWithinStrip", 0.0);
     IgProperty CHS = recHits.addProperty("strips", std::string());
@@ -128,6 +129,8 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
 
       CSCDetId id = (*it).cscDetId();
       
+      irechit[T] = static_cast<double>(it->tpeak());
+
       irechit[EC] = id.endcap();
       irechit[ST] = id.station();
       irechit[RG] = id.ring();

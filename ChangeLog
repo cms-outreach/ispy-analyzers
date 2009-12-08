@@ -1,5 +1,9 @@
 2009-12-08 Tom McCauley <thomas.mccauley@cern.ch>
 
+	* ISpyCSCRecHit2D.cc: add time and evolve schema
+
+2009-12-08 Tom McCauley <thomas.mccauley@cern.ch>
+
 	* ISpyTrackingRecHit.*: change to VInputTag
 	* ISpyTrack.cc, ISpyHBRecHit.cc, ISpyHERecHit.cc, ISpyHORecHit.cc, ISpyHFRecHit.cc, ISpyEBRecHit.cc, ISpyEERecHit.cc, ISpyESRecHit.cc:
 	evolve schema to V2

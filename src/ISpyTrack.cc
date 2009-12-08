@@ -60,12 +60,7 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
   {
     std::string error = 
       "### Error: ISpyTrack::analyze: Invalid GlobalTrackingGeometryRecord ";
-    
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-    
+    config->error (error);
     return;
   }
 
@@ -76,12 +71,7 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
   {
     std::string error = 
       "### Error: ISpyTrack::analyze: Invalid Magnetic field ";
-    
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-    
+    config->error (error);
     return;
   }
 
@@ -201,11 +191,7 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
 			  + (*ti).label() + ":"
 			  + (*ti).instance() + ":" 
 			  + (*ti).process() + " are not found.";
-
-      IgCollection &collection = storage->getCollection ("Errors_V1");
-      IgProperty ERROR_MSG = collection.addProperty ("Error", std::string ());
-      IgCollectionItem item = collection.create ();
-      item [ERROR_MSG] = error;
+      config->error (error);
     }
   }
 }

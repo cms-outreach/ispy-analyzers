@@ -36,16 +36,15 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       "or remove the module that requires it";
   }
 
-  storage_ = config->storage();
-
-  eventSetup.get<IdealMagneticFieldRecord>().get(field_);
+  IgDataStorage* storage = config->storage();
+  edm::ESHandle<MagneticField> field; 
+  eventSetup.get<IdealMagneticFieldRecord>().get(field);
   
-  if ( ! field_.isValid() )
+  if ( ! field.isValid() )
   {
     std::string error = 
             "### Error: ISpyPATMuon::analyze: Invalid Magnetic field ";
-    
-    writeError(error);
+    config->error (error);
     return;
   }
 
@@ -60,11 +59,9 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
                         + inputTag_.instance() + ":"
                         + inputTag_.process() + " are not found.";
 
-    writeError(error);
+    config->error (error);
     return;
   }
-  
-  storage_ = config->storage();
     
   std::string product = "pat::Muons "
                         + edm::TypeID (typeid (std::vector<pat::Muon>)).friendlyClassName() + ":"
@@ -72,41 +69,41 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
                         + inputTag_.instance() + ":"
                         + inputTag_.process();
     
-  IgCollection& products = storage_->getCollection("Products_V1");
+  IgCollection& products = storage->getCollection("Products_V1");
   IgProperty PROD = products.addProperty("Product", std::string());
   IgCollectionItem item = products.create();
   item[PROD] = product;
 
-  IgCollection& trackerMuonCollection = storage_->getCollection("PATTrackerMuons_V1");
+  IgCollection& trackerMuonCollection = storage->getCollection("PATTrackerMuons_V1");
   IgProperty T_PT = trackerMuonCollection.addProperty ("pt", 0.0);
   IgProperty T_CHARGE = trackerMuonCollection.addProperty ("charge", int(0));
   IgProperty T_RP = trackerMuonCollection.addProperty ("rp", IgV3d ());
   IgProperty T_PHI = trackerMuonCollection.addProperty ("phi", 0.0);
   IgProperty T_ETA = trackerMuonCollection.addProperty ("eta", 0.0);
  
-  IgCollection& standAloneMuonCollection = storage_->getCollection("PATStandaloneMuons_V1");
+  IgCollection& standAloneMuonCollection = storage->getCollection("PATStandaloneMuons_V1");
   IgProperty S_PT = standAloneMuonCollection.addProperty ("pt", 0.0);
   IgProperty S_CHARGE = standAloneMuonCollection.addProperty ("charge", int(0));
   IgProperty S_RP = standAloneMuonCollection.addProperty ("pos", IgV3d ());
   IgProperty S_PHI = standAloneMuonCollection.addProperty ("phi", 0.0);
   IgProperty S_ETA = standAloneMuonCollection.addProperty ("eta", 0.0);
  
-  IgCollection& globalMuonCollection = storage_->getCollection("PATGlobalMuons_V1");
+  IgCollection& globalMuonCollection = storage->getCollection("PATGlobalMuons_V1");
   IgProperty G_PT = globalMuonCollection.addProperty ("pt", 0.0);
   IgProperty G_CHARGE = globalMuonCollection.addProperty ("charge", int(0));
   IgProperty G_RP = globalMuonCollection.addProperty ("rp", IgV3d ());
   IgProperty G_PHI = globalMuonCollection.addProperty ("phi", 0.0);
   IgProperty G_ETA = globalMuonCollection.addProperty ("eta", 0.0);
 
-  IgCollection& extras = storage_->getCollection("Extras_V1");
+  IgCollection& extras = storage->getCollection("Extras_V1");
   IgProperty IPOS = extras.addProperty("pos_1", IgV3d());
   IgProperty IP   = extras.addProperty("dir_1", IgV3d());
   IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
   IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
-  IgAssociationSet& trackExtras = storage_->getAssociationSet("PATMuonTrackExtras_V1");
+  IgAssociationSet& trackExtras = storage->getAssociationSet("PATMuonTrackExtras_V1");
 
-  IgCollection& points = storage_->getCollection("Points_V1");
+  IgCollection& points = storage->getCollection("Points_V1");
   IgProperty POS = points.addProperty("pos", IgV3d());
 
   for ( std::vector<pat::Muon>::const_iterator t = collection->begin(), tEnd = collection->end(); 
@@ -126,12 +123,12 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       imuon[T_PHI] = (*track).phi();
       imuon[T_ETA] = (*track).eta();
 
-      IgAssociationSet& muonTrackerPoints = storage_->getAssociationSet("PATMuonTrackerPoints_V1");
+      IgAssociationSet& muonTrackerPoints = storage->getAssociationSet("PATMuonTrackerPoints_V1");
 
       try
       {
-        ISpyTrackRefitter::refitTrack(imuon, muonTrackerPoints, storage_,
-                                     track, &*field_, 
+        ISpyTrackRefitter::refitTrack(imuon, muonTrackerPoints, storage,
+                                     track, &*field, 
                                      in_, out_, step_);
       }       
             
@@ -140,8 +137,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
         std::string error = 
           "### Error: ISpyPATMuon::refitTrack exception caught for TrackerMuon:";
         error += e.explainSelf();
-
-        writeError(error);
+	config->error (error);
       }
     }  // Tracker 
     
@@ -198,12 +194,12 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       imuon[G_PHI] = (*combinedMuon).phi();
       imuon[G_ETA] = (*combinedMuon).eta();
 
-      IgAssociationSet& muonGlobalPoints = storage_->getAssociationSet("PATMuonGlobalPoints_V1");	
+      IgAssociationSet& muonGlobalPoints = storage->getAssociationSet("PATMuonGlobalPoints_V1");	
  
       try
       {
-        ISpyTrackRefitter::refitTrack(imuon, muonGlobalPoints, storage_,
-                                     combinedMuon, &*field_, 
+        ISpyTrackRefitter::refitTrack(imuon, muonGlobalPoints, storage,
+                                     combinedMuon, &*field, 
                                      in_, out_, step_);
       }
             
@@ -212,21 +208,10 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
         std::string error = 
           "### Error: ISpyPATMuon::refitTrack exception caught for GlobalMuon:";
         error += e.explainSelf();
-
-        writeError(error);
+	config->error (error);
       }
-
     } // Global
   } 
 }
-
-void ISpyPATMuon::writeError(std::string& error)
-{
-  IgCollection& collection = storage_->getCollection("Errors_V1");
-  IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-  IgCollectionItem item = collection.create();
-  item[ERROR_MSG] = error;
-}
-
 
 DEFINE_FWK_MODULE(ISpyPATMuon);

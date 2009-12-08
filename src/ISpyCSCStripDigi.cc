@@ -49,12 +49,7 @@ void ISpyCSCStripDigi::analyze(const edm::Event& event, const edm::EventSetup& e
   {
     std::string error = 
       "### Error: ISpyCSCStripDigi::analyze: Invalid MuonGeometryRecord ";
-
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-
+    config->error (error);
     return;
   }
 
@@ -131,11 +126,7 @@ void ISpyCSCStripDigi::analyze(const edm::Event& event, const edm::EventSetup& e
 			+ inputTag_.label() + ":"
 			+ inputTag_.instance() + ":"
 			+ inputTag_.process() + " are not found.";
-
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
+    config->error (error);
   }
 }
 

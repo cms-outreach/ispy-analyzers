@@ -121,8 +121,7 @@ void ISpyPFRecTrack::analyze(const edm::Event& event, const edm::EventSetup& eve
         }
       }
     }
-  }
-    
+  }    
   else 
   {
     std::string error = "### Error: PFRecTracks "
@@ -130,14 +129,8 @@ void ISpyPFRecTrack::analyze(const edm::Event& event, const edm::EventSetup& eve
                         + inputTag_.label() + ":"
                         + inputTag_.instance() + ":" 
                         + inputTag_.process() + " are not found.";
-
-    IgDataStorage *storage = config->storage();
-    IgCollection &collection = storage->getCollection("Errors_V1");
-    IgProperty errorMsg = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item ["Error"] = error;
+    config->error (error);
   }
 }
-
 
 DEFINE_FWK_MODULE(ISpyPFRecTrack);

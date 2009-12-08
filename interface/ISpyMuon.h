@@ -38,11 +38,6 @@ private:
   void addCaloEnergy(reco::MuonCollection::const_iterator it, 
                      IgCollectionItem& imuon,
                      IgProperty& property);
-
-  void writeError(std::string& error);
-
-  IgDataStorage* storage_;
-  edm::ESHandle<MagneticField> field_; 
 };
 
 #endif

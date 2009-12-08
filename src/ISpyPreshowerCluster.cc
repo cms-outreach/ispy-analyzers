@@ -45,12 +45,7 @@ void ISpyPreshowerCluster::analyze(const edm::Event& event, const edm::EventSetu
   {
     std::string error = 
       "### Error: ISpyPreshowerCluster::analyze: Invalid CaloGeometryRecord ";
-
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-
+    config->error (error);
     return;
   }
 
@@ -139,7 +134,6 @@ void ISpyPreshowerCluster::analyze(const edm::Event& event, const edm::EventSetu
         }       
       }
     }
-
     else
     {
       std::string error = "### Error: PreshowerClusters "
@@ -147,11 +141,7 @@ void ISpyPreshowerCluster::analyze(const edm::Event& event, const edm::EventSetu
                           + (*ti).label() + ":"
                           + (*ti).instance() + ":"
                           + (*ti).process() + " are not found.";
-
-      IgCollection& collection = storage->getCollection("Errors_V1");
-      IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-      IgCollectionItem item = collection.create();
-      item[ERROR_MSG] = error;
+      config->error (error);
     }
   }
 }

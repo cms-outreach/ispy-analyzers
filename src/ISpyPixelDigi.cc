@@ -47,12 +47,7 @@ ISpyPixelDigi::analyze (const edm::Event& event, const edm::EventSetup& eventSet
   {
     std::string error = 
       "### Error: ISpyPixelDigi::analyze: Invalid TrackerDigiGeometryRecord ";
-
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-
+    config->error (error);
     return;
   }
 
@@ -111,13 +106,11 @@ ISpyPixelDigi::analyze (const edm::Event& event, const edm::EventSetup& eventSet
 	  item[ADC] = static_cast<int>((*idigi).adc());
 	  item[ROW] = static_cast<int>((*idigi).row());
 	  item[COL] = static_cast<int>((*idigi).column());
-	  item[CH] = static_cast<int>((*idigi).channel());
-		    
+	  item[CH] = static_cast<int>((*idigi).channel());		    
 	}
       }
     }
   }
-
   else 
   {
     std::string error = "### Error: PixelDigis "
@@ -125,11 +118,7 @@ ISpyPixelDigi::analyze (const edm::Event& event, const edm::EventSetup& eventSet
 			+ inputTag_.label() + ":"
 			+ inputTag_.instance() + ":" 
 			+ inputTag_.process() + " are not found.";
-
-    IgCollection &collection = storage->getCollection ("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty ("Error", std::string ());
-    IgCollectionItem item = collection.create ();
-    item [ERROR_MSG] = error;
+    config->error (error);
   }
 }
 

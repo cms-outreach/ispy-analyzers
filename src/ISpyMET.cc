@@ -77,12 +77,7 @@ ISpyMET::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
 			+ inputTag_.label() + ":"
 			+ inputTag_.instance() + ":" 
 			+ inputTag_.process() + " are not found.";
-
-    IgDataStorage *storage = config->storage ();
-    IgCollection &collection = storage->getCollection ("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty ("Error", std::string ());
-    IgCollectionItem item = collection.create ();
-    item [ERROR_MSG] = error;
+    config->error (error);
   }
 }
 

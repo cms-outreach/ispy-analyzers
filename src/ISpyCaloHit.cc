@@ -46,12 +46,7 @@ void ISpyCaloHit::analyze(const edm::Event& event, const edm::EventSetup& eventS
   {
     std::string error = 
       "### Error: ISpyCaloHit::analyze: Invalid CaloGeometryRecord ";
-
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-      
+    config->error (error);
     return;
   }
 
@@ -189,11 +184,7 @@ void ISpyCaloHit::analyze(const edm::Event& event, const edm::EventSetup& eventS
 			  + (*ti).label() + ":"
 			  + (*ti).instance() + ":"
 			  + (*ti).process() + " are not found.";
-
-      IgCollection& collection = storage->getCollection("Errors_V1");
-      IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-      IgCollectionItem item = collection.create();
-      item[ERROR_MSG] = error;
+      config->error (error);
     }
   }
 }

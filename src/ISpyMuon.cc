@@ -43,17 +43,17 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       "You must add the service in the configuration file\n"
       "or remove the module that requires it";
   }
+
+  IgDataStorage* storage = config->storage();
+  edm::ESHandle<MagneticField> field; 
+  eventSetup.get<IdealMagneticFieldRecord>().get(field);
   
-  storage_ = config->storage();
-  
-  eventSetup.get<IdealMagneticFieldRecord>().get(field_);
-  
-  if ( ! field_.isValid() )
+  if ( ! field.isValid() )
   {
     std::string error = 
             "### Error: ISpyMuon::analyze: Invalid Magnetic field ";
     
-    writeError(error);
+    config->error (error);
     return;
   }
   
@@ -68,7 +68,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
                         + inputTag_.instance() + ":" 
                         + inputTag_.process() + " are not found.";
 
-    writeError(error);
+    config->error (error);
     return;
   }
          
@@ -78,12 +78,12 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
                         + inputTag_.instance() + ":" 
                         + inputTag_.process();
 
-  IgCollection& products = storage_->getCollection("Products_V1");
+  IgCollection& products = storage->getCollection("Products_V1");
   IgProperty PROD = products.addProperty("Product", std::string ());
   IgCollectionItem item = products.create();
   item[PROD] = product;
 
-  IgCollection& trackerMuonCollection = storage_->getCollection("TrackerMuons_V1");
+  IgCollection& trackerMuonCollection = storage->getCollection("TrackerMuons_V1");
   IgProperty T_PT = trackerMuonCollection.addProperty("pt", 0.0);
   IgProperty T_CHARGE = trackerMuonCollection.addProperty("charge", int(0));
   IgProperty T_RP = trackerMuonCollection.addProperty("rp", IgV3d());
@@ -91,7 +91,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty T_ETA = trackerMuonCollection.addProperty("eta", 0.0);
   IgProperty T_CALO_E = trackerMuonCollection.addProperty("calo_energy", 0.0);
 
-  IgCollection& standAloneMuonCollection = storage_->getCollection("StandaloneMuons_V2");
+  IgCollection& standAloneMuonCollection = storage->getCollection("StandaloneMuons_V2");
   IgProperty S_PT = standAloneMuonCollection.addProperty("pt", 0.0);
   IgProperty S_CHARGE = standAloneMuonCollection.addProperty("charge", int(0));
   IgProperty S_RP = standAloneMuonCollection.addProperty("pos", IgV3d());
@@ -99,7 +99,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty S_ETA = standAloneMuonCollection.addProperty("eta", 0.0);
   IgProperty S_CALO_E = standAloneMuonCollection.addProperty("calo_energy", 0.0);
 
-  IgCollection& globalMuonCollection = storage_->getCollection("GlobalMuons_V1");
+  IgCollection& globalMuonCollection = storage->getCollection("GlobalMuons_V1");
   IgProperty G_PT = globalMuonCollection.addProperty("pt", 0.0);
   IgProperty G_CHARGE = globalMuonCollection.addProperty("charge", int(0));
   IgProperty G_RP = globalMuonCollection.addProperty("rp", IgV3d ());
@@ -107,22 +107,22 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty G_ETA = globalMuonCollection.addProperty("eta", 0.0);
   IgProperty G_CALO_E = globalMuonCollection.addProperty("calo_energy", 0.0);
 
-  IgCollection& extras = storage_->getCollection("Extras_V1");
+  IgCollection& extras = storage->getCollection("Extras_V1");
   IgProperty IPOS = extras.addProperty("pos_1", IgV3d());
   IgProperty IP   = extras.addProperty("dir_1", IgV3d());
   IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
   IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
-  IgAssociationSet& trackExtras = storage_->getAssociationSet("MuonTrackExtras_V1");
+  IgAssociationSet& trackExtras = storage->getAssociationSet("MuonTrackExtras_V1");
 
-  IgCollection& points = storage_->getCollection("Points_V1");
+  IgCollection& points = storage->getCollection("Points_V1");
   IgProperty POS = points.addProperty("pos", IgV3d());
 
   // NOTE: TM What are these used for?
-  IgCollection& detIds = storage_->getCollection("DetIds_V1");
+  IgCollection& detIds = storage->getCollection("DetIds_V1");
   IgProperty DETID = detIds.addProperty ("detid", int(0));
   
-  IgAssociationSet& muonDetIds = storage_->getAssociationSet("MuonDetIds_V1");
+  IgAssociationSet& muonDetIds = storage->getAssociationSet("MuonDetIds_V1");
 
   for (reco::MuonCollection::const_iterator it = collection->begin(), end = collection->end(); 
        it != end; ++it) 
@@ -147,12 +147,12 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, T_CALO_E);
 
-      IgAssociationSet& muonTrackerPoints = storage_->getAssociationSet("MuonTrackerPoints_V1");
+      IgAssociationSet& muonTrackerPoints = storage->getAssociationSet("MuonTrackerPoints_V1");
 
       try
       {
-        ISpyTrackRefitter::refitTrack(imuon, muonTrackerPoints, storage_,
-                                     (*it).track (), &*field_, 
+        ISpyTrackRefitter::refitTrack(imuon, muonTrackerPoints, storage,
+                                     (*it).track (), &*field, 
                                      in_, out_, step_);
       }       
             
@@ -161,8 +161,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
         std::string error = 
           "### Error: ISpyMuon::refitTrack exception caught for TrackerMuon:";
         error += e.explainSelf();
-
-        writeError(error);
+	config->error (error);
       }
     }
 	
@@ -228,12 +227,12 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, G_CALO_E);
 
-      IgAssociationSet& muonGlobalPoints = storage_->getAssociationSet("MuonGlobalPoints_V1");	
+      IgAssociationSet& muonGlobalPoints = storage->getAssociationSet("MuonGlobalPoints_V1");	
  
       try
       {
-        ISpyTrackRefitter::refitTrack(imuon, muonGlobalPoints, storage_,
-                                     (*it).combinedMuon(), &*field_, 
+        ISpyTrackRefitter::refitTrack(imuon, muonGlobalPoints, storage,
+                                     (*it).combinedMuon(), &*field, 
                                      in_, out_, step_);
       }
             
@@ -242,8 +241,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
         std::string error = 
           "### Error: ISpyMuon::refitTrack exception caught for GlobalMuon:";
         error += e.explainSelf();
-
-        writeError(error);
+	config->error (error);
       }
     }
   }
@@ -268,14 +266,5 @@ void ISpyMuon::addCaloEnergy(reco::MuonCollection::const_iterator it, IgCollecti
   float e = (*it).calEnergy ().tower;
   imuon[property] = e;		
 }
-
-void ISpyMuon::writeError(std::string& error)
-{
-  IgCollection& collection = storage_->getCollection("Errors_V1");
-  IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-  IgCollectionItem item = collection.create();
-  item[ERROR_MSG] = error;
-}
-
 
 DEFINE_FWK_MODULE(ISpyMuon);

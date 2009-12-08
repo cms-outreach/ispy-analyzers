@@ -74,12 +74,7 @@ ISpyTriggerEvent::analyze(const edm::Event& event, const edm::EventSetup& eventS
   {
     std::string error = 
       "### Error: ISpyTriggerEvent: cannot initialize HLTConfigProvider with process name "+processName_;
-
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-    
+    config->error (error);
     return;
   }
     
@@ -97,11 +92,7 @@ ISpyTriggerEvent::analyze(const edm::Event& event, const edm::EventSetup& eventS
                         + triggerEventTag_.label() + ":"
                         + triggerEventTag_.instance() + ":"
                         + triggerEventTag_.process() + " not found.";
-
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
+    config->error (error);
   }
     
   if ( ! triggerResults.isValid() )
@@ -111,11 +102,7 @@ ISpyTriggerEvent::analyze(const edm::Event& event, const edm::EventSetup& eventS
                         + triggerResultsTag_.label() + ":"
                         + triggerResultsTag_.instance() + ":"
                         + triggerResultsTag_.process() + " not found.";
-
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
+    config->error (error);
   }
     
   
@@ -157,12 +144,7 @@ ISpyTriggerEvent::analyze(const edm::Event& event, const edm::EventSetup& eventS
   if ( triggerResults->size() != hltConfig_.size() )
   {   
     std::string error = "### Error: ISpyTriggerEvent: TriggerResults.size() != HLTConfigProvider.size()";
-    IgDataStorage* storage = config->storage();
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-
+    config->error (error);
     return;
   }
    
@@ -176,11 +158,7 @@ ISpyTriggerEvent::analyze(const edm::Event& event, const edm::EventSetup& eventS
     if ( triggerIndex >= n )
     {
       std::string error = "### Error: ISpyTriggerEvent: "+triggerName+" not found";
-      IgCollection& collection = storage->getCollection("Errors_V1");
-      IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-      IgCollectionItem item = collection.create();
-      item[ERROR_MSG] = error;
-       
+      config->error (error);
       return;
     }
       

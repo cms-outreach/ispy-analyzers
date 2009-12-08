@@ -266,6 +266,16 @@ ISpyService::write (const char *data, lat::OutputStream *to, long int maxSize)
 }
 
 void
+ISpyService::error (const std::string & what)
+{
+  ASSERT (storages_[0]);
+  IgCollection& collection = storages_[0]->getCollection("Errors_V1");
+  IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
+  IgCollectionItem item = collection.create();
+  item[ERROR_MSG] = what;
+}
+
+void
 ISpyService::report (void) 
 {
   std::string footerName = "Footer";

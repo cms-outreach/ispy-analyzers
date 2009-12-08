@@ -50,12 +50,7 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
   {
     std::string error = 
       "### Error: ISpyRPCRecHit::analyze: Invalid MuonGeometryRecord ";
-    
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-    
+    config->error (error);
     return;
   }
     
@@ -141,11 +136,7 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
                         + inputTag_.label() + ":"
                         + inputTag_.instance() + ":" 
                         + inputTag_.process() + " are not found.";
-
-    IgCollection &collection = storage->getCollection ("Errors_V1");
-    IgProperty errorMsg = collection.addProperty ("Error", std::string ());
-    IgCollectionItem item = collection.create ();
-    item ["Error"] = error;
+    config->error (error);
   }
 }
 

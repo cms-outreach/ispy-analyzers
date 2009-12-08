@@ -1,3 +1,26 @@
+2009-12-08  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyService.h, ISpyService.cc: Provide error reporting
+	function. 
+	* ISpyMuon.h, ISpyPATMuon.h, ISpyBasicCluster.cc,
+	ISpyCSCRecHit2D.cc, ISpyCSCSegment.cc, ISpyCSCStripDigi.cc,
+	ISpyCSCWireDigi.cc, ISpyCaloCluster.cc, ISpyCaloHit.cc,
+	ISpyCaloTower.cc, ISpyDTDigi.cc, ISpyDTRecHit.cc,
+	ISpyDTRecSegment4D.cc, ISpyEBRecHit.cc, ISpyEERecHit.cc,
+	ISpyESRecHit.cc, ISpyEcalRecHit.cc, ISpyElectron.cc, ISpyEvent.cc,
+	ISpyGsfElectron.cc, ISpyGsfPFRecTrack.cc, ISpyGsfTrack.cc,
+	ISpyHBRecHit.cc, ISpyHERecHit.cc, ISpyHFRecHit.cc,
+	ISpyHORecHit.cc, ISpyJet.cc, ISpyL1GlobalTriggerReadoutRecord.cc,
+	ISpyMET.cc, ISpyMuon.cc, ISpyPATElectron.cc, ISpyPATMuon.cc,
+	ISpyPATPhoton.cc, ISpyPFCluster.cc, ISpyPFRecHit.cc,
+	ISpyPFRecTrack.cc, ISpyPhoton.cc, ISpyPixelDigi.cc,
+	ISpyPreshowerCluster.cc, ISpyRPCRecHit.cc, ISpyService.cc,
+	ISpySiPixelCluster.cc, ISpySiPixelRecHit.cc,
+	ISpySiStripCluster.cc, ISpySiStripDigi.cc, ISpySimTrack.cc,
+	ISpySuperCluster.cc, ISpyTrack.cc, ISpyTrackingParticle.cc,
+	ISpyTrackingRecHit.cc, ISpyTriggerEvent.cc: Use error reporting
+	from the service.
+
 2009-12-04 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyRPCRecHit.cc, ISpyCSCRecHit2D.cc: add missing sqrt

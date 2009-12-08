@@ -140,7 +140,6 @@ void ISpyPhoton::analyze(const edm::Event& event, const edm::EventSetup& eventSe
       p[NTHDR3] = pi->nTrkHollowConeDR03();   
     } 
   }
-
   else
   {
     std::string error = "### Error: Photons "
@@ -148,11 +147,7 @@ void ISpyPhoton::analyze(const edm::Event& event, const edm::EventSetup& eventSe
                         + inputTag_.label() + ":"
                         + inputTag_.instance() + ":"
                         + inputTag_.process() + " are not found.";
-
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
+    config->error (error);
   }
 }
 

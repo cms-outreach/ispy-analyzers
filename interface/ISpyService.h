@@ -36,6 +36,7 @@ namespace edm {
       long int		write (const char *data, lat::OutputStream *to, long int maxSize);
       IgDataStorage * 	storage (void) { return storages_[0]; }
       IgDataStorage * 	esStorage (void) { return storages_[1]; }
+      void		error (const std::string & what);
 
     private:
       void		init (void);

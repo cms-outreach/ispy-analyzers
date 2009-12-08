@@ -47,12 +47,7 @@ ISpySiStripDigi::analyze( const edm::Event& event, const edm::EventSetup& eventS
   {
     std::string error = 
       "### Error: ISpySiStripDigi::analyze: Invalid TrackerDigiGeometryRecord ";
-
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-
+    config->error (error);
     return;
   }
 
@@ -122,11 +117,7 @@ ISpySiStripDigi::analyze( const edm::Event& event, const edm::EventSetup& eventS
 			+ inputTag_.label() + ":"
 			+ inputTag_.instance() + ":" 
 			+ inputTag_.process() + " are not found.";
-
-    IgCollection &collection = storage->getCollection ("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty ("Error", std::string ());
-    IgCollectionItem item = collection.create ();
-    item [ERROR_MSG] = error;
+    config->error (error);
   }
 }
 

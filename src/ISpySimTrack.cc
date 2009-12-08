@@ -105,11 +105,7 @@ void ISpySimTrack::analyze (const edm::Event& event, const edm::EventSetup& even
 			  + (*i).label() + ":"
 			  + (*i).instance() + ":" 
 			  + (*i).process() + " are not found.";
-	    
-      IgCollection &collection = storage->getCollection ("Errors_V1");
-      IgProperty ERROR_MSG = collection.addProperty ("Error", std::string ());
-      IgCollectionItem item = collection.create ();
-      item [ERROR_MSG] = error;
+      config->error (error);
     }
   }
 
@@ -162,11 +158,7 @@ void ISpySimTrack::analyze (const edm::Event& event, const edm::EventSetup& even
 			  + (*i).label() + ":"
 			  + (*i).instance() + ":" 
 			  + (*i).process() + " are not found.";
-	    
-      IgCollection &collection = storage->getCollection ("Errors_V1");
-      IgProperty ERROR_MSG = collection.addProperty ("Error", std::string ());
-      IgCollectionItem item = collection.create ();
-      item [ERROR_MSG] = error;
+      config->error (error);
     }
   }    
 
@@ -296,8 +288,7 @@ void ISpySimTrack::analyze (const edm::Event& event, const edm::EventSetup& even
 	int vIndex = (*ti).vertIndex();
 	track[VERT] = vIndex;
       }
-    }
-	
+    }	
     else 
     {
       std::string error = "### Error: SimTracks "
@@ -305,14 +296,9 @@ void ISpySimTrack::analyze (const edm::Event& event, const edm::EventSetup& even
 			  + (*i).label() + ":"
 			  + (*i).instance() + ":" 
 			  + (*i).process() + " are not found.";
-	    
-      IgCollection &collection = storage->getCollection ("Errors_V1");
-      IgProperty ERROR_MSG = collection.addProperty ("Error", std::string ());
-      IgCollectionItem item = collection.create ();
-      item [ERROR_MSG] = error;
+      config->error (error);
     }
   }    
 }
-
 
 DEFINE_FWK_MODULE(ISpySimTrack);

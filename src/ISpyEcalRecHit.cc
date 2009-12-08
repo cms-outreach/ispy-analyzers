@@ -50,12 +50,7 @@ ISpyEcalRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSe
   {
     std::string error = 
       "### Error: ISpyEcalRecHit::analyze: Invalid CaloGeometryRecord ";
-    
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-    
+    config->error (error);
     return;
   }
 
@@ -141,11 +136,7 @@ ISpyEcalRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSe
 			  + (*ti).label() + ":"
 			  + (*ti).instance() + ":" 
 			  + (*ti).process() + " are not found.";
-	    
-      IgCollection &collection = storage->getCollection ("Errors_V1");
-      IgProperty ERROR_MSG = collection.addProperty ("Error", std::string ());
-      IgCollectionItem item = collection.create ();
-      item [ERROR_MSG] = error;
+      config->error (error);
     }
   }
 }

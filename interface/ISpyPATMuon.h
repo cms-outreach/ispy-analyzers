@@ -27,10 +27,5 @@ private:
   double in_;
   double out_;
   double step_;    
-
-  void writeError(std::string& error);
-
-  IgDataStorage* storage_;
-  edm::ESHandle<MagneticField> field_; 
 };
 #endif

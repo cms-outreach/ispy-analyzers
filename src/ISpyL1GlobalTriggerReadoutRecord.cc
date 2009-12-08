@@ -199,14 +199,8 @@ void ISpyL1GlobalTriggerReadoutRecord::analyze(const edm::Event& event, const ed
 			+ inputTag_.label() + ":"
 			+ inputTag_.instance() + ":"
 			+ inputTag_.process() + " are not found.";
-
-    IgDataStorage* storage = config->storage();
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
+    config->error (error);
   }
-
 }
 
 DEFINE_FWK_MODULE(ISpyL1GlobalTriggerReadoutRecord);

@@ -49,12 +49,7 @@ ISpyBasicCluster::analyze (const edm::Event& event, const edm::EventSetup& event
   {
     std::string error = 
       "### Error: ISpyBasicCluster::analyze: Invalid CaloGeometryRecord ";
-
-    IgCollection& collection = storage->getCollection("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty("Error", std::string());
-    IgCollectionItem item = collection.create();
-    item[ERROR_MSG] = error;
-
+    config->error (error);
     return;
   }
     
@@ -152,11 +147,7 @@ ISpyBasicCluster::analyze (const edm::Event& event, const edm::EventSetup& event
                         + inputTag_.label() + ":"
                         + inputTag_.instance() + ":" 
                         + inputTag_.process() + " are not found.";
-
-    IgCollection &collection = storage->getCollection ("Errors_V1");
-    IgProperty ERROR_MSG = collection.addProperty ("Error", std::string ());
-    IgCollectionItem item = collection.create ();
-    item [ERROR_MSG] = error;
+    config->error (error);
   }
 }
 

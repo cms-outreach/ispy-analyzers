@@ -34,6 +34,12 @@ public:
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
 private:
   void	buildTracker3D (IgDataStorage *);
+  void	buildPixelBarrel3D (IgDataStorage *);
+  void	buildPixelEndcap3D (IgDataStorage *);
+  void	buildTIB3D (IgDataStorage *);
+  void	buildTOB3D (IgDataStorage *);
+  void	buildTEC3D (IgDataStorage *);
+  void	buildTID3D (IgDataStorage *);
   void	buildTrackerRPhi (IgDataStorage *);
   void	buildTrackerRZ (IgDataStorage *);
   void 	buildDriftTubes3D (IgDataStorage *);
@@ -45,6 +51,9 @@ private:
   void 	buildCSC3D (IgDataStorage *);
   void 	buildCSCRZ (IgDataStorage *);
   void	buildRPC3D (IgDataStorage *);
+  void	buildRPCBarrel3D (IgDataStorage *);
+  void	buildRPCPlusEndcap3D (IgDataStorage *);
+  void	buildRPCMinusEndcap3D (IgDataStorage *);
   void	buildRPCRPhi (IgDataStorage *);
   void	buildRPCRZ (IgDataStorage *);
   void	buildMagneticField (IgDataStorage *);

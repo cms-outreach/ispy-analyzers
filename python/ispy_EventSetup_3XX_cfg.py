@@ -2,10 +2,10 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("IGUANA")
 
-process.load("Configuration.StandardSequences.Geometry_cff")
+process.load("Configuration.StandardSequences.GeometryExtended_cff")
 process.load('Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
-process.GlobalTag.globaltag = 'GR09_31X_V2P::All'
+process.GlobalTag.globaltag = 'GR09_P_V6::All'
 
 process.source = cms.Source("EmptySource")
 
@@ -13,8 +13,8 @@ from FWCore.MessageLogger.MessageLogger_cfi import *
 
 process.add_(
     cms.Service("ISpyService",
-    outputFileName = cms.untracked.string('CRAFT.ig'),
-    outputESFileName = cms.untracked.string('CRAFT_ES.ig'),
+    outputFileName = cms.untracked.string('Geom.ig'),
+    outputESFileName = cms.untracked.string('cms-geometry.v2.ig'),
     online = cms.untracked.bool(False),
     debug = cms.untracked.bool(False)
     )

@@ -1,5 +1,9 @@
 2009-12-08 Tom McCauley <thomas.mccauley@cern.ch>
 
+	* ISpyPATMET, ISpyPATJet: add
+
+2009-12-08 Tom McCauley <thomas.mccauley@cern.ch>
+
 	* ISpyCSCRecHit2D.cc: add time and evolve schema
 
 2009-12-08 Tom McCauley <thomas.mccauley@cern.ch>

@@ -48,7 +48,7 @@ from ISpy.Analyzers.ISpyTriggerEvent_cfi import *
 
 # These labels are needed to pick up cosmics
 #
-#ISpyTrackingRecHit.iSpyTrackingRecHitTag = cms.InputTag('cosmicMuons')
+#ISpyTrackingRecHit.iSpyTrackingRecHitTags = cms.VInputTag(cms.InputTag('cosmicMuons'),cms.InputTag('cosmictrackfinderP5'),cms.InputTag('ctfWithMaterialTracksP5'))
 #ISpyTrack.iSpyTrackTags = cms.VInputTag(cms.InputTag('cosmicMuons'),cms.InputTag('cosmictrackfinderP5'),cms.InputTag('ctfWithMaterialTracksP5'))
 
 iSpy_sequence = cms.Sequence(ISpyEvent*

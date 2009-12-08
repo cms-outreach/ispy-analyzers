@@ -70,7 +70,7 @@ process.ISpyMET.iSpyMETTag = cms.InputTag('genMetIC5GenJets')
 process.ISpyMuon.iSpyMuonTag = cms.InputTag('muons')
 process.ISpySiStripDigi.iSpySiStripDigiTag = cms.InputTag('siStripDigis:ZeroSuppressed')
 process.ISpyTrack.iSpyTrackTags = cms.VInputTag(cms.InputTag('generalTracks'))
-process.ISpyTrackingRecHit.iSpyTrackingRecHitTag = cms.InputTag('generalTracks')
+process.ISpyTrackingRecHit.iSpyTrackingRecHitTags = cms.VInputTag(cms.InputTag('generalTracks'))y
 
 process.iSpy = cms.Path(process.ISpyEvent*
                        process.ISpyBasicCluster*

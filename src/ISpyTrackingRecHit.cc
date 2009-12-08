@@ -21,7 +21,7 @@
 using namespace edm::service;
 
 ISpyTrackingRecHit::ISpyTrackingRecHit (const edm::ParameterSet& iConfig)
-  : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyTrackingRecHitTag"))
+  : inputTags_(iConfig.getParameter<std::vector<edm::InputTag> >("iSpyTrackingRecHitTags"))
 {}
 
 void
@@ -51,47 +51,52 @@ ISpyTrackingRecHit::analyze( const edm::Event& event, const edm::EventSetup& eve
     return;
   }
 
-  edm::Handle<TrackingRecHitCollection> collection;
-  event.getByLabel (inputTag_, collection);
- 
-  if (collection.isValid ())
-  {	 
-    std::string product = "TrackingRecHits "
-			  + edm::TypeID (typeid (TrackingRecHitCollection)).friendlyClassName() + ":" 
-			  + inputTag_.label() + ":"
-			  + inputTag_.instance() + ":" 
-			  +	inputTag_.process();
-
-    IgCollection& products = storage->getCollection("Products_V1");
-    IgProperty PROD = products.addProperty("Product", std::string ());
-    IgCollectionItem item = products.create();
-    item[PROD] = product;
-	
-    IgCollection &recHits = storage->getCollection("TrackingRecHits_V1");
-    IgProperty POS = recHits.addProperty("pos", IgV3d());
-
-    for (TrackingRecHitCollection::const_iterator it=collection->begin(), itEnd=collection->end(); it!=itEnd; ++it)
-    {
-      if ((*it).isValid () && !(*it).geographicalId ().null ())
-      {
-	LocalPoint point = ISpyLocalPosition::localPosition(&(*it), geom.product ());
-	float x = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).x () / 100.0;
-	float y = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).y () / 100.0;
-	float z = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).z () / 100.0;
-
-	IgCollectionItem irechit = recHits.create();
-	irechit[POS] = IgV3d (static_cast<double>(x), static_cast<double>(y), static_cast<double>(z));
-      }	    
-    }
-  }
-  else 
+  for ( VInputTag::const_iterator ti = inputTags_.begin();
+	ti != inputTags_.end(); ++ti )
   {
-    std::string error = "### Error: TrackingRecHits "
-			+ edm::TypeID (typeid (TrackingRecHitCollection)).friendlyClassName () + ":" 
-			+ inputTag_.label() + ":"
-			+ inputTag_.instance() + ":" 
-			+ inputTag_.process() + " are not found.";
-    config->error (error);
+    edm::Handle<TrackingRecHitCollection> collection;
+    event.getByLabel(*ti, collection);
+  
+    if (collection.isValid ())
+    {	 
+      std::string product = "TrackingRecHits "
+                            + edm::TypeID (typeid (TrackingRecHitCollection)).friendlyClassName() + ":" 
+                            + (*ti).label() + ":"
+                            + (*ti).instance() + ":" 
+                            + (*ti).process();
+
+      IgCollection& products = storage->getCollection("Products_V1");
+      IgProperty PROD = products.addProperty("Product", std::string ());
+      IgCollectionItem item = products.create();
+      item[PROD] = product;
+	
+      IgCollection &recHits = storage->getCollection("TrackingRecHits_V1");
+      IgProperty POS = recHits.addProperty("pos", IgV3d());
+
+      for (TrackingRecHitCollection::const_iterator it=collection->begin(), itEnd=collection->end(); it!=itEnd; ++it)
+      {
+        if ((*it).isValid () && !(*it).geographicalId ().null ())
+        {
+          LocalPoint point = ISpyLocalPosition::localPosition(&(*it), geom.product ());
+          float x = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).x () / 100.0;
+          float y = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).y () / 100.0;
+          float z = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).z () / 100.0;
+
+          IgCollectionItem irechit = recHits.create();
+          irechit[POS] = IgV3d (static_cast<double>(x), static_cast<double>(y), static_cast<double>(z));
+        }	           
+      }
+    }
+  
+    else 
+    {
+      std::string error = "### Error: TrackingRecHits "
+                          + edm::TypeID (typeid (TrackingRecHitCollection)).friendlyClassName () + ":" 
+                          + (*ti).label() + ":"
+                          + (*ti).instance() + ":" 
+                          + (*ti).process() + " are not found.";
+      config->error (error);
+    }
   }
 }
 

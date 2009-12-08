@@ -69,7 +69,7 @@ ISpyHBRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
     IgCollectionItem item = products.create();
     item[PROD] = product;
 
-    IgCollection &recHits = storage->getCollection("HBRecHits_V1");
+    IgCollection &recHits = storage->getCollection("HBRecHits_V2");
     IgProperty E = recHits.addProperty("energy", 0.0);
     IgProperty ETA = recHits.addProperty("eta", 0.0);
     IgProperty PHI = recHits.addProperty("phi", 0.0);

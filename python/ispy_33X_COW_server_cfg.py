@@ -12,7 +12,8 @@ process.load("Configuration.StandardSequences.RawToDigi_Data_cff")
 process.load('Configuration/StandardSequences/L1Reco_cff')
 process.load('Configuration/StandardSequences/FrontierConditions_GlobalTag_cff')
 process.load("ISpy/Analyzers/ISpy_Online_Producer_cff")
-process.ISpyTrack.iSpyTrackTags = cms.VInputTag(cms.InputTag('generalTracks'),cms.InputTag('ctfPixelLess'),cms.InputTag('pixelTracks'))
+
+process.ISpyTrack.iSpyTrackTags = cms.VInputTag(cms.InputTag('generalTracks'))
 
 process.GlobalTag.connect = "frontier://(proxyurl=http://localhost:3128)(serverurl=http://localhost:8000/FrontierOnProd)(serverurl=http://localhost:8000/FrontierOnProd)(retrieve-ziplevel=0)(failovertoserver=no)/CMS_COND_31X_GLOBALTAG"                     
 process.GlobalTag.globaltag = "GR09_H_V6::All"

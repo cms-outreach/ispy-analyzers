@@ -2,6 +2,9 @@
 #define ANALYZER_ISPY_TRACKING_REC_HIT_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include <vector>
+
+typedef std::vector<edm::InputTag> VInputTag;
 
 class ISpyTrackingRecHit : public edm::EDAnalyzer
 {
@@ -11,7 +14,7 @@ public:
        
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
 private:
-  edm::InputTag	inputTag_;
+  VInputTag	inputTags_;
 };
 
 #endif // ANALYZER_ISPY_TRACKING_REC_HIT_H

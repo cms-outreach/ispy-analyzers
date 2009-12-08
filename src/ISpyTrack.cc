@@ -94,7 +94,7 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
       IgCollectionItem item = products.create();
       item[PROD] = product;
 
-      IgCollection &tracks = storage->getCollection ("Tracks_V1");
+      IgCollection &tracks = storage->getCollection ("Tracks_V2");
 
       IgProperty VTX = tracks.addProperty ("pos", IgV3d());
       IgProperty P   = tracks.addProperty ("dir", IgV3d());

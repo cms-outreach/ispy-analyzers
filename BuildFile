@@ -17,6 +17,7 @@
 <use name=Iguana/Utilities>
 <use name=HLTrigger/HLTcore>
 <use name=PhysicsTools/PatUtils>
+<use name=DataFormats/SiStripCluster>
 
 <use name=boost>
 <use name=clhep>

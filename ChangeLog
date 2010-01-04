@@ -1,3 +1,7 @@
+2009-12-22  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyMET.cc: Migtrated to a new MET data format.
+
 2009-12-08 Ianna Osborne <ianna.osborne@cern.ch>
 	
 	* ISpyEventSetup.cc: Separate the tracker and RPC geometry to

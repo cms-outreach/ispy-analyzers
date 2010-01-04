@@ -3,7 +3,7 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/METReco/interface/MET.h"
-#include "DataFormats/METReco/interface/METCollection.h"
+#include "DataFormats/METReco/interface/METFwd.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -13,6 +13,7 @@
 #include "FWCore/Utilities/interface/Exception.h"
 
 using namespace edm::service;
+using namespace reco;
 
 ISpyMET::ISpyMET (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyMETTag"))

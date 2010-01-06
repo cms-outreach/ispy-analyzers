@@ -86,19 +86,44 @@ ISpyCSCSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
 
       const GeomDet *det = geom->idToDet((*it).cscDetId());
 
-      // Chamber thickness (in z)
-      float halfThickness = det->surface ().bounds ().thickness () / 2.;
+      // along z
+      float halfThickness = det->surface().bounds().thickness() / 2.0;
+
+      // along x
+      float halfWidth = det->surface().bounds().width() / 2.0;
+
+      // along y
+      float halfLength = det->surface().bounds().length() / 2.0;
+
+      //std::cout<<"px, py, pz: "<< pos.x() <<" "<< pos.y() <<" "<< pos.z() <<std::endl;
+      //std::cout<<"dx, dy, dz: "<< dir.x() <<" "<< dir.y() <<" "<< dir.z() <<std::endl;
+      //std::cout<<"t, w, l: "<< thickness <<" "<< width <<" "<< length <<std::endl;
 
       float z1 = halfThickness;
-      float x1 = pos.x();// + dir.x()*z1/dir.z();
-      float y1 = pos.y();// + dir.y()*z1/dir.z();
-      GlobalPoint g1 = det->surface().toGlobal( LocalPoint(x1,y1,z1) );
+      float x1 = pos.x() + dir.x()*z1/dir.z();
+      float y1 = pos.y() + dir.y()*z1/dir.z();
+ 
+      
+      if ( fabs(x1) > halfWidth )
+        x1 = halfWidth*x1/fabs(x1);
+      if ( fabs(y1) > halfLength )
+        y1 = halfLength*y1/fabs(y1);
+      
 
       float z2 = -halfThickness;
-      float x2 = pos.x();// + dir.x()*z2/dir.z();
-      float y2 = pos.y();// + dir.y()*z2/dir.z();
+      float x2 = pos.x() + dir.x()*z2/dir.z();
+      float y2 = pos.y() + dir.y()*z2/dir.z();
+
+      
+      if ( fabs(x2) > halfWidth )
+        x2 = halfWidth*x2/fabs(x2);
+      if ( fabs(y2) > halfLength )
+        y2 = halfLength*y2/fabs(y2);
+      
+
+      GlobalPoint g1 = det->surface().toGlobal( LocalPoint(x1,y1,z1) );
       GlobalPoint g2 = det->surface().toGlobal( LocalPoint(x2,y2,z2) );
-		
+
       float x = g1.x () / 100.0;  // cm -> m
       float y = g1.y () / 100.0;  // cm -> m
       float z = g1.z () / 100.0;  // cm -> m

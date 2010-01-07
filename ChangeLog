@@ -1,8 +1,12 @@
 2010-01-07 Tom McCauley <thomas.mccauley@cern.ch>
 
+	* ISpyPFJet: add
+
+2010-01-06 Tom McCauley <thomas.mccauley@cern.ch>
+
 	* ISpyPFMET, ISpyCaloMET: add
 	
-2010-01-07 Tom McCauley <thomas.mccauley@cern.ch>
+2010-01-06 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyCSCSegment.cc: constrain segment to chamber
 	* MakeISpyAnalyzer.py: update to use config for error

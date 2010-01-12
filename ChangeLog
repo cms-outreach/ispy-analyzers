@@ -1,3 +1,9 @@
+2010-01-12 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpy_Producer_cff.py: add CaloMET, CaloTau, PFJet, PFMET, PFTau to sequence
+	* ISpyCaloTau, ISpyPFTau: add
+	* ispy_35_cfg.py: add
+
 2010-01-07 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyPFJet: add

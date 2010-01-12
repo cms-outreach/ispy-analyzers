@@ -7,6 +7,8 @@ from ISpy.Analyzers.ISpyCSCWireDigi_cfi import *
 from ISpy.Analyzers.ISpyCaloCluster_cfi import *
 #from ISpy.Analyzers.ISpyCaloHit_cfi import *
 from ISpy.Analyzers.ISpyCaloTower_cfi import *
+from ISpy.Analyzers.ISpyCaloTau_cfi import *
+from ISpy.Analyzers.ISpyCaloMET_cfi import *
 from ISpy.Analyzers.ISpyDTDigi_cfi import *
 from ISpy.Analyzers.ISpyDTRecHit_cfi import *
 from ISpy.Analyzers.ISpyDTRecSegment4D_cfi import *
@@ -31,6 +33,9 @@ from ISpy.Analyzers.ISpyPATPhoton_cfi import *
 from ISpy.Analyzers.ISpyPFCluster_cfi import *
 from ISpy.Analyzers.ISpyPFRecHit_cfi import *
 from ISpy.Analyzers.ISpyPFRecTrack_cfi import *
+from ISpy.Analyzers.ISpyPFJet_cfi import *
+from ISpy.Analyzers.ISpyPFMET_cfi import *
+from ISpy.Analyzers.ISpyPFTau_cfi import *
 from ISpy.Analyzers.ISpyPhoton_cfi import *
 from ISpy.Analyzers.ISpyPixelDigi_cfi import *
 from ISpy.Analyzers.ISpyPreshowerCluster_cfi import *
@@ -60,6 +65,8 @@ iSpy_sequence = cms.Sequence(ISpyEvent*
                              ISpyCaloCluster*
                              #ISpyCaloHit*
                              ISpyCaloTower*
+                             ISpyCaloMET*
+                             ISpyCaloTau*
                              ISpyDTDigi*
                              ISpyDTRecHit*
                              ISpyDTRecSegment4D*
@@ -84,6 +91,9 @@ iSpy_sequence = cms.Sequence(ISpyEvent*
                              #ISpyPFCluster*
                              ISpyPFRecHit*
                              ISpyPFRecTrack*
+                             ISpyPFJet*
+                             ISpyPFMET*
+                             ISpyPFTau*
                              ISpyPhoton*
                              ISpyPixelDigi*
                              ISpyPreshowerCluster*

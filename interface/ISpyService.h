@@ -54,6 +54,7 @@ namespace edm {
       const std::string ext_;
       int		outputMaxEvents_;
       int		outputMaxTime_;
+      bool		outputIg_;
       bool		outputReport_;	    
       bool		outputRegistry_;	    
       int		eventCounter_;	    

@@ -34,6 +34,7 @@ ISpyService::ISpyService (const ParameterSet& iPSet, ActivityRegistry& iRegistry
     ext_ (iPSet.getUntrackedParameter<std::string>( "outputFileExtension", std::string(".ig"))),
     outputMaxEvents_(iPSet.getUntrackedParameter<int>( "outputMaxEvents", -1)),
     outputMaxTime_(iPSet.getUntrackedParameter<int>( "outputMaxTime", 3600)),
+    outputIg_(iPSet.getUntrackedParameter<bool>( "outputIg", true)),
     outputReport_(iPSet.getUntrackedParameter<bool>( "outputReport", false)),
     outputRegistry_(iPSet.getUntrackedParameter<bool>( "outputRegistry", true)),
     eventCounter_ (0),
@@ -70,12 +71,15 @@ ISpyService::init (void)
 void
 ISpyService::postBeginJob (void)
 {
-  currentFile_[0] = tempFileName (outputFileName_);
-  archives_[0] = archive (currentFile_[0]);
-  if (outputRegistry_) registry ();
-  currentFile_[1] = tempFileName (outputESFileName_);
-  archives_[1] = archive (currentFile_[1]);
-
+  if (outputIg_)
+  {
+    currentFile_[0] = tempFileName (outputFileName_);
+    archives_[0] = archive (currentFile_[0]);
+    if (outputRegistry_) registry ();
+    currentFile_[1] = tempFileName (outputESFileName_);
+    archives_[1] = archive (currentFile_[1]);
+  }
+  
   nextTime_ = Time::current () + TimeSpan (0, 0, 0, outputMaxTime_ /* seconds */, 0);
 }
 
@@ -105,23 +109,26 @@ ISpyService::tempFileName (const std::string &fileName)
 void
 ISpyService::postEndJob (void)
 {
-  if (outputReport_) report ();
-  if (! archives_[0] == 0 && archives_[0]->size () > 0)
-  {	    
-    archives_[0]->close ();
-    delete archives_[0];
-    archives_[0] = 0;
-    finalize (currentFile_[0]);
-  }
+  if (outputIg_)
+  {
+    if (outputReport_) report ();
+    if (! archives_[0] == 0 && archives_[0]->size () > 0)
+    {	    
+      archives_[0]->close ();
+      delete archives_[0];
+      archives_[0] = 0;
+      finalize (currentFile_[0]);
+    }
     
-  if (! archives_[1] == 0 && archives_[1]->size () > 0)
-  {	    
-    archives_[1]->close ();
-    delete archives_[1];
-    archives_[1] = 0;
-    finalize (currentFile_[1]);
+    if (! archives_[1] == 0 && archives_[1]->size () > 0)
+    {	    
+      archives_[1]->close ();
+      delete archives_[1];
+      archives_[1] = 0;
+      finalize (currentFile_[1]);
+    }
   }
-    
+  
   if (netProducer_)
   {	
     netProducer_->lock ();
@@ -165,7 +172,7 @@ ISpyService::preEventProcessing (const edm::EventID& event, const edm::Timestamp
   currentRun_ = event.run();
   currentEvent_ = event.event();
     
-  if (archives_[0] == 0)
+  if (outputIg_ && archives_[0] == 0)
   {
     currentFile_[0] = tempFileName (outputFileName_);
     archives_[0] = archive (currentFile_[0]);
@@ -180,28 +187,8 @@ ISpyService::postEventProcessing (const edm::Event& event, const edm::EventSetup
 {    
   if (!storages_[0]->empty())
   {
-    std::stringstream eoss;
-    eoss << "Events/Run_" << currentRun_ << "/Event_" << currentEvent_;
-	
-    current_[0] = new ZipMember (eoss.str ());
-    current_[0]->isDirectory (false);
-    current_[0]->time (Time::current ());
-    current_[0]->method (ZConstants::DEFLATED);
-    current_[0]->level (ZConstants::BEST_COMPRESSION);
-    
-    output_[0] = archives_[0]->output (current_[0]);
-    char str[] = "\n";
-    output_[0]->write (str, sizeof (str)-1);
-    
-    if (outputMaxEvents_ != -1)
-      eventCounter_++;
-    
-    ASSERT (output_[0]);
-
     std::stringstream oss;
     oss << *storages_[0];
-    write (oss.str ().c_str (), output_[0], oss.str ().length ());
-    
     if (isOnline ())
     {
       ASSERT (netProducer_);	
@@ -211,49 +198,72 @@ ISpyService::postEventProcessing (const edm::Event& event, const edm::EventSetup
 
       produceEvent (event, noss.str (), oss.str ().c_str (), oss.str ().length ());	
     }
-    output_[0]->close ();
-    delete output_[0];
-    output_[0] = 0;
-  }
-  delete storages_[0];    
-  storages_[0] = 0;
+    if (outputIg_)
+    {      
+      std::stringstream eoss;
+      eoss << "Events/Run_" << currentRun_ << "/Event_" << currentEvent_;
+	
+      current_[0] = new ZipMember (eoss.str ());
+      current_[0]->isDirectory (false);
+      current_[0]->time (Time::current ());
+      current_[0]->method (ZConstants::DEFLATED);
+      current_[0]->level (ZConstants::BEST_COMPRESSION);
+    
+      output_[0] = archives_[0]->output (current_[0]);
+      char str[] = "\n";
+      output_[0]->write (str, sizeof (str)-1);
+    
+      if (outputMaxEvents_ != -1)
+	eventCounter_++;
+    
+      ASSERT (output_[0]);
+
+      write (oss.str ().c_str (), output_[0], oss.str ().length ());
+    
+      output_[0]->close ();
+      delete output_[0];
+      output_[0] = 0;
+    }
+    delete storages_[0];    
+    storages_[0] = 0;
   
-  if (! storages_[1]->empty ())
-  {	
-    std::stringstream goss;
-    goss << "Geometry/Run_" << event.run () << "/Event_" << event.id ().event ();
+    if (! storages_[1]->empty ())
+    {	
+      std::stringstream goss;
+      goss << "Geometry/Run_" << event.run () << "/Event_" << event.id ().event ();
     
-    current_[1] = new ZipMember (goss.str ());
-    current_[1]->isDirectory (false);
-    current_[1]->time (Time::current ());
-    current_[1]->method (ZConstants::DEFLATED);
-    current_[1]->level (ZConstants::BEST_COMPRESSION);
+      current_[1] = new ZipMember (goss.str ());
+      current_[1]->isDirectory (false);
+      current_[1]->time (Time::current ());
+      current_[1]->method (ZConstants::DEFLATED);
+      current_[1]->level (ZConstants::BEST_COMPRESSION);
 
-    ASSERT (archives_[1]);	
-    output_[1] = archives_[1]->output (current_[1]);
+      ASSERT (archives_[1]);	
+      output_[1] = archives_[1]->output (current_[1]);
 
-    ASSERT (output_[1]);
+      ASSERT (output_[1]);
 
-    std::stringstream ossES;
-    ossES << *storages_[1];
-    write (ossES.str ().c_str (),  output_[1], ossES.str ().length ());
-    output_[1]->close ();
-    delete output_[1];
-    output_[1] = 0;
-  }
-  delete storages_[1];    
-  storages_[1] = 0;
+      std::stringstream ossES;
+      ossES << *storages_[1];
+      write (ossES.str ().c_str (),  output_[1], ossES.str ().length ());
+      output_[1]->close ();
+      delete output_[1];
+      output_[1] = 0;
+    }
+    delete storages_[1];    
+    storages_[1] = 0;
     
-  if (eventCounter_ == outputMaxEvents_
-      || Time::current () > nextTime_)
-  {
-    archives_[0]->close ();
-    delete archives_[0];
-    archives_[0] = 0;
-    finalize (currentFile_[0]);	
-    eventCounter_ = 0;
-    fileCounter_++;
-    nextTime_ = Time::current () + TimeSpan (0, 0, 0, outputMaxTime_ /* seconds */, 0);
+    if (eventCounter_ == outputMaxEvents_
+	|| Time::current () > nextTime_)
+    {
+      archives_[0]->close ();
+      delete archives_[0];
+      archives_[0] = 0;
+      finalize (currentFile_[0]);	
+      eventCounter_ = 0;
+      fileCounter_++;
+      nextTime_ = Time::current () + TimeSpan (0, 0, 0, outputMaxTime_ /* seconds */, 0);
+    }
   }
 }
 	    

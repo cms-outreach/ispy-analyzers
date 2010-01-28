@@ -1,3 +1,8 @@
+2010-01-28  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyService.h, ISpyService.cc: Add a flag to disable ig file production.
+	* python/ispy_35X_cfg.py: Add a new flag for testing. 
+
 2010-01-12 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpy_Producer_cff.py: add CaloMET, CaloTau, PFJet, PFMET, PFTau to sequence

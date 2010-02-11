@@ -69,8 +69,8 @@ void ISpyGsfPFRecTrack::analyze(const edm::Event& event, const edm::EventSetup& 
     IgProperty DP = brems.addProperty("deltaP", 0.0);
     IgProperty SDP = brems.addProperty("sigmadeltaP", 0.0);
 
-    IgAssociationSet& tracktrajs = storage->getAssociationSet("GsfPFRecTrackTrajectoryPoints_V1");
-    IgAssociationSet& bremtrajs  = storage->getAssociationSet("PFBremTrajectoryPoints_V1");
+    IgAssociations& tracktrajs = storage->getAssociations("GsfPFRecTrackTrajectoryPoints_V1");
+    IgAssociations& bremtrajs  = storage->getAssociations("PFBremTrajectoryPoints_V1");
 
     for ( GsfPFRecTrackCollection::const_iterator t = collection->begin(); t != collection->end(); ++t )
     {

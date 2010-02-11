@@ -112,13 +112,13 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
       IgProperty OPOS = extras.addProperty ("pos_2", IgV3d());
       IgProperty OP   = extras.addProperty ("dir_2", IgV3d());
  
-      IgAssociationSet &trackExtras = storage->getAssociationSet ("TrackExtras_V1");
+      IgAssociations &trackExtras = storage->getAssociations ("TrackExtras_V1");
 
       // Create a collection for tracking rec hits.
       IgCollection &hits = storage->getCollection ("Hits_V1");
       IgProperty HIT_POS = hits.addProperty ("pos", IgV3d());
 
-      IgAssociationSet &trackHits = storage->getAssociationSet ("TrackHits_V1");
+      IgAssociations &trackHits = storage->getAssociations ("TrackHits_V1");
  
       for (reco::TrackCollection::const_iterator track = collection->begin (), trackEnd = collection->end ();
 	   track != trackEnd; ++track)

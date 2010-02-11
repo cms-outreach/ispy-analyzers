@@ -4,7 +4,7 @@
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 
 class IgCollectionItem;
-class IgAssociationSet;
+class IgAssociations;
 class IgDataStorage;
 class MagneticField;
 
@@ -12,7 +12,7 @@ class ISpyTrackRefitter
 {
 public:
   static void refitTrack(IgCollectionItem& item, 
-                         IgAssociationSet& assoc,
+                         IgAssociations& assoc,
                          IgDataStorage* storage,
                          reco::TrackRef track, 
                          const MagneticField* field,

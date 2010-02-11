@@ -5,12 +5,13 @@
 #include "ISpy/Services/interface/IgCollection.h"
 #include "DataFormats/GeometrySurface/interface/PlaneBuilder.h"
 
-void ISpyTrackRefitter::refitTrack(IgCollectionItem& item, 
-				   IgAssociationSet& association, 
-				   IgDataStorage* storage, 
-				   reco::TrackRef track, 
-				   const MagneticField* field,
-				   double in, double out, double step) 
+void
+ISpyTrackRefitter::refitTrack(IgCollectionItem& item, 
+			      IgAssociations& association, 
+			      IgDataStorage* storage, 
+			      reco::TrackRef track, 
+			      const MagneticField* field,
+			      double in, double out, double step) 
 {    
   if ( track.isNonnull() )
   {
@@ -120,7 +121,6 @@ void ISpyTrackRefitter::refitTrack(IgCollectionItem& item,
         
         nGood++;
       } 
-      
       else 
       {
         nBad++;
@@ -165,7 +165,6 @@ void ISpyTrackRefitter::refitTrack(IgCollectionItem& item,
     
         nGood++;
       } 
-      
       else 
       {
         nBad++;
@@ -195,7 +194,6 @@ void ISpyTrackRefitter::refitTrack(IgCollectionItem& item,
       
         nGood++;
       } 
-    
       else 
       {
         nBad++;

@@ -90,7 +90,7 @@ void ISpySuperCluster::analyze(const edm::Event& event, const edm::EventSetup& e
     IgProperty BACK_3  = fractions.addProperty("back_3",  IgV3d());
     IgProperty BACK_4  = fractions.addProperty("back_4",  IgV3d());
 
-    IgAssociationSet& superClustersFracs = storage->getAssociationSet("SuperClusterRecHitFractions_V1");
+    IgAssociations& superClustersFracs = storage->getAssociations("SuperClusterRecHitFractions_V1");
 
     for ( reco::SuperClusterCollection::const_iterator ci = collection->begin(), cie = collection->end();
           ci != cie; ++ci )

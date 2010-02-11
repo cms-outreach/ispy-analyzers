@@ -91,7 +91,7 @@ void ISpyPreshowerCluster::analyze(const edm::Event& event, const edm::EventSetu
       IgProperty BACK_3  = fractions.addProperty("back_3",  IgV3d());
       IgProperty BACK_4  = fractions.addProperty("back_4",  IgV3d());
 
-      IgAssociationSet& esClustersFracs = storage->getAssociationSet("PreshowerClusterRecHitFractions_V1");
+      IgAssociations& esClustersFracs = storage->getAssociations("PreshowerClusterRecHitFractions_V1");
 
       for ( reco::PreshowerClusterCollection::const_iterator ci = collection->begin(), cie = collection->end(); ci != cie; ++ci ) 
       {

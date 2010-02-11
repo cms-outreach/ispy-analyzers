@@ -86,12 +86,12 @@ void ISpyGsfTrack::analyze(const edm::Event& event, const edm::EventSetup& event
     IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
     IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
-    IgAssociationSet &trackExtras = storage->getAssociationSet("GsfTrackExtras_V1");
+    IgAssociations &trackExtras = storage->getAssociations("GsfTrackExtras_V1");
 
     IgCollection &hits = storage->getCollection("Hits_V1");
     IgProperty HIT_POS = hits.addProperty("pos", IgV3d());
 
-    IgAssociationSet &trackHits = storage->getAssociationSet("GsfTrackHits_V1");
+    IgAssociations &trackHits = storage->getAssociations("GsfTrackHits_V1");
  
     for (reco::GsfTrackCollection::const_iterator track = collection->begin (), trackEnd = collection->end ();
          track != trackEnd; ++track)

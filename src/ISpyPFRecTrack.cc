@@ -69,7 +69,7 @@ void ISpyPFRecTrack::analyze(const edm::Event& event, const edm::EventSetup& eve
     IgProperty POS = trajpts.addProperty("pos", IgV3d());
     IgProperty DIR = trajpts.addProperty("dir", IgV3d());
 	
-    IgAssociationSet& tracktrajs = storage->getAssociationSet("PFRecTrackTrajectoryPoints_V1");
+    IgAssociations& tracktrajs = storage->getAssociations("PFRecTrackTrajectoryPoints_V1");
     
     for ( std::vector<reco::PFRecTrack>::const_iterator rectrack = collection->begin();
           rectrack != collection->end(); ++rectrack )

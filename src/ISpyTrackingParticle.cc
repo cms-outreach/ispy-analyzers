@@ -85,7 +85,7 @@ void ISpyTrackingParticle::analyze(const edm::Event& event, const edm::EventSetu
     IgProperty DIR = shs.addProperty("dir", IgV3d());
     IgProperty TOF = shs.addProperty("tof", 0.0);
         
-    IgAssociationSet& tpshs = storage->getAssociationSet("TrackingParticlePSimHits_V1");
+    IgAssociations& tpshs = storage->getAssociations("TrackingParticlePSimHits_V1");
 
     for(TrackingParticleCollection::const_iterator t = trackingParticles.begin(), tEnd = trackingParticles.end(); t != tEnd; ++t)
     {

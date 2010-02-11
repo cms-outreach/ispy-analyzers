@@ -68,7 +68,7 @@ void ISpyPATElectron::analyze(const edm::Event& event, const edm::EventSetup& ev
     IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
     IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
-    IgAssociationSet& trackExtras = storage->getAssociationSet("PATElectronExtras_V1");
+    IgAssociations& trackExtras = storage->getAssociations("PATElectronExtras_V1");
 
     for ( std::vector<pat::Electron>::const_iterator t = collection->begin(), tEnd = collection->end(); 
           t != tEnd; ++t )

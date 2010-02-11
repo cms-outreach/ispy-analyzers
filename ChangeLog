@@ -1,3 +1,13 @@
+2010-02-11  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyMuon.h, ISpyTrackRefitter.h, ISpyBasicCluster.cc,
+	ISpyCaloCluster.cc, ISpyElectron.cc, ISpyGsfElectron.cc,
+	ISpyGsfPFRecTrack.cc, ISpyGsfTrack.cc, ISpyMuon.cc,
+	ISpyPATElectron.cc, ISpyPATMuon.cc, ISpyPFCluster.cc,
+	ISpyPFRecTrack.cc, ISpyPreshowerCluster.cc, ISpySuperCluster.cc,
+	ISpyTrack.cc, ISpyTrackRefitter.cc, ISpyTrackingParticle.cc:
+	Migrate to a new IgAssociations API.
+
 2010-01-28  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyService.h, ISpyService.cc: Add a flag to disable ig file production.

@@ -101,7 +101,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
   IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
   IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
-  IgAssociationSet& trackExtras = storage->getAssociationSet("PATMuonTrackExtras_V1");
+  IgAssociations& trackExtras = storage->getAssociations("PATMuonTrackExtras_V1");
 
   IgCollection& points = storage->getCollection("Points_V1");
   IgProperty POS = points.addProperty("pos", IgV3d());
@@ -123,7 +123,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       imuon[T_PHI] = (*track).phi();
       imuon[T_ETA] = (*track).eta();
 
-      IgAssociationSet& muonTrackerPoints = storage->getAssociationSet("PATMuonTrackerPoints_V1");
+      IgAssociations& muonTrackerPoints = storage->getAssociations("PATMuonTrackerPoints_V1");
 
       try
       {
@@ -194,7 +194,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       imuon[G_PHI] = (*combinedMuon).phi();
       imuon[G_ETA] = (*combinedMuon).eta();
 
-      IgAssociationSet& muonGlobalPoints = storage->getAssociationSet("PATMuonGlobalPoints_V1");	
+      IgAssociations& muonGlobalPoints = storage->getAssociations("PATMuonGlobalPoints_V1");	
  
       try
       {

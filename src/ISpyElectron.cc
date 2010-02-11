@@ -73,7 +73,7 @@ void ISpyElectron::analyze(const edm::Event& event, const edm::EventSetup& event
     IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
     IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
-    IgAssociationSet& trackExtras = storage->getAssociationSet("ElectronExtras_V1");
+    IgAssociations& trackExtras = storage->getAssociations("ElectronExtras_V1");
 
     for ( ElectronCollection::const_iterator ei = collection->begin(), eie = collection->end();
           ei != eie; ++ei )

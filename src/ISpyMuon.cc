@@ -113,7 +113,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
   IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
-  IgAssociationSet& trackExtras = storage->getAssociationSet("MuonTrackExtras_V1");
+  IgAssociations& trackExtras = storage->getAssociations("MuonTrackExtras_V1");
 
   IgCollection& points = storage->getCollection("Points_V1");
   IgProperty POS = points.addProperty("pos", IgV3d());
@@ -122,7 +122,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgCollection& detIds = storage->getCollection("DetIds_V1");
   IgProperty DETID = detIds.addProperty ("detid", int(0));
   
-  IgAssociationSet& muonDetIds = storage->getAssociationSet("MuonDetIds_V1");
+  IgAssociations& muonDetIds = storage->getAssociations("MuonDetIds_V1");
 
   for (reco::MuonCollection::const_iterator it = collection->begin(), end = collection->end(); 
        it != end; ++it) 
@@ -147,7 +147,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, T_CALO_E);
 
-      IgAssociationSet& muonTrackerPoints = storage->getAssociationSet("MuonTrackerPoints_V1");
+      IgAssociations& muonTrackerPoints = storage->getAssociations("MuonTrackerPoints_V1");
 
       try
       {
@@ -227,7 +227,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, G_CALO_E);
 
-      IgAssociationSet& muonGlobalPoints = storage->getAssociationSet("MuonGlobalPoints_V1");	
+      IgAssociations& muonGlobalPoints = storage->getAssociations("MuonGlobalPoints_V1");	
  
       try
       {
@@ -247,8 +247,9 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   }
 }
 
-void ISpyMuon::addDetIds(reco::MuonCollection::const_iterator it, IgCollectionItem& imuon, 
-                        IgProperty& DETID, IgCollection& detIds, IgAssociationSet& muonDetIds)
+void
+ISpyMuon::addDetIds(reco::MuonCollection::const_iterator it, IgCollectionItem& imuon, 
+		    IgProperty& DETID, IgCollection& detIds, IgAssociations& muonDetIds)
 { 		    
   const std::vector<reco::MuonChamberMatch> &dets = (*it).matches();
   for (std::vector<reco::MuonChamberMatch>::const_iterator dit = dets.begin (), ditEnd = dets.end (); 

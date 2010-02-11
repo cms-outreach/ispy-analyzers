@@ -102,7 +102,7 @@ ISpyPFCluster::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     IgProperty B3 = rechits.addProperty("back_3", IgV3d());
     IgProperty B4 = rechits.addProperty("back_4", IgV3d());
 	
-    IgAssociationSet& clusterRecHits = storage->getAssociationSet("PFClusterPFRecHitFractions_V1");
+    IgAssociations& clusterRecHits = storage->getAssociations("PFClusterPFRecHitFractions_V1");
 
     for ( std::vector<PFCluster>::const_iterator cluster = collection->begin(), clusterEnd = collection->end();
           cluster != clusterEnd; ++cluster )

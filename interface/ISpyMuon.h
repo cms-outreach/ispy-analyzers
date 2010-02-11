@@ -9,7 +9,7 @@
 class IgCollection;
 class IgDataStorage;
 class IgCollectionItem;
-class IgAssociationSet;
+class IgAssociations;
 class IgProperty;
 
 // NOTE: TM Should this eventually be made a class from which 
@@ -33,7 +33,7 @@ private:
                  IgCollectionItem& imuon,
                  IgProperty& property, 
                  IgCollection& detIds, 
-                 IgAssociationSet& muonDetIds);
+                 IgAssociations& muonDetIds);
 
   void addCaloEnergy(reco::MuonCollection::const_iterator it, 
                      IgCollectionItem& imuon,

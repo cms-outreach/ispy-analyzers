@@ -88,7 +88,7 @@ ISpyBasicCluster::analyze (const edm::Event& event, const edm::EventSetup& event
     IgProperty BACK_3  = idetids.addProperty("back_3",  IgV3d());
     IgProperty BACK_4  = idetids.addProperty("back_4",  IgV3d());
 
-    IgAssociationSet &basicClustersDetIds = storage->getAssociationSet("BasicClusterRecHitFractions_V1");
+    IgAssociations &basicClustersDetIds = storage->getAssociations("BasicClusterRecHitFractions_V1");
 
     for (reco::BasicClusterCollection::const_iterator it = collection->begin (), end = collection->end (); it != end; ++it) 
     {

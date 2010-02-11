@@ -74,7 +74,7 @@ void ISpyGsfElectron::analyze(const edm::Event& event, const edm::EventSetup& ev
  
     // NOTE: TM Should add info on shower shape, isolation, etc.
 
-    IgAssociationSet& trackExtras = storage->getAssociationSet("GsfElectronExtras_V1");
+    IgAssociations& trackExtras = storage->getAssociations("GsfElectronExtras_V1");
 
     for ( GsfElectronCollection::const_iterator ei = collection->begin(), eie = collection->end();
           ei != eie; ++ei )

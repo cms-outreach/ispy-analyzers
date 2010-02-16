@@ -1,3 +1,9 @@
+2010-02-16  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyService.cc: Reorganize the logic to make sure that an
+	archive doesn't get closed on timeout if we do not produce the ig
+	files. 
+
 2010-02-11  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyMuon.h, ISpyTrackRefitter.h, ISpyBasicCluster.cc,

@@ -78,9 +78,9 @@ ISpyService::postBeginJob (void)
     if (outputRegistry_) registry ();
     currentFile_[1] = tempFileName (outputESFileName_);
     archives_[1] = archive (currentFile_[1]);
+
+    nextTime_ = Time::current () + TimeSpan (0, 0, 0, outputMaxTime_ /* seconds */, 0);
   }
-  
-  nextTime_ = Time::current () + TimeSpan (0, 0, 0, outputMaxTime_ /* seconds */, 0);
 }
 
 lat::ZipArchive*
@@ -223,48 +223,48 @@ ISpyService::postEventProcessing (const edm::Event& event, const edm::EventSetup
       output_[0]->close ();
       delete output_[0];
       output_[0] = 0;
-    }
-    delete storages_[0];    
-    storages_[0] = 0;
-  
-    if (! storages_[1]->empty ())
-    {	
-      std::stringstream goss;
-      goss << "Geometry/Run_" << event.run () << "/Event_" << event.id ().event ();
-    
-      current_[1] = new ZipMember (goss.str ());
-      current_[1]->isDirectory (false);
-      current_[1]->time (Time::current ());
-      current_[1]->method (ZConstants::DEFLATED);
-      current_[1]->level (ZConstants::BEST_COMPRESSION);
 
-      ASSERT (archives_[1]);	
-      output_[1] = archives_[1]->output (current_[1]);
-
-      ASSERT (output_[1]);
-
-      std::stringstream ossES;
-      ossES << *storages_[1];
-      write (ossES.str ().c_str (),  output_[1], ossES.str ().length ());
-      output_[1]->close ();
-      delete output_[1];
-      output_[1] = 0;
-    }
-    delete storages_[1];    
-    storages_[1] = 0;
-    
-    if (eventCounter_ == outputMaxEvents_
-	|| Time::current () > nextTime_)
-    {
-      archives_[0]->close ();
-      delete archives_[0];
-      archives_[0] = 0;
-      finalize (currentFile_[0]);	
-      eventCounter_ = 0;
-      fileCounter_++;
-      nextTime_ = Time::current () + TimeSpan (0, 0, 0, outputMaxTime_ /* seconds */, 0);
+      if (eventCounter_ == outputMaxEvents_
+	  || Time::current () > nextTime_)
+      {
+	archives_[0]->close ();
+	delete archives_[0];
+	archives_[0] = 0;
+	finalize (currentFile_[0]);	
+	eventCounter_ = 0;
+	fileCounter_++;
+	nextTime_ = Time::current () + TimeSpan (0, 0, 0, outputMaxTime_ /* seconds */, 0);
+      }
     }
   }
+  delete storages_[0];    
+  storages_[0] = 0;
+  
+  if (outputIg_ && (!storages_[1]->empty ()))
+  {	
+    std::stringstream goss;
+    goss << "Geometry/Run_" << event.run () << "/Event_" << event.id ().event ();
+    
+    current_[1] = new ZipMember (goss.str ());
+    current_[1]->isDirectory (false);
+    current_[1]->time (Time::current ());
+    current_[1]->method (ZConstants::DEFLATED);
+    current_[1]->level (ZConstants::BEST_COMPRESSION);
+
+    ASSERT (archives_[1]);	
+    output_[1] = archives_[1]->output (current_[1]);
+
+    ASSERT (output_[1]);
+
+    std::stringstream ossES;
+    ossES << *storages_[1];
+    write (ossES.str ().c_str (),  output_[1], ossES.str ().length ());
+    output_[1]->close ();
+    delete output_[1];
+    output_[1] = 0;
+  }
+  delete storages_[1];    
+  storages_[1] = 0;
 }
 	    
 long int

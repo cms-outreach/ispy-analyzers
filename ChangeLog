@@ -1,7 +1,7 @@
 2010-02-26 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyVertex: add
-	* ISpyCaloTower.cc: add more info and evolve schema
+	* ISpyCaloTower.cc: add more info and evolve schema, get rid of pos (not filled or used)
 	* ispy_35X_cfg.py: create ig files by default
 	* ISpy_Producer_cff.py: add vertices to sequence
 	* ispy_36_cfg.py: add

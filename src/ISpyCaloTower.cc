@@ -72,7 +72,6 @@ ISpyCaloTower::analyze( const edm::Event& event, const edm::EventSetup& eventSet
     IgProperty EMTIME = caloTowers.addProperty("ecalTime", 0.0);
     IgProperty HTIME = caloTowers.addProperty("hcalTime", 0.0);
 
-    IgProperty POS  = caloTowers.addProperty("pos", IgV3d());
     IgProperty EPOS = caloTowers.addProperty("emPosition", IgV3d());
     IgProperty HPOS = caloTowers.addProperty("hadPosition", IgV3d());
 
@@ -109,7 +108,6 @@ ISpyCaloTower::analyze( const edm::Event& event, const edm::EventSetup& eventSet
       const GlobalPoint& hpos = (*it).hadPosition();
       itower[EPOS] = IgV3d( static_cast<double>(epos.x()), static_cast<double>(epos.y()),static_cast<double>(epos.z()) );
       itower[HPOS] = IgV3d( static_cast<double>(hpos.x()), static_cast<double>(hpos.y()),static_cast<double>(hpos.z()) );
-
 
       itower[FRONT_1] = IgV3d(static_cast<double>(corners[0].x()/100.0), static_cast<double>(corners[0].y()/100.0), static_cast<double>(corners[0].z()/100.0));
       itower[FRONT_2] = IgV3d(static_cast<double>(corners[1].x()/100.0), static_cast<double>(corners[1].y()/100.0), static_cast<double>(corners[1].z()/100.0));

@@ -31,4 +31,6 @@ process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(10)
 )
 
+process.ISpyCaloTower.iSpyCaloTowerTag = cms.InputTag('towerMaker')
+
 process.p1 = cms.Path(process.iSpy_sequence)

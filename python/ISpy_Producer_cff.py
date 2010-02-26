@@ -50,6 +50,7 @@ from ISpy.Analyzers.ISpyTrack_cfi import *
 from ISpy.Analyzers.ISpyTrackingParticle_cfi import *
 from ISpy.Analyzers.ISpyTrackingRecHit_cfi import *
 from ISpy.Analyzers.ISpyTriggerEvent_cfi import *
+from ISpy.Analyzers.ISpyVertex_cfi import *
 
 # These labels are needed to pick up cosmics
 #
@@ -107,4 +108,5 @@ iSpy_sequence = cms.Sequence(ISpyEvent*
                              ISpyTrack*
                              ISpyTrackingParticle*
                              ISpyTrackingRecHit*
-                             ISpyTriggerEvent)
+                             ISpyTriggerEvent*
+                             ISpyVertex)

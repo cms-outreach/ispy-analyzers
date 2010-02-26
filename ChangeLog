@@ -3,6 +3,7 @@
 	* ISpyVertex: add
 	* ISpyCaloTower.cc: add more info and evolve schema
 	* ispy_35X_cfg.py: create ig files by default
+	* ISpy_Producer_cff.py: add vertices to sequence
 	
 2010-02-16  Ianna Osborne  <ianna.osborne@cern.ch>
 

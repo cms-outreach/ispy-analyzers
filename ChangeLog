@@ -1,3 +1,9 @@
+2010-02-26 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyVertex: add
+	* ISpyCaloTower.cc: add more info and evolve schema
+	* ispy_35X_cfg.py: create ig files by default
+	
 2010-02-16  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyService.cc: Reorganize the logic to make sure that an

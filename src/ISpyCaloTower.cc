@@ -60,14 +60,22 @@ ISpyCaloTower::analyze( const edm::Event& event, const edm::EventSetup& eventSet
     IgCollectionItem item = products.create();
     item[PROD] = product;
 
-    IgCollection &caloTowers = storage->getCollection("CaloTowers_V1");
+    IgCollection &caloTowers = storage->getCollection("CaloTowers_V2");
     IgProperty ET   = caloTowers.addProperty("et", 0.0);
     IgProperty ETA  = caloTowers.addProperty("eta", 0.0);
     IgProperty PHI  = caloTowers.addProperty("phi", 0.0);
     IgProperty IPHI = caloTowers.addProperty("iphi", 0.0);
+
     IgProperty HE   = caloTowers.addProperty("hadEnergy", 0.0);
     IgProperty EE   = caloTowers.addProperty("emEnergy", 0.0);
+    IgProperty OE   = caloTowers.addProperty("outerEnergy", 0.0);
+    IgProperty EMTIME = caloTowers.addProperty("ecalTime", 0.0);
+    IgProperty HTIME = caloTowers.addProperty("hcalTime", 0.0);
+
     IgProperty POS  = caloTowers.addProperty("pos", IgV3d());
+    IgProperty EPOS = caloTowers.addProperty("emPosition", IgV3d());
+    IgProperty HPOS = caloTowers.addProperty("hadPosition", IgV3d());
+
     IgProperty FRONT_1 = caloTowers.addProperty("front_1", IgV3d());
     IgProperty FRONT_2 = caloTowers.addProperty("front_2", IgV3d());
     IgProperty FRONT_3 = caloTowers.addProperty("front_3", IgV3d());
@@ -89,8 +97,20 @@ ISpyCaloTower::analyze( const edm::Event& event, const edm::EventSetup& eventSet
       itower[ETA] = static_cast<double>((*it).eta());
       itower[PHI] = static_cast<double>((*it).phi());
       itower[IPHI] = static_cast<double>((*it).iphi());
+
       itower[HE] = static_cast<double>((*it).hadEnergy());
       itower[EE] = static_cast<double>((*it).emEnergy());
+      itower[OE] = static_cast<double>((*it).outerEnergy());
+      
+      itower[EMTIME] = static_cast<double>((*it).ecalTime());
+      itower[HTIME] = static_cast<double>((*it).hcalTime());  
+
+      const GlobalPoint& epos = (*it).emPosition();
+      const GlobalPoint& hpos = (*it).hadPosition();
+      itower[EPOS] = IgV3d( static_cast<double>(epos.x()), static_cast<double>(epos.y()),static_cast<double>(epos.z()) );
+      itower[HPOS] = IgV3d( static_cast<double>(hpos.x()), static_cast<double>(hpos.y()),static_cast<double>(hpos.z()) );
+
+
       itower[FRONT_1] = IgV3d(static_cast<double>(corners[0].x()/100.0), static_cast<double>(corners[0].y()/100.0), static_cast<double>(corners[0].z()/100.0));
       itower[FRONT_2] = IgV3d(static_cast<double>(corners[1].x()/100.0), static_cast<double>(corners[1].y()/100.0), static_cast<double>(corners[1].z()/100.0));
       itower[FRONT_3] = IgV3d(static_cast<double>(corners[2].x()/100.0), static_cast<double>(corners[2].y()/100.0), static_cast<double>(corners[2].z()/100.0));

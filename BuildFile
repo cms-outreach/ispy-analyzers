@@ -5,12 +5,14 @@
 <use name=DataFormats/L1GlobalTrigger>
 <use name=DataFormats/CSCDigi>
 <use name=DataFormats/RPCRecHit>
+<use name=DataFormats/EcalDigi>
 <use name=CondFormats/L1TObjects>
 <use name=Geometry/DTGeometry>
 <use name=Geometry/CSCGeometry>
 <use name=Geometry/RPCGeometry>
 <use name=Geometry/CaloGeometry>
 <use name=Geometry/TrackerGeometryBuilder>
+<use name=Geometry/EcalMapping>
 <use name=TrackingTools/TransientTrack>
 <use name=TrackPropagation/SteppingHelixPropagator>
 <use name=ISpy/Services>

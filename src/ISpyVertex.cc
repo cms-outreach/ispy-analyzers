@@ -57,7 +57,7 @@ void ISpyVertex::analyze(const edm::Event& event, const edm::EventSetup& eventSe
     IgProperty ISV  = vertices.addProperty("isValid", int(0));
     IgProperty ISF  = vertices.addProperty("isFake", int(0));
 
-    IgProperty POS  = vertices.addProperty("position", IgV3d());
+    IgProperty POS  = vertices.addProperty("pos", IgV3d());
     IgProperty XERR = vertices.addProperty("xError", 0.0);
     IgProperty YERR = vertices.addProperty("yError", 0.0);
     IgProperty ZERR = vertices.addProperty("zError", 0.0);

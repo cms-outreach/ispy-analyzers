@@ -1,3 +1,7 @@
+2010-03-05 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyVertex.cc: change "position" to "pos" (to conform to what is used in drawing code)
+	
 2010-02-26 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyVertex: add

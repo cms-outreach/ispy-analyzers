@@ -79,7 +79,7 @@ void ISpyPFRecTrack::analyze(const edm::Event& event, const edm::EventSetup& eve
       rt[PT] = (*rectrack).trackRef()->pt();
       rt[PHI] = (*rectrack).trackRef()->phi();
       rt[ETA] = (*rectrack).trackRef()->eta();
-      rt[CHARGE] = (*rectrack).charge();
+      rt[CHARGE] = static_cast<int>((*rectrack).charge());
 
       unsigned int algoType = (*rectrack).algoType();
       
@@ -109,13 +109,12 @@ void ISpyPFRecTrack::analyze(const edm::Event& event, const edm::EventSetup& eve
 		    
           tp[POS] = IgV3d(x,y,z);
           
-          float dirx = points[ipt].momentum().X();
-          float diry = points[ipt].momentum().Y();
-          float dirz = points[ipt].momentum().Z();
+          double dirx = static_cast<double>(points[ipt].momentum().X());
+          double diry = static_cast<double>(points[ipt].momentum().Y());
+          double dirz = static_cast<double>(points[ipt].momentum().Z());
 
           IgV3d vec = IgV3d(dirx,diry,dirz);
           ISpyVector::normalize(vec);
-          tp[DIR] = vec;
           
           tracktrajs.associate(rt, tp);
         }

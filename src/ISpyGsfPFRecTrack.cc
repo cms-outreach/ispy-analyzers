@@ -83,7 +83,7 @@ void ISpyGsfPFRecTrack::analyze(const edm::Event& event, const edm::EventSetup& 
       gsft[PHI] = closestApproach.momentum().eta();
       gsft[ETA] = closestApproach.momentum().phi();
 
-      gsft[CHARGE] = (*t).charge();
+      gsft[CHARGE] = static_cast<int>((*t).charge());
 
       const std::vector<reco::PFTrajectoryPoint>& points = (*t).trajectoryPoints();
 
@@ -99,9 +99,9 @@ void ISpyGsfPFRecTrack::analyze(const edm::Event& event, const edm::EventSetup& 
 		    
           tp[POS] = IgV3d(x,y,z);
           
-          float dirx = points[ipt].momentum().X();
-          float diry = points[ipt].momentum().Y();
-          float dirz = points[ipt].momentum().Z();
+          double dirx = static_cast<double>(points[ipt].momentum().X());
+          double diry = static_cast<double>(points[ipt].momentum().Y());
+          double dirz = static_cast<double>(points[ipt].momentum().Z());
 
           IgV3d dir = IgV3d(dirx,diry,dirz);
           ISpyVector::normalize(dir);
@@ -133,9 +133,9 @@ void ISpyGsfPFRecTrack::analyze(const edm::Event& event, const edm::EventSetup& 
                             bremPoints[b].position().Y()/100.0,
                             bremPoints[b].position().Z()/100.0);
 
-            double dirx = bremPoints[b].momentum().X();
-            double diry = bremPoints[b].momentum().Y();
-            double dirz = bremPoints[b].momentum().Z();
+            double dirx = static_cast<double>(bremPoints[b].momentum().X());
+            double diry = static_cast<double>(bremPoints[b].momentum().Y());
+            double dirz = static_cast<double>(bremPoints[b].momentum().Z());
             
             IgV3d dir = IgV3d(dirx,diry,dirz);
             ISpyVector::normalize(dir);

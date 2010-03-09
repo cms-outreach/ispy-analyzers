@@ -1,3 +1,7 @@
+2010-03-09 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyPFRecTrack.cc, ISpyGsfPFRecTrack.cc: fix cast problem
+
 2010-03-08 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* BuildFile: remove spurious dependencies

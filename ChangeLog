@@ -1,3 +1,9 @@
+2010-03-15  Ianna Osborne  <ianna.osborne@cern.ch>
+
+	* ISpyEvent.cc: Introduce local time. Evolve schema.
+	* BuildFile: Remove spurious dependencies.
+	* python/ispy_35X_cfg.py: Update configuration for the release.
+
 2010-03-09 Tom McCauley <thomas.mccauley@cern.ch>
 
 	* ISpyPFRecTrack.cc, ISpyGsfPFRecTrack.cc: fix cast problem

@@ -11,18 +11,18 @@ process.GlobalTag.globaltag = 'STARTUP3X_V14::All'
 
 
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring('/store/relval/CMSSW_3_5_0_pre2/RelValTTbar/GEN-SIM-RECO/STARTUP3X_V14-v1/0010/76A5863F-22EE-DE11-A745-002618943896.root')
+                            fileNames = cms.untracked.vstring('/store/data/Commissioning10/Cosmics/RECO/v4/000/130/516/14341C26-722C-DF11-AA02-000423D99CEE.root')
 )
 
 from FWCore.MessageLogger.MessageLogger_cfi import *
 
 process.add_(
     cms.Service("ISpyService",
-    outputFileName = cms.untracked.string('RelValTTbar.ig'),
-    outputIg = cms.untracked.bool(True),
+    outputFileName = cms.untracked.string('Commissioning10.ig'),
+    ##outputIg = cms.untracked.bool(True),
     outputMaxEvents = cms.untracked.int32(10),
-    online = cms.untracked.bool(True),
-    debug = cms.untracked.bool(True)
+    ##online = cms.untracked.bool(True),
+    ##debug = cms.untracked.bool(True)
 
     )
 )

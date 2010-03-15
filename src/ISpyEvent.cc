@@ -14,6 +14,23 @@
 
 using namespace edm::service;
 
+namespace {
+  std::string
+    getLocalTime(const edm::Event& event)
+  {
+    time_t t(event.time().value() >> 32);
+    std::string text(asctime(localtime(&t)));
+    size_t pos = text.find('\n');
+    if (pos != std::string::npos) text = text.substr(0, pos);
+    text += " ";
+    if (daylight)
+      text += tzname[1];
+    else
+      text += tzname[0];
+    return text;
+  }
+}
+
 ISpyEvent::ISpyEvent (const edm::ParameterSet& iPSet)
 {}
 
@@ -46,7 +63,7 @@ ISpyEvent::analyze( const edm::Event& event, const edm::EventSetup& /* eventSetu
 
   IgDataStorage *storage = config->storage ();
   ASSERT (storage);
-  IgCollection &eventColl = storage->getCollection ("Event_V1");
+  IgCollection &eventColl = storage->getCollection ("Event_V2");
 
   IgProperty RUN   = eventColl.addProperty ("run", static_cast<int>(0));
   IgProperty EVENT = eventColl.addProperty ("event", static_cast<int>(0));
@@ -54,6 +71,7 @@ ISpyEvent::analyze( const edm::Event& event, const edm::EventSetup& /* eventSetu
   IgProperty ORBIT = eventColl.addProperty ("orbit", static_cast<int>(0));
   IgProperty BX    = eventColl.addProperty ("bx", static_cast<int>(0));
   IgProperty TIME  = eventColl.addProperty ("time", std::string ());    
+  IgProperty LOCALTIME  = eventColl.addProperty ("localtime", std::string ());    
 
   IgCollectionItem eventId = eventColl.create();
   eventId [RUN]   = static_cast<int>(event.id ().run ());
@@ -62,6 +80,7 @@ ISpyEvent::analyze( const edm::Event& event, const edm::EventSetup& /* eventSetu
   eventId [ORBIT] = static_cast<int>(event.orbitNumber ());
   eventId [BX]    = static_cast<int>(event.bunchCrossing ());
   eventId [TIME]  = static_cast<std::string>(datetime);
+  eventId [LOCALTIME]  = static_cast<std::string>(getLocalTime(event));
 }
 
 DEFINE_FWK_MODULE(ISpyEvent);

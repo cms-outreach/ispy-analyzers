@@ -1,3 +1,9 @@
+2010-04-18 Tom McCauley <thomas.mccauley@cern.ch>
+
+	* ISpyEventFeatures: added for 7 TeV event (but just added now to ChangeLog)
+	* ISpyEBDigi, ISpyEEDigi: added (was pending for a while)
+	* ispy_EcalDigis_cfg.py: added
+
 2010-03-15  Ianna Osborne  <ianna.osborne@cern.ch>
 
 	* ISpyEvent.cc: Introduce local time. Evolve schema.

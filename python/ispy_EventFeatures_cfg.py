@@ -4,9 +4,8 @@ process = cms.Process('ISPY')
 
 process.source = cms.Source('PoolSource',
    fileNames = cms.untracked.vstring(
-    'file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/EventDisplay/RootFileTempStorageArea/EVDISPSM_1269579790176.root',
-    'file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/EventDisplay/RootFileTempStorageArea/EVDISPSM_1269584437015.root',
-    'file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/EventDisplay/RootFileTempStorageArea/EVDISPSM_1269585770126.root')
+    'file:/afs/cern.ch/cms/CAF/CMSCOMM/COMM_GLOBAL/EventDisplay/RootFileTempStorageArea/EVDISPSM_1269596402.root',
+)
     )
 
 

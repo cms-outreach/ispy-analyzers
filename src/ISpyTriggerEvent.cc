@@ -35,9 +35,10 @@ ISpyTriggerEvent::ISpyTriggerEvent(const edm::ParameterSet& iConfig)
 }
 
 void
-ISpyTriggerEvent::beginRun(const edm::Run&, const edm::EventSetup&)
+ISpyTriggerEvent::beginRun(const edm::Run& iRun, const edm::EventSetup& iSetup)
 {
-  if ( ! hltConfig_.init(processName_) )
+  bool changed(false);
+  if ( ! hltConfig_.init(iRun, iSetup, processName_, changed) )
     hltConfigProvided_ = false;
 }
 

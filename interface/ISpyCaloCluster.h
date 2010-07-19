@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_CALO_CLUSTER_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/CaloRecHit/interface/CaloCluster.h"
 
 class ISpyCaloCluster : public edm::EDAnalyzer

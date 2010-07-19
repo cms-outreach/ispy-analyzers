@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_L1_GLOBAL_TRIGGER_READOUT_RECORD_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 class ISpyL1GlobalTriggerReadoutRecord : public edm::EDAnalyzer
 {

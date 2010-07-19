@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_PATMET_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 class ISpyPATMET : public edm::EDAnalyzer
 {

@@ -1,8 +1,9 @@
 #ifndef ANALYZER_ISPY_TRIGGER_EVENT_H
 #define ANALYZER_ISPY_TRIGGER_EVENT_H
 
-# include "FWCore/Framework/interface/EDAnalyzer.h"
-# include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
+#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
 /*
   Dump TriggerEvent a la HLTEventAnalyzerAOD, TriggerSummaryAnalyzerAOD

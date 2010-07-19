@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_CALOHIT_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 typedef std::vector<edm::InputTag> VInputTag;
 

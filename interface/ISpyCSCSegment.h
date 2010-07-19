@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_CSC_SEGMENT_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 class ISpyCSCSegment : public edm::EDAnalyzer
 {

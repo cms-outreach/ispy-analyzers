@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_PATPHOTON_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 class ISpyPATPhoton : public edm::EDAnalyzer
 {

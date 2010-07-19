@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_BASIC_CLUSTER_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 #ifdef CMSSW_2_2_X
 #include "DataFormats/EgammaReco/interface/BasicCluster.h"

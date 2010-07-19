@@ -1,7 +1,8 @@
 #ifndef ANALYZER_ISPY_PFREC_TRACK_H
 #define ANALYZER_ISPY_PFREC_TRACK_H
 
-# include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 class ISpyPFRecTrack : public edm::EDAnalyzer
 {

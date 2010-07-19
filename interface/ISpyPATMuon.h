@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_PATMUON_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "MagneticField/Engine/interface/MagneticField.h"
 #include "DataFormats/MuonReco/interface/MuonFwd.h"

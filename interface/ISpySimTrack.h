@@ -1,8 +1,9 @@
 #ifndef ANALYZER_ISPY_SIM_TRACK_H
 #define ANALYZER_ISPY_SIM_TRACK_H
 
-# include "FWCore/Framework/interface/EDAnalyzer.h"
-# include <map>
+#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
+#include <map>
 
 class PSimHit;
 

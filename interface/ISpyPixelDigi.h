@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_PIXEL_DIGI_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 class ISpyPixelDigi : public edm::EDAnalyzer
 {

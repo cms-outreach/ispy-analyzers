@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_PRESHOWERCLUSTER_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 #include <vector>
 
 typedef std::vector<edm::InputTag> VInputTag;

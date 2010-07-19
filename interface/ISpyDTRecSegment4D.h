@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_DTREC_SEGMENT_4D_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 class ISpyDTRecSegment4D : public edm::EDAnalyzer
 {

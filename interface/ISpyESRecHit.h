@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_ES_REC_HIT_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 class ISpyESRecHit : public edm::EDAnalyzer
 {

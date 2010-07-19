@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_CSCRECHIT2D_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 class ISpyCSCRecHit2D : public edm::EDAnalyzer
 {

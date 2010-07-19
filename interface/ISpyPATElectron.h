@@ -2,6 +2,7 @@
 #define ANALYZER_ISPY_PATELECTRON_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Utilities/interface/InputTag.h"
 
 class ISpyPATElectron : public edm::EDAnalyzer
 {

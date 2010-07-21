@@ -42,10 +42,12 @@ from ISpy.Analyzers.ISpyTriggerEvent_cfi import *
 #ISpyTrack.iSpyTrackTags = cms.VInputTag(cms.InputTag('cosmicMuons'),cms.InputTag('cosmictrackfinderP5'),cms.InputTag('ctfWithMaterialTracksP5'))
 
 iSpy_online_sequence = cms.Sequence(ISpyEvent*
+                             ISpyBasicCluster*
                              ISpyCSCRecHit2D*
                              ISpyCSCSegment*
                              ISpyCSCStripDigi*
                              ISpyCSCWireDigi*
+                             ISpyCaloCluster*
                              ISpyCaloTower*
                              ISpyDTDigi*
                              ISpyDTRecHit*
@@ -66,11 +68,13 @@ iSpy_online_sequence = cms.Sequence(ISpyEvent*
                              ISpyMuon*
                              ISpyPhoton*
                              ISpyPixelDigi*
+                             ISpyPreshowerCluster*
                              ISpyRPCRecHit*
                              ISpySiPixelCluster*
                              ISpySiPixelRecHit*
                              ISpySiStripCluster*
                              ISpySiStripDigi*
+                             ISpySuperCluster*
                              ISpyTrack*
                              ISpyTrackingRecHit*
                              ISpyTriggerEvent)

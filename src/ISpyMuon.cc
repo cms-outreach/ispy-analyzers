@@ -19,6 +19,10 @@
 
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 
+#include "Geometry/Records/interface/MuonGeometryRecord.h"
+#include "DataFormats/GeometrySurface/interface/RectangularPlaneBounds.h"
+#include "DataFormats/GeometrySurface/interface/TrapezoidalPlaneBounds.h"
+
 #include <iostream>
 #include <sstream>
 
@@ -28,7 +32,8 @@ ISpyMuon::ISpyMuon(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyMuonTag")),
     in_(iConfig.getUntrackedParameter<double>("propagatorIn", 0.0)),
     out_(iConfig.getUntrackedParameter<double>("propagatorOut", 0.0)),
-    step_(iConfig.getUntrackedParameter<double>("propagatorStep", 0.05))
+    step_(iConfig.getUntrackedParameter<double>("propagatorStep", 0.05)),
+    dtGeomValid_(false), cscGeomValid_(false)
 {}      
 
 void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -44,7 +49,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       "or remove the module that requires it";
   }
 
-  IgDataStorage* storage = config->storage();
+  storage_ = config->storage();
   edm::ESHandle<MagneticField> field; 
   eventSetup.get<IdealMagneticFieldRecord>().get(field);
   
@@ -57,6 +62,19 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     return;
   }
   
+  eventSetup.get<MuonGeometryRecord>().get(dtGeometry_);
+  eventSetup.get<MuonGeometryRecord>().get(cscGeometry_);
+
+  if ( dtGeometry_.isValid() )
+    dtGeomValid_ = true;
+  else 
+    config->error("### Error: Muons  DT Geometry not valid");    
+           
+  if ( cscGeometry_.isValid() )
+    cscGeomValid_ = true;
+  else
+    config->error("### Error: Muons  CSC Geometry not valid");
+
   edm::Handle<reco::MuonCollection> collection;
   event.getByLabel(inputTag_, collection);
 
@@ -78,12 +96,12 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
                         + inputTag_.instance() + ":" 
                         + inputTag_.process();
 
-  IgCollection& products = storage->getCollection("Products_V1");
+  IgCollection& products = storage_->getCollection("Products_V1");
   IgProperty PROD = products.addProperty("Product", std::string ());
   IgCollectionItem item = products.create();
   item[PROD] = product;
 
-  IgCollection& trackerMuonCollection = storage->getCollection("TrackerMuons_V1");
+  IgCollection& trackerMuonCollection = storage_->getCollection("TrackerMuons_V1");
   IgProperty T_PT = trackerMuonCollection.addProperty("pt", 0.0);
   IgProperty T_CHARGE = trackerMuonCollection.addProperty("charge", int(0));
   IgProperty T_RP = trackerMuonCollection.addProperty("rp", IgV3d());
@@ -91,7 +109,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty T_ETA = trackerMuonCollection.addProperty("eta", 0.0);
   IgProperty T_CALO_E = trackerMuonCollection.addProperty("calo_energy", 0.0);
 
-  IgCollection& standAloneMuonCollection = storage->getCollection("StandaloneMuons_V2");
+  IgCollection& standAloneMuonCollection = storage_->getCollection("StandaloneMuons_V2");
   IgProperty S_PT = standAloneMuonCollection.addProperty("pt", 0.0);
   IgProperty S_CHARGE = standAloneMuonCollection.addProperty("charge", int(0));
   IgProperty S_RP = standAloneMuonCollection.addProperty("pos", IgV3d());
@@ -99,7 +117,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty S_ETA = standAloneMuonCollection.addProperty("eta", 0.0);
   IgProperty S_CALO_E = standAloneMuonCollection.addProperty("calo_energy", 0.0);
 
-  IgCollection& globalMuonCollection = storage->getCollection("GlobalMuons_V1");
+  IgCollection& globalMuonCollection = storage_->getCollection("GlobalMuons_V1");
   IgProperty G_PT = globalMuonCollection.addProperty("pt", 0.0);
   IgProperty G_CHARGE = globalMuonCollection.addProperty("charge", int(0));
   IgProperty G_RP = globalMuonCollection.addProperty("rp", IgV3d ());
@@ -107,23 +125,17 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty G_ETA = globalMuonCollection.addProperty("eta", 0.0);
   IgProperty G_CALO_E = globalMuonCollection.addProperty("calo_energy", 0.0);
 
-  IgCollection& extras = storage->getCollection("Extras_V1");
+  IgCollection& extras = storage_->getCollection("Extras_V1");
   IgProperty IPOS = extras.addProperty("pos_1", IgV3d());
   IgProperty IP   = extras.addProperty("dir_1", IgV3d());
   IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
   IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
-  IgAssociations& trackExtras = storage->getAssociations("MuonTrackExtras_V1");
+  IgAssociations& trackExtras = storage_->getAssociations("MuonTrackExtras_V1");
 
-  IgCollection& points = storage->getCollection("Points_V1");
+  IgCollection& points = storage_->getCollection("Points_V1");
   IgProperty POS = points.addProperty("pos", IgV3d());
-
-  // NOTE: TM What are these used for?
-  IgCollection& detIds = storage->getCollection("DetIds_V1");
-  IgProperty DETID = detIds.addProperty ("detid", int(0));
-  
-  IgAssociations& muonDetIds = storage->getAssociations("MuonDetIds_V1");
-
+   
   for (reco::MuonCollection::const_iterator it = collection->begin(), end = collection->end(); 
        it != end; ++it) 
   {
@@ -133,8 +145,8 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     {
       IgCollectionItem imuon = trackerMuonCollection.create();
       
-      if ( (*it).isMatchesValid() )                
-        addDetIds(it, imuon, DETID, detIds, muonDetIds);
+      if ( (*it).isMatchesValid() && (dtGeomValid_ || cscGeomValid_))                
+        addChambers(it);
 
       imuon[T_PT] = (*it).track()->pt();
       imuon[T_CHARGE] = charge;
@@ -147,11 +159,11 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, T_CALO_E);
 
-      IgAssociations& muonTrackerPoints = storage->getAssociations("MuonTrackerPoints_V1");
+      IgAssociations& muonTrackerPoints = storage_->getAssociations("MuonTrackerPoints_V1");
 
       try
       {
-        ISpyTrackRefitter::refitTrack(imuon, muonTrackerPoints, storage,
+        ISpyTrackRefitter::refitTrack(imuon, muonTrackerPoints, storage_,
                                      (*it).track (), &*field, 
                                      in_, out_, step_);
       }       
@@ -169,10 +181,9 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     {
       IgCollectionItem imuon = standAloneMuonCollection.create();
       
-      if ((*it).isMatchesValid()) 
-        addDetIds(it, imuon, DETID, detIds, muonDetIds);
+      if ((*it).isMatchesValid() && (dtGeomValid_ || cscGeomValid_)) 
+        addChambers(it);
 	
-      
       imuon[S_PT] = (*it).standAloneMuon()->pt();
       imuon[S_CHARGE] = charge;
       imuon[S_RP] = IgV3d((*it).standAloneMuon()->vx()/100.0,
@@ -213,8 +224,8 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     {
       IgCollectionItem imuon = globalMuonCollection.create();
         
-      if ((*it).isMatchesValid ()) 
-        addDetIds(it, imuon, DETID, detIds, muonDetIds);
+      if ((*it).isMatchesValid () && (dtGeomValid_ || cscGeomValid_)) 
+        addChambers(it);
 
       imuon[G_PT] = (*it).combinedMuon()->pt();
       imuon[G_CHARGE] = charge;
@@ -227,11 +238,11 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, G_CALO_E);
 
-      IgAssociations& muonGlobalPoints = storage->getAssociations("MuonGlobalPoints_V1");	
+      IgAssociations& muonGlobalPoints = storage_->getAssociations("MuonGlobalPoints_V1");	
  
       try
       {
-        ISpyTrackRefitter::refitTrack(imuon, muonGlobalPoints, storage,
+        ISpyTrackRefitter::refitTrack(imuon, muonGlobalPoints, storage_,
                                      (*it).combinedMuon(), &*field, 
                                      in_, out_, step_);
       }
@@ -247,17 +258,94 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   }
 }
 
+
 void
-ISpyMuon::addDetIds(reco::MuonCollection::const_iterator it, IgCollectionItem& imuon, 
-		    IgProperty& DETID, IgCollection& detIds, IgAssociations& muonDetIds)
+ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
 { 		    
+  IgCollection& chambers = storage_->getCollection("MuonChambers_V1");
+  IgProperty DETID = chambers.addProperty("detid", int(0));
+  IgProperty FRONT_1 = chambers.addProperty("front_1", IgV3d());
+  IgProperty FRONT_2 = chambers.addProperty("front_2", IgV3d());
+  IgProperty FRONT_3 = chambers.addProperty("front_3", IgV3d());
+  IgProperty FRONT_4 = chambers.addProperty("front_4", IgV3d());
+  IgProperty BACK_1 = chambers.addProperty("back_1", IgV3d());
+  IgProperty BACK_2 = chambers.addProperty("back_2", IgV3d());
+  IgProperty BACK_3 = chambers.addProperty("back_3", IgV3d());
+  IgProperty BACK_4 = chambers.addProperty("back_4", IgV3d());
+
   const std::vector<reco::MuonChamberMatch> &dets = (*it).matches();
-  for (std::vector<reco::MuonChamberMatch>::const_iterator dit = dets.begin (), ditEnd = dets.end (); 
-       dit != ditEnd; ++dit)
-  {		    
-    IgCollectionItem idetId = detIds.create ();
-    idetId[DETID] = (*dit).id;
-    muonDetIds.associate (imuon, idetId);
+  const GeomDet* geomDet;
+  float length, width, thickness;
+
+  for ( std::vector<reco::MuonChamberMatch>::const_iterator dit = dets.begin(), 
+                                                         ditEnd = dets.end(); 
+        dit != ditEnd; ++dit )
+  {
+    if ( dit->detector() == MuonSubdetId::CSC )
+    {
+      geomDet = cscGeometry_->idToDet((*dit).id);
+    }
+    
+    else if ( dit->detector() == MuonSubdetId::DT )
+    {
+      geomDet = dtGeometry_->idToDet((*dit).id);
+    }
+    
+    else
+      continue;
+
+    GlobalPoint p[8];
+    const Bounds* b = &(geomDet->surface().bounds());
+    IgCollectionItem chamber = chambers.create();
+    chamber[DETID] = static_cast<int>((*dit).id.rawId());
+
+    if ( const TrapezoidalPlaneBounds* b2 = dynamic_cast<const TrapezoidalPlaneBounds*>(b) )
+    {
+      std::vector<float> parameters = b2->parameters();
+     
+      p[0] = geomDet->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
+      p[1] = geomDet->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
+      p[2] = geomDet->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
+      p[3] = geomDet->surface().toGlobal(LocalPoint(-parameters[1],parameters[3],parameters[2])); 
+      p[4] = geomDet->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],-parameters[2])); 
+      p[5] = geomDet->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],-parameters[2])); 
+      p[6] = geomDet->surface().toGlobal(LocalPoint(parameters[1],parameters[3],-parameters[2])); 
+      p[7] = geomDet->surface().toGlobal(LocalPoint(-parameters[1],parameters[3],-parameters[2]));
+    }  
+    
+    if ( dynamic_cast<const RectangularPlaneBounds*>(b) )
+    {            
+      length = geomDet->surface().bounds().length();
+      width = geomDet->surface().bounds().width();
+      thickness = geomDet->surface().bounds().thickness();
+
+      p[0] = geomDet->surface().toGlobal(LocalPoint(width/2,length/2,thickness/2)); 
+      p[1] = geomDet->surface().toGlobal(LocalPoint(width/2,-length/2,thickness/2)); 
+      p[2] = geomDet->surface().toGlobal(LocalPoint(-width/2,length/2,thickness/2)); 
+      p[3] = geomDet->surface().toGlobal(LocalPoint(-width/2,-length/2,thickness/2)); 
+      p[4] = geomDet->surface().toGlobal(LocalPoint(width/2,length/2,-thickness/2)); 
+      p[5] = geomDet->surface().toGlobal(LocalPoint(width/2,-length/2,-thickness/2)); 
+      p[6] = geomDet->surface().toGlobal(LocalPoint(-width/2,length/2,-thickness/2)); 
+      p[7] = geomDet->surface().toGlobal(LocalPoint(-width/2,-length/2,-thickness/2));    
+    }
+
+    chamber["front_1"] =        
+      IgV3d(static_cast<double>(p[0].x()/100.0), static_cast<double>(p[0].y()/100.0), static_cast<double>(p[0].z()/100.0));
+    chamber["front_2"] = 
+      IgV3d(static_cast<double>(p[1].x()/100.0), static_cast<double>(p[1].y()/100.0), static_cast<double>(p[1].z()/100.0));
+    chamber["front_4"] = 
+      IgV3d(static_cast<double>(p[2].x()/100.0), static_cast<double>(p[2].y()/100.0), static_cast<double>(p[2].z()/100.0));
+    chamber["front_3"] = 
+      IgV3d(static_cast<double>(p[3].x()/100.0), static_cast<double>(p[3].y()/100.0), static_cast<double>(p[3].z()/100.0));
+    chamber["back_1"] = 
+      IgV3d(static_cast<double>(p[4].x()/100.0), static_cast<double>(p[4].y()/100.0), static_cast<double>(p[4].z()/100.0));
+    chamber["back_2"] = 
+      IgV3d(static_cast<double>(p[5].x()/100.0), static_cast<double>(p[5].y()/100.0), static_cast<double>(p[5].z()/100.0));
+    chamber["back_4"] = 
+      IgV3d(static_cast<double>(p[6].x()/100.0), static_cast<double>(p[6].y()/100.0), static_cast<double>(p[6].z()/100.0));
+    chamber["back_3"] = 
+      IgV3d(static_cast<double>(p[7].x()/100.0), static_cast<double>(p[7].y()/100.0), static_cast<double>(p[7].z()/100.0));
+
   }
 }
 

@@ -4,8 +4,11 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/Framework/interface/ESHandle.h"
-#include "MagneticField/Engine/interface/MagneticField.h"
+
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
+
+#include "Geometry/DTGeometry/interface/DTGeometry.h"
+#include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 
 class IgCollection;
 class IgDataStorage;
@@ -30,11 +33,14 @@ private:
   double out_;
   double step_;    
    
-  void addDetIds(reco::MuonCollection::const_iterator it, 
-                 IgCollectionItem& imuon,
-                 IgProperty& property, 
-                 IgCollection& detIds, 
-                 IgAssociations& muonDetIds);
+  IgDataStorage* storage_;
+
+  edm::ESHandle<DTGeometry>  dtGeometry_;
+  bool dtGeomValid_;
+  edm::ESHandle<CSCGeometry> cscGeometry_;
+  bool cscGeomValid_;
+
+  void addChambers(reco::MuonCollection::const_iterator it);
 
   void addCaloEnergy(reco::MuonCollection::const_iterator it, 
                      IgCollectionItem& imuon,

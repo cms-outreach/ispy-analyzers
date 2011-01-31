@@ -83,7 +83,7 @@ ISpySiPixelCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
       DetId detid (detID);
 
       const PixelGeomDetUnit* theDet = dynamic_cast<const PixelGeomDetUnit *>(geom->idToDet (detid));
-      const RectangularPixelTopology *theTopol = dynamic_cast<const RectangularPixelTopology *>( &(theDet->specificTopology ()));
+      const PixelTopology *theTopol =  &(theDet->specificTopology ());
 	    
       edmNew::DetSet<SiPixelCluster>::const_iterator icluster = it->begin ();
       edmNew::DetSet<SiPixelCluster>::const_iterator iclusterEnd = it->end ();

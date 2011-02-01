@@ -10,6 +10,8 @@
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include "DataFormats/TrackerRecHit2D/interface/SiStripMatchedRecHit2D.h"
 #include "DataFormats/GeometrySurface/interface/PlaneBuilder.h"
+#include "DataFormats/GeometrySurface/interface/RectangularPlaneBounds.h"
+#include "DataFormats/GeometrySurface/interface/TrapezoidalPlaneBounds.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -95,7 +97,6 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
       item[PROD] = product;
 
       IgCollection &tracks = storage->getCollection ("Tracks_V2");
-
       IgProperty VTX = tracks.addProperty ("pos", IgV3d());
       IgProperty P   = tracks.addProperty ("dir", IgV3d());
       IgProperty PT  = tracks.addProperty ("pt", 0.0); 
@@ -105,21 +106,28 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
       IgProperty CHI2 = tracks.addProperty ("chi2", 0.0);
       IgProperty NDOF = tracks.addProperty ("ndof", 0.0);
 
-      // Create a collection for track extras.
       IgCollection &extras = storage->getCollection ("Extras_V1");
       IgProperty IPOS = extras.addProperty ("pos_1", IgV3d());
       IgProperty IP   = extras.addProperty ("dir_1", IgV3d());
       IgProperty OPOS = extras.addProperty ("pos_2", IgV3d());
       IgProperty OP   = extras.addProperty ("dir_2", IgV3d());
- 
       IgAssociations &trackExtras = storage->getAssociations ("TrackExtras_V1");
 
-      // Create a collection for tracking rec hits.
       IgCollection &hits = storage->getCollection ("Hits_V1");
       IgProperty HIT_POS = hits.addProperty ("pos", IgV3d());
-
       IgAssociations &trackHits = storage->getAssociations ("TrackHits_V1");
- 
+
+      IgCollection &dets = storage->getCollection("TrackDets_V1");
+      IgProperty DET_ID  = dets.addProperty("detid", int (0)); 
+      IgProperty FRONT_1 = dets.addProperty("front_1", IgV3d());
+      IgProperty FRONT_2 = dets.addProperty("front_2", IgV3d());
+      IgProperty FRONT_4 = dets.addProperty("front_3", IgV3d());
+      IgProperty FRONT_3 = dets.addProperty("front_4", IgV3d());
+      IgProperty BACK_1  = dets.addProperty("back_1",  IgV3d());
+      IgProperty BACK_2  = dets.addProperty("back_2",  IgV3d());
+      IgProperty BACK_4  = dets.addProperty("back_3",  IgV3d());
+      IgProperty BACK_3  = dets.addProperty("back_4",  IgV3d());
+            
       for (reco::TrackCollection::const_iterator track = collection->begin (), trackEnd = collection->end ();
 	   track != trackEnd; ++track)
       {
@@ -179,7 +187,61 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
 				   geometry->idToDet((*it)->geographicalId())->surface().toGlobal(point).z()/100.0);
 
 	      trackHits.associate (item, hit);
-	    }
+
+              IgCollectionItem det = dets.create();
+              det[DET_ID] = static_cast<int>((*it)->geographicalId().rawId());
+
+              GlobalPoint p[8];
+
+              const GeomDet* detUnit = geometry->idToDet((*it)->geographicalId());
+              const Bounds* b = &((detUnit->surface()).bounds());
+ 
+              if(  const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *>(b) )
+              {
+                std::vector<float> parameters = b2->parameters();
+                p[0] = detUnit->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
+                p[1] = detUnit->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
+                p[2] = detUnit->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
+                p[3] = detUnit->surface().toGlobal(LocalPoint(-parameters[1],parameters[3],parameters[2])); 
+                p[4] = detUnit->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],-parameters[2])); 
+                p[5] = detUnit->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],-parameters[2])); 
+                p[6] = detUnit->surface().toGlobal(LocalPoint(parameters[1],parameters[3],-parameters[2])); 
+                p[7] = detUnit->surface().toGlobal(LocalPoint(-parameters[1],parameters[3],-parameters[2]));
+              }
+              
+              if ( dynamic_cast<const RectangularPlaneBounds*>(b) )
+              {
+                float length = detUnit->surface().bounds().length();
+                float width = detUnit->surface().bounds().width();
+                float thickness = detUnit->surface().bounds().thickness();
+                
+                p[0] = detUnit->surface().toGlobal(LocalPoint(width/2,length/2,thickness/2)); 
+                p[1] = detUnit->surface().toGlobal(LocalPoint(width/2,-length/2,thickness/2)); 
+                p[2] = detUnit->surface().toGlobal(LocalPoint(-width/2,length/2,thickness/2)); 
+                p[3] = detUnit->surface().toGlobal(LocalPoint(-width/2,-length/2,thickness/2)); 
+                p[4] = detUnit->surface().toGlobal(LocalPoint(width/2,length/2,-thickness/2)); 
+                p[5] = detUnit->surface().toGlobal(LocalPoint(width/2,-length/2,-thickness/2)); 
+                p[6] = detUnit->surface().toGlobal(LocalPoint(-width/2,length/2,-thickness/2)); 
+                p[7] = detUnit->surface().toGlobal(LocalPoint(-width/2,-length/2,-thickness/2));
+              }
+              
+              det[FRONT_1] = 
+                IgV3d(static_cast<double>(p[0].x()/100.0), static_cast<double>(p[0].y()/100.0), static_cast<double>(p[0].z()/100.0));
+              det[FRONT_2] = 
+                IgV3d(static_cast<double>(p[1].x()/100.0), static_cast<double>(p[1].y()/100.0), static_cast<double>(p[1].z()/100.0));
+              det[FRONT_3] = 
+                IgV3d(static_cast<double>(p[2].x()/100.0), static_cast<double>(p[2].y()/100.0), static_cast<double>(p[2].z()/100.0));
+              det[FRONT_4] = 
+                IgV3d(static_cast<double>(p[3].x()/100.0), static_cast<double>(p[3].y()/100.0), static_cast<double>(p[3].z()/100.0));
+              det[BACK_1]  = 
+                IgV3d(static_cast<double>(p[4].x()/100.0), static_cast<double>(p[4].y()/100.0), static_cast<double>(p[4].z()/100.0));
+              det[BACK_2]  = 
+                IgV3d(static_cast<double>(p[5].x()/100.0), static_cast<double>(p[5].y()/100.0), static_cast<double>(p[5].z()/100.0));
+              det[BACK_3]  = 
+                IgV3d(static_cast<double>(p[6].x()/100.0), static_cast<double>(p[6].y()/100.0), static_cast<double>(p[6].z()/100.0));
+              det[BACK_4]  = 
+                IgV3d(static_cast<double>(p[7].x()/100.0), static_cast<double>(p[7].y()/100.0), static_cast<double>(p[7].z()/100.0));
+            }
 	  }
 	}
       }

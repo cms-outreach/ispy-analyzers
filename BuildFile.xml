@@ -13,7 +13,7 @@
 <use   name="TrackingTools/TransientTrack"/>
 <use   name="TrackPropagation/SteppingHelixPropagator"/>
 <use   name="ISpy/Services"/>
-<use   name="classlib"/>
+<use   name="Iguana/Utilities"/>
 <use   name="HLTrigger/HLTcore"/>
 <use   name="PhysicsTools/PatUtils"/>
 <use   name="DataFormats/SiStripCluster"/>

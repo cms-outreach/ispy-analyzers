@@ -20,7 +20,6 @@ process.add_(
     cms.Service("ISpyService",
     outputFileName = cms.untracked.string('CRAFT09-CSCskim.ig'),
     outputMaxEvents = cms.untracked.int32(10),
-    online = cms.untracked.bool(False),
     debug = cms.untracked.bool(True)
     )
 )

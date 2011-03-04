@@ -33,7 +33,6 @@ process.add_(
     outputFileName = cms.untracked.string('ispy.ig'),
     outputIg = cms.untracked.bool(True),
     outputMaxEvents = cms.untracked.int32(10), # These are the number of events per ig file 
-    online = cms.untracked.bool(False),
     debug = cms.untracked.bool(False)
     )
 )

@@ -26,7 +26,6 @@ process.add_(
     cms.Service("ISpyService",
     outputFileName = cms.untracked.string('CRUZET.ig'),
     outputMaxEvents = cms.untracked.int32(100),
-    online = cms.untracked.bool(False),
     debug = cms.untracked.bool(True)
     )
 )

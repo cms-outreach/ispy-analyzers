@@ -7,9 +7,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "boost/date_time/posix_time/posix_time.hpp"
-
-#include "classlib/utils/Error.h"
-
 #include <sys/time.h> 
 
 using namespace edm::service;
@@ -62,7 +59,7 @@ ISpyEvent::analyze( const edm::Event& event, const edm::EventSetup& /* eventSetu
   std::string datetime (oss.str ());
 
   IgDataStorage *storage = config->storage ();
-  ASSERT (storage);
+  assert(storage);
   IgCollection &eventColl = storage->getCollection ("Event_V2");
 
   IgProperty RUN   = eventColl.addProperty ("run", static_cast<int>(0));

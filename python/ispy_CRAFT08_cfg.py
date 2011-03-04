@@ -20,7 +20,6 @@ from FWCore.MessageLogger.MessageLogger_cfi import *
 process.add_(
     cms.Service("ISpyService",
     outputFileName = cms.untracked.string('CRAFT0831X_V1_311_ReReco_FromSuperPointing_v1.ig'),
-    online = cms.untracked.bool(False),
     debug = cms.untracked.bool(True)
     )
 )

@@ -89,7 +89,7 @@ ISpyCaloTower::analyze( const edm::Event& event, const edm::EventSetup& eventSet
       const CaloCellGeometry *cell = (*geom).getGeometry((*it).id());
 
       const CaloCellGeometry::CornersVec& corners = cell->getCorners();
-      ASSERT(corners.size()==8);
+      assert(corners.size()==8);
 
       IgCollectionItem itower = caloTowers.create();
       itower[ET] = static_cast<double>((*it).et());

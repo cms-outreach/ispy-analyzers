@@ -16,7 +16,6 @@ process.add_(
     outputFileName = cms.untracked.string('EventFeatures.ig'),
     outputIg = cms.untracked.bool(True),
     outputMaxEvents = cms.untracked.int32(-1), # These are the number of events per ig file 
-    online = cms.untracked.bool(False),
     debug = cms.untracked.bool(False)
     )
 )

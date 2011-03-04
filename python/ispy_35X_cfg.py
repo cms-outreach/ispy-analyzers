@@ -19,12 +19,9 @@ from FWCore.MessageLogger.MessageLogger_cfi import *
 process.add_(
     cms.Service("ISpyService",
     outputFileName = cms.untracked.string('Commissioning10.ig'),
-    ##outputIg = cms.untracked.bool(True),
-    outputMaxEvents = cms.untracked.int32(10),
-    ##online = cms.untracked.bool(True),
-    ##debug = cms.untracked.bool(True)
-
-    )
+    outputIg = cms.untracked.bool(True),
+    outputMaxEvents = cms.untracked.int32(10)
+                )
 )
 
 process.maxEvents = cms.untracked.PSet(

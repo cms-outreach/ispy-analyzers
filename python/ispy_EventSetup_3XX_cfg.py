@@ -15,7 +15,6 @@ process.add_(
     cms.Service("ISpyService",
     outputFileName = cms.untracked.string('Geom.ig'),
     outputESFileName = cms.untracked.string('cms-geometry.v2.ig'),
-    online = cms.untracked.bool(False),
     debug = cms.untracked.bool(False)
     )
 )

@@ -31,13 +31,16 @@ namespace edm {
 
     private:
       void              open(const std::string& name, zipFile& zfile);
-      void              write(IgDataStorage* storage, zipFile& zfile);
+      void              write(std::stringstream& soss, zipFile& zfile);
       void              close(zipFile& zfile);
+      void              makeHeader();
+      void              writeHeader(zipFile& zfile);
 	    
       std::string       outputFileName_;
       std::string       outputESFileName_;
       std::string       fileExt_;
       std::string       currentExt_;
+      std::string       header_;
 
       int		outputMaxEvents_;
       int		eventCounter_;	    

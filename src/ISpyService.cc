@@ -12,6 +12,7 @@
 #include "FWCore/ServiceRegistry/interface/ServiceMaker.h"
 #include "FWCore/ServiceRegistry/interface/ActivityRegistry.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
+#include "FWCore/Version/interface/GetReleaseVersion.h"
 
 #include <iostream>
 #include <cstdio>
@@ -35,6 +36,8 @@ ISpyService::ISpyService (const ParameterSet& iPSet, ActivityRegistry& iRegistry
 
   iRegistry.watchPreProcessEvent(this,&ISpyService::preEventProcessing);
   iRegistry.watchPostProcessEvent(this,&ISpyService::postEventProcessing);
+
+  makeHeader();
 }
 
 void
@@ -64,9 +67,53 @@ ISpyService::postBeginJob (void)
 }
 
 void
+ISpyService::makeHeader()
+{
+  // What else do we want to add here?
+  // - Provenance?
+  // - ScheduleInfo?
+  // - versions of Analyzers and Services?
+  // - dump of input cfg file?
+ 
+  header_.append(edm::getReleaseVersion());
+}
+
+void 
+ISpyService::writeHeader(zipFile& zfile)
+{
+  std::string hs("Header");
+  
+  zip_fileinfo zi; // Do something with this                                                                                                             
+  zi.tmz_date.tm_sec  = 0;
+  zi.tmz_date.tm_min  = 0;
+  zi.tmz_date.tm_hour = 0;
+  zi.tmz_date.tm_mday = 0;
+  zi.tmz_date.tm_mon  = 0;
+  zi.tmz_date.tm_year = 0;
+  zi.dosDate = 0;
+  zi.internal_fa = 0;
+  zi.external_fa = 0;
+
+  ziperr_ = zipOpenNewFileInZip64(zfile, hs.c_str(), &zi,
+                                  0, 0, 0, 0, 0, // other stuff                                                                                          
+                                  Z_DEFLATED, // method                                                                                                  
+                                  9, // compression level                                                                                                
+                                  0);
+  assert(ziperr_ == ZIP_OK);
+
+  std::stringstream doss;
+  doss << header_; 
+  write(doss, zfile);
+
+  ziperr_ = zipCloseFileInZip(zfile);
+  assert(ziperr_ == ZIP_OK);
+}
+
+void
 ISpyService::open(const std::string &outputFileName, zipFile& zf)
 {
   zf = zipOpen64(outputFileName.c_str(), APPEND_STATUS_CREATE);  
+  writeHeader(zf);
 }
 
 void
@@ -150,7 +197,9 @@ ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup&
     if ( outputMaxEvents_ != -1 )       
       eventCounter_++;
       
-    write(storages_[0], zipFile0_);
+    std::stringstream doss;
+    doss << *storages_[0];
+    write(doss, zipFile0_);
     
     ziperr_ = zipCloseFileInZip(zipFile0_);
     assert(ziperr_ == ZIP_OK);
@@ -185,7 +234,9 @@ ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup&
     zi.internal_fa = 0;
     zi.external_fa = 0;
 
-    write(storages_[1], zipFile1_);
+    std::stringstream doss;
+    doss << *storages_[1];
+    write(doss, zipFile1_);
 
     ziperr_ = zipOpenNewFileInZip64(zipFile1_, goss.str().c_str(), &zi,
                                     0, 0, 0, 0, 0, 
@@ -198,14 +249,11 @@ ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup&
 }
 	
 void 
-ISpyService::write(IgDataStorage* storage, zipFile& zfile)
+ISpyService::write(std::stringstream& soss, zipFile& zfile)
 {
-  std::stringstream doss;
-  doss << *storage; 
- 
-  long int size_buf = sizeof(std::string::size_type) + doss.str().length();
+  long int size_buf = sizeof(std::string::size_type) + soss.str().length();
   void* buf = (void*) malloc(size_buf);
-  memcpy((void*) buf, doss.str().c_str(), size_buf);
+  memcpy((void*) buf, soss.str().c_str(), size_buf);
 
   ziperr_ = zipWriteInFileInZip(zfile, buf, size_buf);
   
@@ -213,7 +261,7 @@ ISpyService::write(IgDataStorage* storage, zipFile& zfile)
 }
 
 void
-ISpyService::error (const std::string & what)
+ISpyService::error(const std::string & what)
 {
   assert (storages_[0]);
   IgCollection& collection = storages_[0]->getCollection("Errors_V1");

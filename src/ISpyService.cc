@@ -18,6 +18,8 @@
 #include <cstdio>
 #include <sstream>
 
+#include "boost/date_time/posix_time/posix_time.hpp"
+
 using namespace edm::service;
 
 ISpyService::ISpyService (const ParameterSet& iPSet, ActivityRegistry& iRegistry)
@@ -83,22 +85,26 @@ ISpyService::writeHeader(zipFile& zfile)
 {
   std::string hs("Header");
   
-  zip_fileinfo zi; // Do something with this                                                                                                             
-  zi.tmz_date.tm_sec  = 0;
-  zi.tmz_date.tm_min  = 0;
-  zi.tmz_date.tm_hour = 0;
-  zi.tmz_date.tm_mday = 0;
-  zi.tmz_date.tm_mon  = 0;
-  zi.tmz_date.tm_year = 0;
+  zip_fileinfo zi;
+
+  time_t now = time(0);
+  boost::posix_time::ptime bt = boost::posix_time::from_time_t(now);
+  tm tt = boost::posix_time::to_tm(bt);
+                                                                                                         
+  zi.tmz_date.tm_sec  = tt.tm_sec;
+  zi.tmz_date.tm_min  = tt.tm_min;
+  zi.tmz_date.tm_hour = tt.tm_hour;
+  zi.tmz_date.tm_mday = tt.tm_mday;
+  zi.tmz_date.tm_mon  = tt.tm_mon;
+  zi.tmz_date.tm_year = tt.tm_year;
   zi.dosDate = 0;
   zi.internal_fa = 0;
   zi.external_fa = 0;
 
-  ziperr_ = zipOpenNewFileInZip64(zfile, hs.c_str(), &zi,
+  ziperr_ = zipOpenNewFileInZip(zfile, hs.c_str(), &zi,
                                   0, 0, 0, 0, 0, // other stuff                                                                                          
                                   Z_DEFLATED, // method                                                                                                  
-                                  9, // compression level                                                                                                
-                                  0);
+                                  9);
   assert(ziperr_ == ZIP_OK);
 
   std::stringstream doss;
@@ -112,7 +118,7 @@ ISpyService::writeHeader(zipFile& zfile)
 void
 ISpyService::open(const std::string &outputFileName, zipFile& zf)
 {
-  zf = zipOpen64(outputFileName.c_str(), APPEND_STATUS_CREATE);  
+  zf = zipOpen(outputFileName.c_str(), APPEND_STATUS_CREATE);  
   writeHeader(zf);
 }
 
@@ -175,23 +181,27 @@ ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup&
   {
     std::stringstream eoss;
     eoss << "Events/Run_" << currentRun_ << "/Event_" << currentEvent_;
-	
-    zip_fileinfo zi; // Do something with this 
-    zi.tmz_date.tm_sec  = 0;
-    zi.tmz_date.tm_min  = 0;
-    zi.tmz_date.tm_hour = 0;
-    zi.tmz_date.tm_mday = 0;
-    zi.tmz_date.tm_mon  = 0;
-    zi.tmz_date.tm_year = 0;
+
+    zip_fileinfo zi;
+
+    time_t now = time(0);
+    boost::posix_time::ptime bt = boost::posix_time::from_time_t(now);
+    tm tt = boost::posix_time::to_tm(bt);
+                                                                                                         
+    zi.tmz_date.tm_sec  = tt.tm_sec;
+    zi.tmz_date.tm_min  = tt.tm_min;
+    zi.tmz_date.tm_hour = tt.tm_hour;
+    zi.tmz_date.tm_mday = tt.tm_mday;
+    zi.tmz_date.tm_mon  = tt.tm_mon;
+    zi.tmz_date.tm_year = tt.tm_year;
     zi.dosDate = 0;
     zi.internal_fa = 0;
     zi.external_fa = 0;
     
-    ziperr_ = zipOpenNewFileInZip64(zipFile0_, eoss.str().c_str(), &zi,
+    ziperr_ = zipOpenNewFileInZip(zipFile0_, eoss.str().c_str(), &zi,
                                     0, 0, 0, 0, 0, // other stuff
                                     Z_DEFLATED, // method
-                                    9, // compression level
-                                    0);
+                                    9);
     assert(ziperr_ == ZIP_OK);
 
     if ( outputMaxEvents_ != -1 )       
@@ -223,13 +233,19 @@ ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup&
     std::stringstream goss;
     goss << "Geometry/Run_"<< currentRun_ <<"/Event_"<< currentEvent_;
 
-    zip_fileinfo zi; // Do something with this
-    zi.tmz_date.tm_sec  = 0;
-    zi.tmz_date.tm_min  = 0;
-    zi.tmz_date.tm_hour = 0;
-    zi.tmz_date.tm_mday = 0;
-    zi.tmz_date.tm_mon  = 0;
-    zi.tmz_date.tm_year = 0;
+    zip_fileinfo zi;
+
+    time_t now = time(0);
+    boost::posix_time::ptime bt = boost::posix_time::from_time_t(now);
+    tm tt = boost::posix_time::to_tm(bt);
+                                                                                                         
+    zi.tmz_date.tm_sec  = tt.tm_sec;
+    zi.tmz_date.tm_min  = tt.tm_min;
+    zi.tmz_date.tm_hour = tt.tm_hour;
+    zi.tmz_date.tm_mday = tt.tm_mday;
+    zi.tmz_date.tm_mon  = tt.tm_mon;
+    zi.tmz_date.tm_year = tt.tm_year;
+   
     zi.dosDate = 0;
     zi.internal_fa = 0;
     zi.external_fa = 0;
@@ -238,9 +254,9 @@ ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup&
     doss << *storages_[1];
     write(doss, zipFile1_);
 
-    ziperr_ = zipOpenNewFileInZip64(zipFile1_, goss.str().c_str(), &zi,
+    ziperr_ = zipOpenNewFileInZip(zipFile1_, goss.str().c_str(), &zi,
                                     0, 0, 0, 0, 0, 
-                                    Z_DEFLATED, 9, 0);
+                                    Z_DEFLATED, 9);
     assert(ziperr_ == ZIP_OK);
   }
   

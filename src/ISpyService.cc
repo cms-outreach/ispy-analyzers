@@ -267,7 +267,7 @@ ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup&
 void 
 ISpyService::write(std::stringstream& soss, zipFile& zfile)
 {
-  long int size_buf = sizeof(std::string::size_type) + soss.str().length();
+  long int size_buf = soss.str().length();
   void* buf = (void*) malloc(size_buf);
   memcpy((void*) buf, soss.str().c_str(), size_buf);
 

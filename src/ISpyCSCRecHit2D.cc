@@ -151,12 +151,11 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
       irechit[CHS] = chs.str(); 
 
       std::stringstream wis;
-
-      for ( std::vector<int>::const_iterator cc 
-              = (*it).wgroups().begin(), ccEnd = (*it).wgroups().end();
-            cc != ccEnd; ++cc )
-        wis<< *cc <<" ";
+      const unsigned int wgroupsize=(*it).wgroups().size();
       
+      for ( unsigned int icc=0; icc<wgroupsize; ++icc )
+      	wis<< (*it).wgroups().at(icc) <<" ";
+
       irechit[WIS] = wis.str(); 
     }
   }

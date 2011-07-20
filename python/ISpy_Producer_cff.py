@@ -1,5 +1,6 @@
 from ISpy.Analyzers.ISpyEvent_cfi import *
 from ISpy.Analyzers.ISpyBasicCluster_cfi import *
+from ISpy.Analyzers.ISpyBeamSpot_cfi import *
 from ISpy.Analyzers.ISpyCSCRecHit2D_cfi import *
 from ISpy.Analyzers.ISpyCSCSegment_cfi import *
 from ISpy.Analyzers.ISpyCSCStripDigi_cfi import *
@@ -61,6 +62,7 @@ from ISpy.Analyzers.ISpyVertex_cfi import *
 
 iSpy_sequence = cms.Sequence(ISpyEvent*
                              ISpyBasicCluster*
+                             ISpyBeamSpot*
                              ISpyCSCRecHit2D*
                              ISpyCSCSegment*
                              ISpyCSCStripDigi*

@@ -15,6 +15,8 @@ from ISpy.Analyzers.ISpyDTRecSegment4D_cfi import *
 from ISpy.Analyzers.ISpyEBRecHit_cfi import *
 from ISpy.Analyzers.ISpyEERecHit_cfi import *
 from ISpy.Analyzers.ISpyESRecHit_cfi import *
+from ISpy.Analyzers.ISpyEBDigi_cfi import *
+from ISpy.Analyzers.ISpyEEDigi_cfi import *
 from ISpy.Analyzers.ISpyElectron_cfi import *
 from ISpy.Analyzers.ISpyGsfElectron_cfi import *
 from ISpy.Analyzers.ISpyGsfPFRecTrack_cfi import *
@@ -74,6 +76,8 @@ iSpy_sequence = cms.Sequence(ISpyEvent*
                              ISpyEBRecHit*
                              ISpyEERecHit*
                              ISpyESRecHit*
+                             ISpyEBDigi*
+                             ISpyEEDigi*
                              ISpyElectron*
                              ISpyGsfElectron*
                              ISpyGsfPFRecTrack*

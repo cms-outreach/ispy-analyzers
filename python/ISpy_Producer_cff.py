@@ -5,6 +5,7 @@ from ISpy.Analyzers.ISpyCSCRecHit2D_cfi import *
 from ISpy.Analyzers.ISpyCSCSegment_cfi import *
 from ISpy.Analyzers.ISpyCSCStripDigi_cfi import *
 from ISpy.Analyzers.ISpyCSCWireDigi_cfi import *
+from ISpy.Analyzers.ISpyCSCLCTDigi_cfi import *
 from ISpy.Analyzers.ISpyCaloCluster_cfi import *
 #from ISpy.Analyzers.ISpyCaloHit_cfi import *
 from ISpy.Analyzers.ISpyCaloTower_cfi import *
@@ -67,6 +68,7 @@ iSpy_sequence = cms.Sequence(ISpyEvent*
                              ISpyCSCSegment*
                              ISpyCSCStripDigi*
                              ISpyCSCWireDigi*
+                             ISpyCSCLCTDigi*
                              ISpyCaloCluster*
                              #ISpyCaloHit*
                              ISpyCaloTower*

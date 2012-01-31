@@ -141,6 +141,10 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
       irechit[POS] = static_cast<double>((*it).positionWithinStrip());
       irechit[ERR] = static_cast<double>((*it).errorWithinStrip());
 
+#ifdef CMSSW_5_X
+      // Not sure how to use the new interface so 
+      // don't write out CHS and WIS for now 
+#else
       std::stringstream chs;
 
       for ( std::vector<int>::const_iterator cc = 
@@ -156,7 +160,8 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
       for ( unsigned int icc=0; icc<wgroupsize; ++icc )
       	wis<< (*it).wgroups().at(icc) <<" ";
 
-      irechit[WIS] = wis.str(); 
+      irechit[WIS] = wis.str();
+#endif
     }
   }
 

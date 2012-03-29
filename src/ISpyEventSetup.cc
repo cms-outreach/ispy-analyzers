@@ -3,7 +3,9 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
+#include "DataFormats/EcalDetId/interface/EEDetId.h"
 #include "DataFormats/HcalDetId/interface/HcalSubdetector.h"
+#include "DataFormats/HcalDetId/interface/HcalDetId.h"
 #include "DataFormats/GeometrySurface/interface/RectangularPlaneBounds.h"
 #include "DataFormats/GeometrySurface/interface/TrapezoidalPlaneBounds.h"
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
@@ -17,6 +19,7 @@
 #include "DataFormats/SiPixelDetId/interface/PixelSubdetector.h"
 #include "DataFormats/SiPixelDetId/interface/PXBDetId.h"
 #include "DataFormats/SiPixelDetId/interface/PXFDetId.h"
+
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -69,13 +72,21 @@ ISpyEventSetup::analyze( const edm::Event& event, const edm::EventSetup& eventSe
 
   if (trackerGeom_.isValid () &&  watch_trackerGeom_.check (eventSetup))
   {
+    std::cout<<"Tracker"<<std::endl;
+
     // FIXME: Only if we want full tracker in 3D:
     // buildTracker3D (storage);
     buildPixelBarrel3D (storage);
-    buildPixelEndcap3D (storage);
+    //buildPixelEndcap3D (storage);
+    buildPixelEndcapPlus3D(storage);
+    buildPixelEndcapMinus3D(storage);
+
     buildTIB3D (storage);
     buildTOB3D (storage);
-    buildTEC3D (storage);
+    //buildTEC3D (storage);
+    buildTECPlus3D(storage);
+    buildTECMinus3D(storage);
+
     buildTID3D (storage);
     buildTrackerRPhi (storage);
     buildTrackerRZ (storage);
@@ -83,6 +94,8 @@ ISpyEventSetup::analyze( const edm::Event& event, const edm::EventSetup& eventSe
     
   if (caloGeom_.isValid () && watch_caloGeom_.check (eventSetup))
   {
+    std::cout<<"Calo"<<std::endl;
+
     buildCalo3D (storage);
     buildCaloRPhi (storage);
     buildCaloRZ (storage);
@@ -91,6 +104,8 @@ ISpyEventSetup::analyze( const edm::Event& event, const edm::EventSetup& eventSe
     
   if (watch_muonGeom_.check (eventSetup))	
   {
+    std::cout<<"Muon"<<std::endl;
+
     if (dtGeom_.isValid ())
     {
       buildDriftTubes3D (storage);
@@ -100,7 +115,8 @@ ISpyEventSetup::analyze( const edm::Event& event, const edm::EventSetup& eventSe
 	
     if (cscGeom_.isValid ())
     {
-      buildCSC3D (storage);
+      buildCSC3D (storage, "CSCMinus3D_V1", 2);
+      buildCSC3D (storage, "CSCPlus3D_V1", 1);
       buildCSCRZ (storage);
     }
 	
@@ -321,6 +337,153 @@ ISpyEventSetup::buildPixelEndcap3D (IgDataStorage *storage)
 }
 
 void
+ISpyEventSetup::buildPixelEndcapPlus3D (IgDataStorage *storage)
+{
+  IgCollection &geometry = storage->getCollection ("PixelEndcapPlus3D_V1");
+  IgProperty DET_ID  = geometry.addProperty ("detid", int (0)); 
+  IgProperty FRONT_1 = geometry.addProperty ("front_1", IgV3d());
+  IgProperty FRONT_2 = geometry.addProperty ("front_2", IgV3d());
+  IgProperty FRONT_4 = geometry.addProperty ("front_3", IgV3d());
+  IgProperty FRONT_3 = geometry.addProperty ("front_4", IgV3d());
+  IgProperty BACK_1  = geometry.addProperty ("back_1",  IgV3d());
+  IgProperty BACK_2  = geometry.addProperty ("back_2",  IgV3d());
+  IgProperty BACK_4  = geometry.addProperty ("back_3",  IgV3d());
+  IgProperty BACK_3  = geometry.addProperty ("back_4",  IgV3d());
+
+  TrackerGeometry::DetContainer::const_iterator it  = trackerGeom_->detsPXF ().begin ();
+  TrackerGeometry::DetContainer::const_iterator end = trackerGeom_->detsPXF ().end ();
+  for (; it != end; ++it)
+  {	    
+    uint32_t id = (*it)->geographicalId ().rawId ();
+    PXFDetId pid(id);
+
+    if (pid.side() != 1)
+      continue;
+
+    IgCollectionItem icorner = geometry.create ();
+    icorner[DET_ID] = static_cast<int> (id);
+
+    const Bounds *b = &(((*it)->surface ()).bounds ());
+    GlobalPoint p[8];
+
+    const GeomDetUnit *det = trackerGeom_->idToDetUnit ((*it)->geographicalId ());	    
+    if (dynamic_cast<const TrapezoidalPlaneBounds *> (b))
+    {
+      // Trapezoidal
+      const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
+      std::vector< float > parameters = b2->parameters ();
+      p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
+      p[1] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
+      p[2] = det->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
+      p[3] = det->surface().toGlobal(LocalPoint(-parameters[1],parameters[3],parameters[2])); 
+      p[4] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],-parameters[2])); 
+      p[5] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],-parameters[2])); 
+      p[6] = det->surface().toGlobal(LocalPoint(parameters[1],parameters[3],-parameters[2])); 
+      p[7] = det->surface().toGlobal(LocalPoint(-parameters[1],parameters[3],-parameters[2]));
+    }
+    if (dynamic_cast<const RectangularPlaneBounds *> (b))
+    {
+      // Rectangular
+      float length = det->surface().bounds().length();
+      float width = det->surface().bounds().width();
+      float thickness = det->surface().bounds().thickness();
+
+      p[0] = det->surface().toGlobal(LocalPoint(width/2,length/2,thickness/2)); 
+      p[1] = det->surface().toGlobal(LocalPoint(width/2,-length/2,thickness/2)); 
+      p[2] = det->surface().toGlobal(LocalPoint(-width/2,length/2,thickness/2)); 
+      p[3] = det->surface().toGlobal(LocalPoint(-width/2,-length/2,thickness/2)); 
+      p[4] = det->surface().toGlobal(LocalPoint(width/2,length/2,-thickness/2)); 
+      p[5] = det->surface().toGlobal(LocalPoint(width/2,-length/2,-thickness/2)); 
+      p[6] = det->surface().toGlobal(LocalPoint(-width/2,length/2,-thickness/2)); 
+      p[7] = det->surface().toGlobal(LocalPoint(-width/2,-length/2,-thickness/2));
+    }
+    icorner[FRONT_1] = IgV3d(static_cast<double>(p[0].x()/100.0), static_cast<double>(p[0].y()/100.0), static_cast<double>(p[0].z()/100.0));
+    icorner[FRONT_2] = IgV3d(static_cast<double>(p[1].x()/100.0), static_cast<double>(p[1].y()/100.0), static_cast<double>(p[1].z()/100.0));
+    icorner[FRONT_3] = IgV3d(static_cast<double>(p[2].x()/100.0), static_cast<double>(p[2].y()/100.0), static_cast<double>(p[2].z()/100.0));
+    icorner[FRONT_4] = IgV3d(static_cast<double>(p[3].x()/100.0), static_cast<double>(p[3].y()/100.0), static_cast<double>(p[3].z()/100.0));
+    icorner[BACK_1]  = IgV3d(static_cast<double>(p[4].x()/100.0), static_cast<double>(p[4].y()/100.0), static_cast<double>(p[4].z()/100.0));
+    icorner[BACK_2]  = IgV3d(static_cast<double>(p[5].x()/100.0), static_cast<double>(p[5].y()/100.0), static_cast<double>(p[5].z()/100.0));
+    icorner[BACK_3]  = IgV3d(static_cast<double>(p[6].x()/100.0), static_cast<double>(p[6].y()/100.0), static_cast<double>(p[6].z()/100.0));
+    icorner[BACK_4]  = IgV3d(static_cast<double>(p[7].x()/100.0), static_cast<double>(p[7].y()/100.0), static_cast<double>(p[7].z()/100.0));
+  }	
+}
+
+void
+ISpyEventSetup::buildPixelEndcapMinus3D (IgDataStorage *storage)
+{
+  IgCollection &geometry = storage->getCollection ("PixelEndcapPlus3D_V1");
+  IgProperty DET_ID  = geometry.addProperty ("detid", int (0)); 
+  IgProperty FRONT_1 = geometry.addProperty ("front_1", IgV3d());
+  IgProperty FRONT_2 = geometry.addProperty ("front_2", IgV3d());
+  IgProperty FRONT_4 = geometry.addProperty ("front_3", IgV3d());
+  IgProperty FRONT_3 = geometry.addProperty ("front_4", IgV3d());
+  IgProperty BACK_1  = geometry.addProperty ("back_1",  IgV3d());
+  IgProperty BACK_2  = geometry.addProperty ("back_2",  IgV3d());
+  IgProperty BACK_4  = geometry.addProperty ("back_3",  IgV3d());
+  IgProperty BACK_3  = geometry.addProperty ("back_4",  IgV3d());
+
+  TrackerGeometry::DetContainer::const_iterator it  = trackerGeom_->detsPXF ().begin ();
+  TrackerGeometry::DetContainer::const_iterator end = trackerGeom_->detsPXF ().end ();
+  for (; it != end; ++it)
+  {	    
+    uint32_t id = (*it)->geographicalId ().rawId ();
+    PXFDetId pid(id);
+
+    if (pid.side() != 2)
+      continue;
+
+    IgCollectionItem icorner = geometry.create ();
+    icorner[DET_ID] = static_cast<int> (id);
+
+    const Bounds *b = &(((*it)->surface ()).bounds ());
+    GlobalPoint p[8];
+
+    const GeomDetUnit *det = trackerGeom_->idToDetUnit ((*it)->geographicalId ());	    
+    if (dynamic_cast<const TrapezoidalPlaneBounds *> (b))
+    {
+      // Trapezoidal
+      const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
+      std::vector< float > parameters = b2->parameters ();
+      p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
+      p[1] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
+      p[2] = det->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
+      p[3] = det->surface().toGlobal(LocalPoint(-parameters[1],parameters[3],parameters[2])); 
+      p[4] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],-parameters[2])); 
+      p[5] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],-parameters[2])); 
+      p[6] = det->surface().toGlobal(LocalPoint(parameters[1],parameters[3],-parameters[2])); 
+      p[7] = det->surface().toGlobal(LocalPoint(-parameters[1],parameters[3],-parameters[2]));
+    }
+    if (dynamic_cast<const RectangularPlaneBounds *> (b))
+    {
+      // Rectangular
+      float length = det->surface().bounds().length();
+      float width = det->surface().bounds().width();
+      float thickness = det->surface().bounds().thickness();
+
+      p[0] = det->surface().toGlobal(LocalPoint(width/2,length/2,thickness/2)); 
+      p[1] = det->surface().toGlobal(LocalPoint(width/2,-length/2,thickness/2)); 
+      p[2] = det->surface().toGlobal(LocalPoint(-width/2,length/2,thickness/2)); 
+      p[3] = det->surface().toGlobal(LocalPoint(-width/2,-length/2,thickness/2)); 
+      p[4] = det->surface().toGlobal(LocalPoint(width/2,length/2,-thickness/2)); 
+      p[5] = det->surface().toGlobal(LocalPoint(width/2,-length/2,-thickness/2)); 
+      p[6] = det->surface().toGlobal(LocalPoint(-width/2,length/2,-thickness/2)); 
+      p[7] = det->surface().toGlobal(LocalPoint(-width/2,-length/2,-thickness/2));
+    }
+    icorner[FRONT_1] = IgV3d(static_cast<double>(p[0].x()/100.0), static_cast<double>(p[0].y()/100.0), static_cast<double>(p[0].z()/100.0));
+    icorner[FRONT_2] = IgV3d(static_cast<double>(p[1].x()/100.0), static_cast<double>(p[1].y()/100.0), static_cast<double>(p[1].z()/100.0));
+    icorner[FRONT_3] = IgV3d(static_cast<double>(p[2].x()/100.0), static_cast<double>(p[2].y()/100.0), static_cast<double>(p[2].z()/100.0));
+    icorner[FRONT_4] = IgV3d(static_cast<double>(p[3].x()/100.0), static_cast<double>(p[3].y()/100.0), static_cast<double>(p[3].z()/100.0));
+    icorner[BACK_1]  = IgV3d(static_cast<double>(p[4].x()/100.0), static_cast<double>(p[4].y()/100.0), static_cast<double>(p[4].z()/100.0));
+    icorner[BACK_2]  = IgV3d(static_cast<double>(p[5].x()/100.0), static_cast<double>(p[5].y()/100.0), static_cast<double>(p[5].z()/100.0));
+    icorner[BACK_3]  = IgV3d(static_cast<double>(p[6].x()/100.0), static_cast<double>(p[6].y()/100.0), static_cast<double>(p[6].z()/100.0));
+    icorner[BACK_4]  = IgV3d(static_cast<double>(p[7].x()/100.0), static_cast<double>(p[7].y()/100.0), static_cast<double>(p[7].z()/100.0));
+  }	
+}
+
+
+
+
+void
 ISpyEventSetup::buildTIB3D (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("SiStripTIB3D_V1");
@@ -473,6 +636,150 @@ ISpyEventSetup::buildTEC3D (IgDataStorage *storage)
   for (; it != end; ++it)
   {	    
     uint32_t id = (*it)->geographicalId ().rawId ();
+
+    IgCollectionItem icorner = geometry.create ();
+    icorner[DET_ID] = static_cast<int> (id);
+
+    const Bounds *b = &(((*it)->surface ()).bounds ());
+    GlobalPoint p[8];
+
+    if (dynamic_cast<const TrapezoidalPlaneBounds *> (b))
+    {
+      // Trapezoidal
+      const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
+      std::vector< float > parameters = b2->parameters ();
+      p[0] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
+      p[1] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
+      p[2] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
+      p[3] = (*it)->toGlobal(LocalPoint(-parameters[1],parameters[3],parameters[2])); 
+      p[4] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],-parameters[2])); 
+      p[5] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],-parameters[2])); 
+      p[6] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],-parameters[2])); 
+      p[7] = (*it)->toGlobal(LocalPoint(-parameters[1],parameters[3],-parameters[2]));
+    }
+    if (dynamic_cast<const RectangularPlaneBounds *> (b))
+    {
+      // Rectangular
+      float length = (*it)->surface().bounds().length();
+      float width = (*it)->surface().bounds().width();
+      float thickness = (*it)->surface().bounds().thickness();
+
+      p[0] = (*it)->toGlobal(LocalPoint(width/2,length/2,thickness/2)); 
+      p[1] = (*it)->toGlobal(LocalPoint(width/2,-length/2,thickness/2)); 
+      p[2] = (*it)->toGlobal(LocalPoint(-width/2,length/2,thickness/2)); 
+      p[3] = (*it)->toGlobal(LocalPoint(-width/2,-length/2,thickness/2)); 
+      p[4] = (*it)->toGlobal(LocalPoint(width/2,length/2,-thickness/2)); 
+      p[5] = (*it)->toGlobal(LocalPoint(width/2,-length/2,-thickness/2)); 
+      p[6] = (*it)->toGlobal(LocalPoint(-width/2,length/2,-thickness/2)); 
+      p[7] = (*it)->toGlobal(LocalPoint(-width/2,-length/2,-thickness/2));
+    }
+    icorner[FRONT_1] = IgV3d(static_cast<double>(p[0].x()/100.0), static_cast<double>(p[0].y()/100.0), static_cast<double>(p[0].z()/100.0));
+    icorner[FRONT_2] = IgV3d(static_cast<double>(p[1].x()/100.0), static_cast<double>(p[1].y()/100.0), static_cast<double>(p[1].z()/100.0));
+    icorner[FRONT_3] = IgV3d(static_cast<double>(p[2].x()/100.0), static_cast<double>(p[2].y()/100.0), static_cast<double>(p[2].z()/100.0));
+    icorner[FRONT_4] = IgV3d(static_cast<double>(p[3].x()/100.0), static_cast<double>(p[3].y()/100.0), static_cast<double>(p[3].z()/100.0));
+    icorner[BACK_1]  = IgV3d(static_cast<double>(p[4].x()/100.0), static_cast<double>(p[4].y()/100.0), static_cast<double>(p[4].z()/100.0));
+    icorner[BACK_2]  = IgV3d(static_cast<double>(p[5].x()/100.0), static_cast<double>(p[5].y()/100.0), static_cast<double>(p[5].z()/100.0));
+    icorner[BACK_3]  = IgV3d(static_cast<double>(p[6].x()/100.0), static_cast<double>(p[6].y()/100.0), static_cast<double>(p[6].z()/100.0));
+    icorner[BACK_4]  = IgV3d(static_cast<double>(p[7].x()/100.0), static_cast<double>(p[7].y()/100.0), static_cast<double>(p[7].z()/100.0));
+  }	
+}
+
+
+void
+ISpyEventSetup::buildTECPlus3D (IgDataStorage *storage)
+{
+  IgCollection &geometry = storage->getCollection ("SiStripTECPlus3D_V1");
+  IgProperty DET_ID  = geometry.addProperty ("detid", int (0)); 
+  IgProperty FRONT_1 = geometry.addProperty ("front_1", IgV3d());
+  IgProperty FRONT_2 = geometry.addProperty ("front_2", IgV3d());
+  IgProperty FRONT_4 = geometry.addProperty ("front_3", IgV3d());
+  IgProperty FRONT_3 = geometry.addProperty ("front_4", IgV3d());
+  IgProperty BACK_1  = geometry.addProperty ("back_1",  IgV3d());
+  IgProperty BACK_2  = geometry.addProperty ("back_2",  IgV3d());
+  IgProperty BACK_4  = geometry.addProperty ("back_3",  IgV3d());
+  IgProperty BACK_3  = geometry.addProperty ("back_4",  IgV3d());
+
+  TrackerGeometry::DetContainer::const_iterator it  = trackerGeom_->detsTEC ().begin ();
+  TrackerGeometry::DetContainer::const_iterator end = trackerGeom_->detsTEC ().end ();
+  for (; it != end; ++it)
+  {	    
+    uint32_t id = (*it)->geographicalId ().rawId ();
+    TECDetId tid(id);
+
+    if ( tid.side() != 1 )
+      continue;
+
+    IgCollectionItem icorner = geometry.create ();
+    icorner[DET_ID] = static_cast<int> (id);
+
+    const Bounds *b = &(((*it)->surface ()).bounds ());
+    GlobalPoint p[8];
+
+    if (dynamic_cast<const TrapezoidalPlaneBounds *> (b))
+    {
+      // Trapezoidal
+      const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
+      std::vector< float > parameters = b2->parameters ();
+      p[0] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
+      p[1] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
+      p[2] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
+      p[3] = (*it)->toGlobal(LocalPoint(-parameters[1],parameters[3],parameters[2])); 
+      p[4] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],-parameters[2])); 
+      p[5] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],-parameters[2])); 
+      p[6] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],-parameters[2])); 
+      p[7] = (*it)->toGlobal(LocalPoint(-parameters[1],parameters[3],-parameters[2]));
+    }
+    if (dynamic_cast<const RectangularPlaneBounds *> (b))
+    {
+      // Rectangular
+      float length = (*it)->surface().bounds().length();
+      float width = (*it)->surface().bounds().width();
+      float thickness = (*it)->surface().bounds().thickness();
+
+      p[0] = (*it)->toGlobal(LocalPoint(width/2,length/2,thickness/2)); 
+      p[1] = (*it)->toGlobal(LocalPoint(width/2,-length/2,thickness/2)); 
+      p[2] = (*it)->toGlobal(LocalPoint(-width/2,length/2,thickness/2)); 
+      p[3] = (*it)->toGlobal(LocalPoint(-width/2,-length/2,thickness/2)); 
+      p[4] = (*it)->toGlobal(LocalPoint(width/2,length/2,-thickness/2)); 
+      p[5] = (*it)->toGlobal(LocalPoint(width/2,-length/2,-thickness/2)); 
+      p[6] = (*it)->toGlobal(LocalPoint(-width/2,length/2,-thickness/2)); 
+      p[7] = (*it)->toGlobal(LocalPoint(-width/2,-length/2,-thickness/2));
+    }
+    icorner[FRONT_1] = IgV3d(static_cast<double>(p[0].x()/100.0), static_cast<double>(p[0].y()/100.0), static_cast<double>(p[0].z()/100.0));
+    icorner[FRONT_2] = IgV3d(static_cast<double>(p[1].x()/100.0), static_cast<double>(p[1].y()/100.0), static_cast<double>(p[1].z()/100.0));
+    icorner[FRONT_3] = IgV3d(static_cast<double>(p[2].x()/100.0), static_cast<double>(p[2].y()/100.0), static_cast<double>(p[2].z()/100.0));
+    icorner[FRONT_4] = IgV3d(static_cast<double>(p[3].x()/100.0), static_cast<double>(p[3].y()/100.0), static_cast<double>(p[3].z()/100.0));
+    icorner[BACK_1]  = IgV3d(static_cast<double>(p[4].x()/100.0), static_cast<double>(p[4].y()/100.0), static_cast<double>(p[4].z()/100.0));
+    icorner[BACK_2]  = IgV3d(static_cast<double>(p[5].x()/100.0), static_cast<double>(p[5].y()/100.0), static_cast<double>(p[5].z()/100.0));
+    icorner[BACK_3]  = IgV3d(static_cast<double>(p[6].x()/100.0), static_cast<double>(p[6].y()/100.0), static_cast<double>(p[6].z()/100.0));
+    icorner[BACK_4]  = IgV3d(static_cast<double>(p[7].x()/100.0), static_cast<double>(p[7].y()/100.0), static_cast<double>(p[7].z()/100.0));
+  }	
+}
+
+
+void
+ISpyEventSetup::buildTECMinus3D (IgDataStorage *storage)
+{
+  IgCollection &geometry = storage->getCollection ("SiStripTECMinus3D_V1");
+  IgProperty DET_ID  = geometry.addProperty ("detid", int (0)); 
+  IgProperty FRONT_1 = geometry.addProperty ("front_1", IgV3d());
+  IgProperty FRONT_2 = geometry.addProperty ("front_2", IgV3d());
+  IgProperty FRONT_4 = geometry.addProperty ("front_3", IgV3d());
+  IgProperty FRONT_3 = geometry.addProperty ("front_4", IgV3d());
+  IgProperty BACK_1  = geometry.addProperty ("back_1",  IgV3d());
+  IgProperty BACK_2  = geometry.addProperty ("back_2",  IgV3d());
+  IgProperty BACK_4  = geometry.addProperty ("back_3",  IgV3d());
+  IgProperty BACK_3  = geometry.addProperty ("back_4",  IgV3d());
+
+  TrackerGeometry::DetContainer::const_iterator it  = trackerGeom_->detsTEC ().begin ();
+  TrackerGeometry::DetContainer::const_iterator end = trackerGeom_->detsTEC ().end ();
+  for (; it != end; ++it)
+  {	    
+    uint32_t id = (*it)->geographicalId ().rawId ();
+    TECDetId tid(id);
+    
+    if ( tid.side() != 2 )
+      continue;
 
     IgCollectionItem icorner = geometry.create ();
     icorner[DET_ID] = static_cast<int> (id);
@@ -922,12 +1229,19 @@ void
 ISpyEventSetup::buildCalo3D (IgDataStorage *storage)
 {
   build3D (storage, "EcalBarrel3D_V1", DetId::Ecal, EcalBarrel);
-  build3D (storage, "EcalEndcap3D_V1", DetId::Ecal, EcalEndcap);
+  buildEndcap3D (storage, "EcalEndcapPlus3D_V1", DetId::Ecal, EcalEndcap, 1);
+  buildEndcap3D (storage, "EcalEndcapMinus3D_V1", DetId::Ecal, EcalEndcap, -1);
+
   // build3D (storage, "EcalPreshower3D_V1", DetId::Ecal, EcalPreshower);
   build3D (storage, "HcalBarrel3D_V1", DetId::Hcal, HcalBarrel);
-  build3D (storage, "HcalEndcap3D_V1", DetId::Hcal, HcalEndcap);
+
+  buildEndcap3D (storage, "HcalEndcapPlus3D_V1", DetId::Hcal, HcalEndcap, 1);
+  buildEndcap3D (storage, "HcalEndcapMinus3D_V1", DetId::Hcal, EcalEndcap, -1);
+
   build3D (storage, "HcalOuter3D_V1", DetId::Hcal, HcalOuter);
-  build3D (storage, "HcalForward3D_V1", DetId::Hcal, HcalForward);
+
+  buildEndcap3D (storage, "HcalForward3D_V1", DetId::Hcal, HcalForward, 1);
+  buildEndcap3D (storage, "HcalForward3D_V1", DetId::Hcal, HcalForward, -1);
 }
 
 void
@@ -952,9 +1266,9 @@ ISpyEventSetup::buildCaloRZ (IgDataStorage *storage)
 }
 
 void
-ISpyEventSetup::buildCSC3D (IgDataStorage *storage)
+ISpyEventSetup::buildCSC3D (IgDataStorage *storage, const std::string &name, int side)
 {
-  IgCollection &geometry = storage->getCollection ("CSC3D_V1");
+  IgCollection &geometry = storage->getCollection (name.c_str());
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
@@ -976,6 +1290,9 @@ ISpyEventSetup::buildCSC3D (IgDataStorage *storage)
     {
       DetId detId = cscChamber->geographicalId ();
       uint32_t id = detId.rawId ();
+      
+      if ( side != CSCDetId(id).endcap() )
+        continue;
 	    
       IgCollectionItem icorner = geometry.create ();
       icorner[DET_ID] = static_cast<int>(id);
@@ -1279,6 +1596,7 @@ ISpyEventSetup::build3D (IgDataStorage *storage, const std::string &name, DetId:
 
   const CaloSubdetectorGeometry *geom = (*caloGeom_).getSubdetectorGeometry (det, subdetn);
   const std::vector<DetId>& ids (geom->getValidDetIds (det, subdetn));
+
   for (std::vector<DetId>::const_iterator it = ids.begin (), iEnd = ids.end (); it != iEnd; ++it) 
   {
     const CaloCellGeometry *cell = geom->getGeometry (*it);
@@ -1316,6 +1634,75 @@ ISpyEventSetup::build3D (IgDataStorage *storage, const std::string &name, DetId:
     }
   }
 }
+
+
+void
+ISpyEventSetup::buildEndcap3D (IgDataStorage *storage, const std::string &name, DetId::Detector det, int subdetn, int side) 
+{
+  IgCollection &geometry = storage->getCollection (name.c_str ());  
+  IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
+  IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
+  IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
+  IgProperty FRONT_4 = geometry.addProperty("front_4", IgV3d());
+  IgProperty BACK_1  = geometry.addProperty("back_1",  IgV3d());
+  IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
+  IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
+  IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
+
+  const CaloSubdetectorGeometry *geom = (*caloGeom_).getSubdetectorGeometry (det, subdetn);
+  const std::vector<DetId>& ids (geom->getValidDetIds (det, subdetn));
+
+  int zside = 0; 
+
+  for (std::vector<DetId>::const_iterator it = ids.begin (), iEnd = ids.end (); it != iEnd; ++it) 
+  {
+    uint32_t id = (*it).rawId ();
+
+    if ( det == DetId::Ecal )
+      zside = EEDetId(id).zside();
+    else if ( det == DetId::Hcal )
+      zside = HcalDetId(id).zside();
+    else
+      continue;
+
+    if ( zside != side )
+      continue;
+
+    const CaloCellGeometry *cell = geom->getGeometry (*it);
+    const CaloCellGeometry::CornersVec& corners = cell->getCorners ();
+    assert (corners.size () == 8);
+	
+    IgCollectionItem icorner = geometry.create ();
+    icorner[DET_ID] = static_cast<int>(id);
+	
+    if (det == DetId::Ecal)
+    {
+      icorner[FRONT_1] = IgV3d(static_cast<double>(corners[3].x()/100.0), static_cast<double>(corners[3].y()/100.0), static_cast<double>(corners[3].z()/100.0));
+      icorner[FRONT_2] = IgV3d(static_cast<double>(corners[2].x()/100.0), static_cast<double>(corners[2].y()/100.0), static_cast<double>(corners[2].z()/100.0));
+      icorner[FRONT_3] = IgV3d(static_cast<double>(corners[1].x()/100.0), static_cast<double>(corners[1].y()/100.0), static_cast<double>(corners[1].z()/100.0));
+      icorner[FRONT_4] = IgV3d(static_cast<double>(corners[0].x()/100.0), static_cast<double>(corners[0].y()/100.0), static_cast<double>(corners[0].z()/100.0));
+	    
+      icorner[BACK_1] = IgV3d(static_cast<double>(corners[7].x()/100.0), static_cast<double>(corners[7].y()/100.0), static_cast<double>(corners[7].z()/100.0));
+      icorner[BACK_2] = IgV3d(static_cast<double>(corners[6].x()/100.0), static_cast<double>(corners[6].y()/100.0), static_cast<double>(corners[6].z()/100.0));
+      icorner[BACK_3] = IgV3d(static_cast<double>(corners[5].x()/100.0), static_cast<double>(corners[5].y()/100.0), static_cast<double>(corners[5].z()/100.0));
+      icorner[BACK_4] = IgV3d(static_cast<double>(corners[4].x()/100.0), static_cast<double>(corners[4].y()/100.0), static_cast<double>(corners[4].z()/100.0));	
+    }
+    else if (det == DetId::Hcal)
+    {
+      icorner[FRONT_1] = IgV3d(static_cast<double>(corners[0].x()/100.0), static_cast<double>(corners[0].y()/100.0), static_cast<double>(corners[0].z()/100.0));
+      icorner[FRONT_2] = IgV3d(static_cast<double>(corners[1].x()/100.0), static_cast<double>(corners[1].y()/100.0), static_cast<double>(corners[1].z()/100.0));
+      icorner[FRONT_3] = IgV3d(static_cast<double>(corners[2].x()/100.0), static_cast<double>(corners[2].y()/100.0), static_cast<double>(corners[2].z()/100.0));
+      icorner[FRONT_4] = IgV3d(static_cast<double>(corners[3].x()/100.0), static_cast<double>(corners[3].y()/100.0), static_cast<double>(corners[3].z()/100.0));
+	
+      icorner[BACK_1] = IgV3d(static_cast<double>(corners[4].x()/100.0), static_cast<double>(corners[4].y()/100.0), static_cast<double>(corners[4].z()/100.0));
+      icorner[BACK_2] = IgV3d(static_cast<double>(corners[5].x()/100.0), static_cast<double>(corners[5].y()/100.0), static_cast<double>(corners[5].z()/100.0));
+      icorner[BACK_3] = IgV3d(static_cast<double>(corners[6].x()/100.0), static_cast<double>(corners[6].y()/100.0), static_cast<double>(corners[6].z()/100.0));
+      icorner[BACK_4] = IgV3d(static_cast<double>(corners[7].x()/100.0), static_cast<double>(corners[7].y()/100.0), static_cast<double>(corners[7].z()/100.0));
+    }
+  }
+}
+
 
 void
 ISpyEventSetup::buildRPhi (IgDataStorage *storage, const std::string &name, DetId::Detector det, int subdetn, double width) 

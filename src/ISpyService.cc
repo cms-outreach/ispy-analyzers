@@ -24,7 +24,7 @@ using namespace edm::service;
 
 ISpyService::ISpyService (const ParameterSet& iPSet, ActivityRegistry& iRegistry)
   : outputFileName_(iPSet.getUntrackedParameter<std::string>( "outputFileName", std::string("default.ig"))),
-    outputESFileName_(iPSet.getUntrackedParameter<std::string>( "outputESFileName", std::string())),
+    outputESFileName_(iPSet.getUntrackedParameter<std::string>( "outputESFileName", std::string("defaultES.ig"))),
     fileExt_(std::string(".ig")),
     currentExt_(std::string("")),
     outputMaxEvents_(iPSet.getUntrackedParameter<int>( "outputMaxEvents", -1)),
@@ -61,9 +61,9 @@ ISpyService::postBeginJob (void)
   
   outputFileName_.append(currentExt_);
   open(outputFileName_, zipFile0_);
- 
-  if ( ! outputESFileName_.empty() )
-    open(outputESFileName_, zipFile1_);
+  
+  // Do we want to open one all the time?
+  open(outputESFileName_, zipFile1_);
 }
 
 void
@@ -149,9 +149,7 @@ ISpyService::preEventProcessing(const edm::EventID& event, const edm::Timestamp&
   currentEvent_ = event.event();
 
   storages_[0] = new IgDataStorage;
-
-  if ( ! outputESFileName_.empty() )
-    storages_[1] = new IgDataStorage;
+  storages_[1] = new IgDataStorage;
 
   // If an ig file has already been written but we have yet to
   // process an event for the next bunch, then open a new zip file

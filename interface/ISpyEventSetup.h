@@ -47,6 +47,9 @@ private:
   void buildTECMinus3D(IgDataStorage *);
 
   void	buildTID3D (IgDataStorage *);
+  void buildTIDPlus3D(IgDataStorage*);
+  void buildTIDMinus3D(IgDataStorage*);
+
   void	buildTrackerRPhi (IgDataStorage *);
   void	buildTrackerRZ (IgDataStorage *);
   void 	buildDriftTubes3D (IgDataStorage *);

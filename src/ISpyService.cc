@@ -24,7 +24,7 @@ using namespace edm::service;
 
 ISpyService::ISpyService (const ParameterSet& iPSet, ActivityRegistry& iRegistry)
   : outputFileName_(iPSet.getUntrackedParameter<std::string>( "outputFileName", std::string("default.ig"))),
-    outputESFileName_(iPSet.getUntrackedParameter<std::string>( "outputESFileName", std::string("defaultES.ig"))),
+    outputESFileName_(iPSet.getUntrackedParameter<std::string>( "outputESFileName", std::string())),
     fileExt_(std::string(".ig")),
     currentExt_(std::string("")),
     outputMaxEvents_(iPSet.getUntrackedParameter<int>( "outputMaxEvents", -1)),
@@ -62,10 +62,8 @@ ISpyService::postBeginJob (void)
   outputFileName_.append(currentExt_);
   open(outputFileName_, zipFile0_);
  
-  // Do we always want to do this?
-  // Perhaps specify whether or not we want to do this
-  // with a cfg parameter?
-  open(outputESFileName_, zipFile1_);
+  if ( ! outputESFileName_.empty() )
+    open(outputESFileName_, zipFile1_);
 }
 
 void
@@ -102,9 +100,9 @@ ISpyService::writeHeader(zipFile& zfile)
   zi.external_fa = 0;
 
   ziperr_ = zipOpenNewFileInZip(zfile, hs.c_str(), &zi,
-                                  0, 0, 0, 0, 0, // other stuff                                                                                          
-                                  Z_DEFLATED, // method                                                                                                  
-                                  9);
+				0, 0, 0, 0, 0, // other stuff                                                                         
+				Z_DEFLATED, // method                                                                                 
+				9);
   assert(ziperr_ == ZIP_OK);
 
   std::stringstream doss;
@@ -152,8 +150,8 @@ ISpyService::preEventProcessing(const edm::EventID& event, const edm::Timestamp&
 
   storages_[0] = new IgDataStorage;
 
-  // See related comment in postBeginJob 
-  storages_[1] = new IgDataStorage;
+  if ( ! outputESFileName_.empty() )
+    storages_[1] = new IgDataStorage;
 
   // If an ig file has already been written but we have yet to
   // process an event for the next bunch, then open a new zip file
@@ -244,19 +242,21 @@ ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup&
     zi.tmz_date.tm_hour = tt.tm_hour;
     zi.tmz_date.tm_mday = tt.tm_mday;
     zi.tmz_date.tm_mon  = tt.tm_mon;
-    zi.tmz_date.tm_year = tt.tm_year;
-   
+    zi.tmz_date.tm_year = tt.tm_year;   
     zi.dosDate = 0;
     zi.internal_fa = 0;
     zi.external_fa = 0;
+    
+    ziperr_ = zipOpenNewFileInZip(zipFile1_, goss.str().c_str(), &zi,
+                                    0, 0, 0, 0, 0, 
+                                    Z_DEFLATED, 9);
+    assert(ziperr_ == ZIP_OK);
 
     std::stringstream doss;
     doss << *storages_[1];
     write(doss, zipFile1_);
 
-    ziperr_ = zipOpenNewFileInZip(zipFile1_, goss.str().c_str(), &zi,
-                                    0, 0, 0, 0, 0, 
-                                    Z_DEFLATED, 9);
+    ziperr_ = zipCloseFileInZip(zipFile1_);
     assert(ziperr_ == ZIP_OK);
   }
   

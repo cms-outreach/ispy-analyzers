@@ -179,7 +179,7 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
 	  {
 	    if ((*it)->isValid () && !(*it)->geographicalId ().null ())
 	    {
-	      IgCollectionItem hit = hits.create ();
+              IgCollectionItem hit = hits.create ();
 	      LocalPoint point = ISpyLocalPosition::localPosition(&(**it), geometry.product());
 
 	      hit[HIT_POS] = IgV3d(geometry->idToDet((*it)->geographicalId())->surface().toGlobal(point).x()/100.0,
@@ -187,7 +187,7 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
 				   geometry->idToDet((*it)->geographicalId())->surface().toGlobal(point).z()/100.0);
 
 	      trackHits.associate (item, hit);
-
+              
               IgCollectionItem det = dets.create();
               det[DET_ID] = static_cast<int>((*it)->geographicalId().rawId());
 

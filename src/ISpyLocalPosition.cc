@@ -1,107 +1,81 @@
 #include "ISpy/Analyzers/interface/ISpyLocalPosition.h"
 
 #include "DataFormats/DetId/interface/DetId.h"
+
+#include "DataFormats/TrackerRecHit2D/interface/SiPixelRecHit.h"
+#include "DataFormats/TrackerRecHit2D/interface/SiStripRecHit1D.h"
+#include "DataFormats/TrackerRecHit2D/interface/SiStripRecHit2D.h"
 #include "DataFormats/TrackerRecHit2D/interface/SiStripMatchedRecHit2D.h"
-#include "DataFormats/TrackingRecHit/interface/RecHit2DLocalPos.h"
 
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
 #include "Geometry/CommonDetUnit/interface/GeomDetUnit.h"
 #include "Geometry/CommonDetUnit/interface/GlobalTrackingGeometry.h"
+
 #include "Geometry/CommonTopologies/interface/StripTopology.h"
+#include "Geometry/CommonTopologies/interface/PixelTopology.h"
 
 LocalPoint 
-ISpyLocalPosition::localPosition(const TrackingRecHit * rechit , const TrackingGeometry * geometry)
+ISpyLocalPosition::localPosition(const TrackingRecHit* rechit,  const TrackingGeometry* geometry)
 {
-  if (rechit->geographicalId().det() == DetId::Tracker)
-  {
-    std::vector<LocalPoint> points;
-    localPositions(rechit,geometry,points);
-    if (points.size()==1)
-      return points.front();
-    else
-    {
-      //this is not really nice, but that's all we can do there.
-      const SiStripMatchedRecHit2D* matched = dynamic_cast<const SiStripMatchedRecHit2D*>(rechit);
-      if (matched)
-      {
-	GlobalPoint pos_1 = geometry->idToDetUnit(matched->monoHit().geographicalId())->surface().toGlobal(points[0]);
-	GlobalPoint pos_2 = geometry->idToDetUnit(matched->stereoHit().geographicalId())->surface().toGlobal(points[1]);
-	GlobalPoint average((pos_1.x()+pos_2.x())/2,
-			    (pos_1.y()+pos_2.y())/2,
-			    (pos_1.z()+pos_2.z())/2);      
-	return geometry->idToDet(rechit->geographicalId())->surface().toLocal(average);
-      }
-      else return LocalPoint();
-    }
-  }
-  else
-  {
-    return rechit->localPosition();
-  }
-}
-
-
-void  
-ISpyLocalPosition::localPositions(const TrackingRecHit* rechit, const TrackingGeometry* geometry, std::vector<LocalPoint>& points)
-{
-  if (rechit->geographicalId().det() == DetId::Tracker)
-  {
-    const RecHit2DLocalPos* rechit2D = dynamic_cast<const RecHit2DLocalPos*>(rechit);
-    const SiStripRecHit2D* single = dynamic_cast<const SiStripRecHit2D*>(rechit);
-    //matched or single rechits
-    if (single)
-    {
-      DetId detectorId = rechit2D->geographicalId();
-     
-      const SiStripCluster* Cluster = 0;
-      if (single->cluster().isNonnull())
-	Cluster = single->cluster().get();
-      else if (single->cluster_regional().isNonnull())
-	Cluster = single->cluster_regional().get();
-      else points.push_back(LocalPoint());
-      const StripTopology* topology = dynamic_cast<const StripTopology*>(&(geometry->idToDetUnit(detectorId)->topology()));
-      assert(topology);
-                         
-      points.push_back(topology->localPosition(Cluster->barycenter()));
-    }
-    else
-    {
-      const SiStripMatchedRecHit2D* matched = dynamic_cast<const SiStripMatchedRecHit2D*>(rechit);
-      if (matched)
-      {
-	localPositionsSiStrip(matched->monoHit(),geometry,points);
-	localPositionsSiStrip(matched->stereoHit(),geometry,points);
-      }
-    }
-  }   
-  else
-  {
-    points.push_back(rechit->localPosition());
-  }
-}
-
-void  
-ISpyLocalPosition::localPositionsSiStrip(SiStripRecHit2D rechit, const TrackingGeometry* geometry, std::vector<LocalPoint>& points)
-{
-  if (rechit.geographicalId().det() == DetId::Tracker)
-  {
-    DetId detectorId = rechit.geographicalId();
-    
-    const SiStripCluster* Cluster = 0;
-    if (rechit.cluster().isNonnull())
-      Cluster = rechit.cluster().get();
-    else if (rechit.cluster_regional().isNonnull())
-      Cluster = rechit.cluster_regional().get();
-    else points.push_back(LocalPoint());
-    
-    const StripTopology* topology = dynamic_cast<const StripTopology*>(&(geometry->idToDetUnit(detectorId)->topology()));
-    assert(topology);
-                         
-    points.push_back(topology->localPosition(Cluster->barycenter()));
-  }   
+  DetId detid = rechit->geographicalId(); 
   
-  else
-  {
-    points.push_back(rechit.localPosition());
+  if ( const SiPixelRecHit* hit = dynamic_cast<const SiPixelRecHit*>(rechit) ) 
+  {                
+    float bcx = hit->cluster().get()->x();
+    float bcy = hit->cluster().get()->y();
+
+    const PixelTopology* topology =
+      dynamic_cast<const PixelTopology*>(&(geometry->idToDetUnit(detid)->topology()));
+    assert(topology);
+
+    return LocalPoint(topology->localX(bcx), topology->localY(bcy), 0);
   }
-}       
+  
+  if ( const SiStripRecHit1D* hit = dynamic_cast<const SiStripRecHit1D*>(rechit) )
+  {         
+    float bc = hit->cluster().get()->barycenter();
+
+    const StripTopology* topology =
+      dynamic_cast<const StripTopology*>(&(geometry->idToDetUnit(detid)->topology()));
+    assert(topology);
+
+    return topology->localPosition(bc);
+  }
+  
+  if ( const SiStripRecHit2D* hit = dynamic_cast<const SiStripRecHit2D*>(rechit) )
+  {
+    float bc = hit->cluster().get()->barycenter();
+    
+    const StripTopology* topology = 
+      dynamic_cast<const StripTopology*>(&(geometry->idToDetUnit(detid)->topology()));
+    assert(topology);
+
+    return topology->localPosition(bc);
+  }
+          
+  if ( const SiStripMatchedRecHit2D* hit = dynamic_cast<const SiStripMatchedRecHit2D*>(rechit) )
+  {
+    const StripTopology* topology =
+      dynamic_cast<const StripTopology*>(&(geometry->idToDetUnit(detid)->topology()));
+    assert(topology);
+
+    float bc1 = hit->monoCluster().barycenter();
+    float bc2 = hit->stereoCluster().barycenter();
+
+    GlobalPoint pos_1 = geometry->idToDetUnit(hit->monoHit().geographicalId())->surface().toGlobal(topology->localPosition(bc1));
+    GlobalPoint pos_2 = geometry->idToDetUnit(hit->stereoHit().geographicalId())->surface().toGlobal(topology->localPosition(bc2));
+    
+    GlobalPoint average((pos_1.x()+pos_2.x())/2,
+                        (pos_1.y()+pos_2.y())/2,
+                        (pos_1.z()+pos_2.z())/2);
+      
+    return geometry->idToDet(rechit->geographicalId())->surface().toLocal(average);
+  }
+
+  return rechit->localPosition();
+}
+
+
+
+
+

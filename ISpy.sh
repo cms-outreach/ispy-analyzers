@@ -58,7 +58,8 @@ echo -e "= \e[00;33m./ISpy.sh\e[00m or \e[00;33m./ISpy.sh -h\e[00m or \e[00;33m.
 echo "=                                                                                ="
 echo "= Usage:                                                                         ="
 echo -e "= \e[00;33m./ISpy.sh [local or castor root files path. "\*" and "\?" are OK] [options]\e[00m          ="
-echo -e "= \e[00;33m./ISpy.sh DBS:[DBS path] skim [options]\e[00m                                        ="
+echo -e "= \e[00;33m./ISpy.sh [local or castor root files path. "\*" and "\?" are OK] skimreco [options]\e[00m ="
+echo -e "= \e[00;33m./ISpy.sh DAS:[DAS path] skim [options]\e[00m                                        ="
 echo -e "= \e[33;07mPlease do not mix different root formats in one job.\e[00m                           ="
 echo "=                                                                                ="
 echo -e "= \e[33;07mFor MC RAW data with events pileup, please include \"MCRAW\" in the options to\e[00m   ="
@@ -66,6 +67,9 @@ echo -e "= \e[33;07mmask out TrackingParticle collection building.\e[00m        
 echo "=                                                                                ="
 echo "= To reconstruct cosmic RAW data correctly, please include \"CosmicRAW\" in the    ="                            
 echo "= options.                                                                       ="
+echo "=                                                                                ="
+echo -e "= ./ISpy.sh with \e[00;33mskimreco\e[00m option is designed for providing Fireworks (\e[00;33mcmsShow\e[00m)   ="
+echo "= files quickly and easily.                                                      ="
 echo "=                                                                                ="
 echo "=================================================================================="
 echo
@@ -102,6 +106,14 @@ CheckOptions ()
 	    fi
 	    SKIM=TRUE
 	    PYFileNamePrefix="Skim_tmp";;
+	[Ss][Kk][Ii][Mm][Rr][Ee][Cc][Oo])
+	    if [ "$SKIM" == "FALSE" ]; then
+		OutputFileName=${IgFileName%.*}.root
+		echo -e $'\a'"\e[0;31mWarning: Contradictory options --- Data Skimmer should output a root file. The file name is changed to $OutputFileName.\e[00m"
+	    fi
+	    SKIM=TRUE
+	    OutputFileName="SkimandReco.root"
+	    PYFileNamePrefix="Skimreco_tmp";;
 	[Cc][Oo][Nn][Dd][Oo][Rr])
 	    CRABMODE="condor";;
 	[Rr][Ee][Nn][Ee][Ww][Cc][Oo][Dd][Ee])
@@ -256,6 +268,9 @@ CheckAvailability ()
 	if ([ $VersionNum1 -eq 4 ]&&[ $VersionNum2 -lt 2 ])||([ $VersionNum1 -eq 4 ]&&[ $VersionNum2 -eq 2 ]&&[ $VersionNum3 -lt 5 ]); then
 	    ISpyBranchTag="use_classlib"
 	fi
+	if [ $VersionNum1 -ge 5 ]||([ $VersionNum1 -eq 5 ]&&[ $VersionNum2 -ge 2 ]); then
+	    ISpyBranchTag="postCMSSW_5_2"
+	fi
     fi
     if [ `expr match "$System" ".*lxplus.*"` != "0" ]; then
 	echo -e "\e[07mIt is running on lxplus.cern.ch. Run it on Batch? How long will it take?\e[00m"
@@ -310,7 +325,12 @@ CheckoutCode ()
     else
 	TeaTime
     fi
-    cvs checkout -r use_zlib ISpy/Analyzers/src/ISpyCSCRecHit2D.cc # for the fix of the crashes in ISpyCSCRecHit2D
+    #less than CMSSW_5_X, use_zlib for ISpyCSCRecHit2D.cc
+    if [ $VersionNum1 -lt 5 ]||([ $VersionNum1 -eq 5 ]&&[ $VersionNum2 -lt 2 ]); then
+	cvs checkout -r use_zlib ISpy/Analyzers/src/ISpyCSCRecHit2D.cc # for the fix of the crashes in ISpyCSCRecHit2D
+    else
+	cvs checkout -r use_zlib ISpy/Services #temporary!
+    fi
     cvs checkout -r $ISpyBranchTag ISpy/Services
     cd ISpy
     scramv1 b
@@ -493,9 +513,9 @@ HELP ()
     echo -e "      2. Full example: \e[00;33m./ISpy.sh /castor/cern.ch/cms/store/data/Run2010A/Mu/RECO/v2/000/136/294/* 136294:2200000-3000000,1000-2000 HLT_Mu9 HLT_IsoMu3,HLT_L2Mu3 CMSSW_3_5_4 GR_R_35X_V8 \$CASTOR_HOME/output datareco debug\e[00m"
     echo "         It will (1) read events from run 136294 event 2200000 to 3000000 and 1000 to 2000; (2) use HLT algorithm \"HLT_Mu9 and ( HLT_IsoMu3 OR HLT_L2Mu3 )\" to skim events; (3) setup and use CMSSW_3_5_4; (4) use GlobalTag GR_R_35X_V8; (5) save the output to CASTOR, the name will be output.root; (6) treat it as RECO collision data (rarely needed); (7) create all the configuration files and codes without submitting the job."
     echo
-    echo -e "\e[04m(II)   For files on DBS:\e[00m"
-    echo "      It can only skim events from DBS. The ig files could not be produced. Running"
-    echo -e "      \e[00;33m./ISpy.sh DBS:[DBS path] [options] skim\e[00m"
+    echo -e "\e[04m(II)   For files on DAS:\e[00m"
+    echo "      It can only skim events from DAS. The ig files could not be produced. Running"
+    echo -e "      \e[00;33m./ISpy.sh DAS:[DAS path] [options] skim\e[00m"
     echo "      will skim events based on the algorithm stated in the options. The default output path is your CASTOR home directory. You can change the output path in the options."
     echo
     echo -e "\e[07m[options]:\e[00m"
@@ -509,10 +529,11 @@ HELPOptions ()
     echo "      1. To specify the data type:"
     echo -e "         It is rarely necessary since the script can recognize most data types. You have the following options: \e[00;33mMCRECO\e[00m for reconstructed (RECO) Monte Carlo (MC); \e[00;33mMCRAW\e[00m for RAW MC; \e[00;33mRECO\e[00m or \e[00;33mDATARECO\e[00m for cosmic or data RECO; \e[00;33mCOSMICRAW\e[00m for cosmic RAW; \e[00;33mCOLRAW\e[00m or \e[00;33mDATARAW\e[00m for collision RAW data;"    
     echo -e "      2. \e[00;33mdebug\e[00m: The configure files (*.py, crab.cfg, or *.sh) will be written without submitting/running the job"
-    echo -e "      3. \e[00;33mskim\e[00m: The root files will be outputted instead of ig files."
-    echo -e "      4. \e[00;33mcondor\e[00m: CRAB condor mode, for data in T1-FNAL."
-    echo -e "      5. \e[00;33mrenewcode\e[00m: match the ISpy/Analyzer and ISpy/Services codes with the ones on CVS."
-    echo -e "      6. \e[00;33mstagedonly\e[00m: only investigate the staged files on CASTOR."
+    echo -e "      3. \e[00;33mskim\e[00m: The root files will be skimmed and outputted as root files"
+    echo -e "      4. \e[00;33mskimreco\e[00m: The root files will be skimmed, reconstructed and outputted as root files."
+    echo -e "      5. \e[00;33mcondor\e[00m: CRAB condor mode, for data in T1-FNAL."
+    echo -e "      6. \e[00;33mrenewcode\e[00m: match the ISpy/Analyzer and ISpy/Services codes with the ones on CVS."
+    echo -e "      7. \e[00;33mstagedonly\e[00m: only investigate the staged files on CASTOR."
     echo -e "\e[04m(II)  To specify a CMSSW version:\e[00m Please list it directly. It should look like \e[00;33mCMSSW_......\e[00m"
     echo -e "\e[04m(III) To specify a GlobalTag:\e[00m Please list it directly. It should look like \e[00;33m......_......\e[00m"
     echo -e "\e[04m(IV)  To specify the save path and the file name (default is your current directory):\e[00m"
@@ -587,9 +608,13 @@ Main()
 	ProcessRawtoDigi=
 	LoadRECO=
 	ProcessRECO=
-	TeaTime
     else
 	echo "The output ig file will be saved to $SaveTo$IgFileName"
+	if [ ! -d "$CMSSW_BASE/src/ISpy" ]||[ "$RenewCode" == "TRUE" ]; then
+	    CheckoutCode
+	fi
+    fi
+    if [ "$SKIM" != "TRUE" ]||[ "$PYFileNamePrefix"=="Skimreco_tmp" ]; then
 	case $DATAFormat in
 	    1)
 		AUTOCOND='mc'
@@ -642,12 +667,8 @@ Main()
 		echo -n "The data format is Monte Carlo RAWDEBUG (include TrackingParticle collection)" ;;
 	esac
 	echo ". If the format is not correct, please push Ctrl-C and send a bug report."
-	if [ ! -d "$CMSSW_BASE/src/ISpy" ]||[ "$RenewCode" == "TRUE" ]; then
-	    CheckoutCode
-	else
-	    TeaTime
-	fi
     fi
+    TeaTime
     PyNum=0
     PYFileName=$PYFileNamePrefix"_"$PyNum".py"
     until ! [ -f $PYFileName ]
@@ -659,8 +680,10 @@ Main()
     if [ "$SKIM" == "TRUE" ]; then
 	echo 'process = cms.Process("SKIM")'>>$PYFileName
     else
-	echo 'process = cms.Process("ISPY")'>>$PYFileName
-	echo 'process.load("ISpy/Analyzers/ISpy_Producer_cff")'>>$PYFileName
+	echo 'process = cms.Process("ISPY")
+process.load("ISpy/Analyzers/ISpy_Producer_cff")'>>$PYFileName
+    fi
+    if [ "$SKIM" != "TRUE" ]||[ "$PYFileNamePrefix"=="Skimreco_tmp" ]; then
 	echo 'process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")'>>$PYFileName
 	if [ -z "$GlobalTag" ]; then
 	    echo "from $AUTOCONDCFGFILE import autoCond">>$PYFileName
@@ -670,22 +693,22 @@ Main()
 	fi
 	echo 'process.load("Configuration.StandardSequences.Geometry_cff")'>>$PYFileName
 	echo 'process.load("Configuration.StandardSequences.MagneticField_cff")'>>$PYFileName
-
-	echo 'from ISpy.Analyzers.ISpyTriggerEvent_cfi import *'>>$PYFileName
-	HLTTAGProcessName=`expr match "$HLTTAG" "\".*\",\".*\",\"\(.*\)\""`
-	echo "ISpyTriggerEvent.processName=('$HLTTAGProcessName')">>$PYFileName
-
+	if [ "$SKIM" != "TRUE" ]; then
+	    echo 'from ISpy.Analyzers.ISpyTriggerEvent_cfi import *'>>$PYFileName
+	    HLTTAGProcessName=`expr match "$HLTTAG" "\".*\",\".*\",\"\(.*\)\""`
+	    echo "ISpyTriggerEvent.processName=('$HLTTAGProcessName')">>$PYFileName
+        fi
 	echo $LoadRawtoDigi>>$PYFileName
 	echo $LoadRECO>>$PYFileName
 	if [ $DATAFormat -eq 2 ]; then
 	    echo 'process.load("Configuration.StandardSequences.Digi_cff")
-	    process.load("SimGeneral.MixingModule.mixNoPU_cfi")
-            process.load("SimGeneral.TrackingAnalysis.trackingParticles_cfi")
-            process.load("Configuration.StandardSequences.Services_cff")
-            del process.RandomNumberGeneratorService.generator
-            process.RandomNumberGeneratorService.restoreStateLabel = cms.untracked.string("randomEngineStateProducer")
-            process.mix.playback = cms.untracked.bool(True)
-	    process.trackingTruth = cms.Sequence(process.mix*process.doAllDigi*process.mergedtruth)'>>$PYFileName
+process.load("SimGeneral.MixingModule.mixNoPU_cfi")
+process.load("SimGeneral.TrackingAnalysis.trackingParticles_cfi")
+process.load("Configuration.StandardSequences.Services_cff")
+del process.RandomNumberGeneratorService.generator
+process.RandomNumberGeneratorService.restoreStateLabel = cms.untracked.string("randomEngineStateProducer")
+process.mix.playback = cms.untracked.bool(True)
+process.trackingTruth = cms.Sequence(process.mix*process.doAllDigi*process.mergedtruth)'>>$PYFileName
 	fi
     fi
     if [ -n "$HLTalgorithm" ]; then
@@ -748,6 +771,9 @@ Main()
 	else
 	    echo "process.output = cms.OutputModule(\"PoolOutputModule\",">>$PYFileName
 	    echo "fileName = cms.untracked.string(\"$SaveTo$OutputFileName\"))">>$PYFileName
+	fi
+	if [ "$PYFileNamePrefix"=="Skimreco_tmp" ]; then
+	    echo "process.p1=cms.Path($process_HLT$ProcessRawtoDigi${ProcessRECO%\*})">>$PYFileName
 	fi
 	echo "process.outpath = cms.EndPath(process.output)">>$PYFileName
     else
@@ -836,7 +862,7 @@ if [ -z "$1" ]||[ `expr match "$1" '[Hh][Ee][Ll][Pp]'` == 4 ]||[ "$1" == "-h" ]|
     Client
 else
     Logo
-    if [ `expr match "$1" '[Dd][Bb][Ss]:'` == 4 ]; then
+    if [ `expr match "$1" '[Dd][Aa][Ss]:'` == 4 ]; then
 	RunType=GRID
 	if [ -n "$CASTOR_HOME" ]; then
 	    SaveTo=$CASTOR_HOME
@@ -904,7 +930,6 @@ else
 	      do
 	      eval temp=\${$i}
 	      if [ -f "$temp" ]&&[ "$IsFileName" == "TRUE" ]; then
-		  TestFile=${Files[0]}
 		  Files[$NumberFiles]=$temp
 		  (( NumberFiles += 1 ))
 	      else
@@ -912,6 +937,7 @@ else
 		  CheckOptions "$temp";DATAFormat=$?
 	      fi
 	    done
+	    TestFile=${Files[0]}
 	fi
 	if [ "$SKIM" != "TRUE" ]&&[ -n "$DISPLAY" ]; then
 	    Client
@@ -924,7 +950,7 @@ else
 		if [ `expr match "$SaveTo" '/tmp/'` != "0" ]&&[ $RunType -ge 0 ]&&[ $RunType -lt 7 ]; then
 		    echo -e $'\a'"\e[0;31mWarning: You will not be able to find the output files.\e[00m"
 		else
-		    if [ "$SKIM" != "TRUE" ]&&[ $DATAFormat -eq 0 ]; then
+		    if ([ "$SKIM" != "TRUE" ]||[ "$PYFileNamePrefix"=="Skimreco_tmp" ])&&[ $DATAFormat -eq 0 ]; then
 			DATAFormatDef ${TestFile};DATAFormat=$?
 		    fi
 		    Main

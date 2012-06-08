@@ -331,7 +331,7 @@ CheckoutCode ()
     else
 	cvs checkout -r use_zlib ISpy/Services #temporary!
     fi
-    cvs checkout -r $ISpyBranchTag ISpy/Services
+    #cvs checkout -r $ISpyBranchTag ISpy/Services
     cd ISpy
     scramv1 b
     cd $CurrentDir

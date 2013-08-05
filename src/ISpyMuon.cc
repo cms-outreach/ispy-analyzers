@@ -108,7 +108,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty T_PHI = trackerMuonCollection.addProperty("phi", 0.0);
   IgProperty T_ETA = trackerMuonCollection.addProperty("eta", 0.0);
   IgProperty T_CALO_E = trackerMuonCollection.addProperty("calo_energy", 0.0);
-
+  
   IgCollection& standAloneMuonCollection = storage_->getCollection("StandaloneMuons_V2");
   IgProperty S_PT = standAloneMuonCollection.addProperty("pt", 0.0);
   IgProperty S_CHARGE = standAloneMuonCollection.addProperty("charge", int(0));
@@ -172,11 +172,11 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       {
         std::string error = 
           "### Error: ISpyMuon::refitTrack exception caught for TrackerMuon:";
-        error += e.explainSelf();
+        //error += e.explainSelf();
 	config->error (error);
       }
     }
-	
+
     if ( (*it).standAloneMuon().isNonnull() ) // Standalone
     {
       IgCollectionItem imuon = standAloneMuonCollection.create();

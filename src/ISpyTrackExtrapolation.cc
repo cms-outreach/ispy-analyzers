@@ -52,10 +52,6 @@ find_track_match(const reco::TrackRef& track,
     deltaEta = (eta - (*tr).eta());
     deltaEta *= deltaEta;
     deltaPhi = (phi - (*tr).phi());
-    
-    std::cout<<"eta: "<< eta <<" , "<< (*tr).eta() <<std::endl;
-    std::cout<<"phi: "<< phi <<" , "<< (*tr).phi() <<std::endl;
-    std::cout<<"pt: "<< pt <<" , "<< (*tr).pt() <<"  "<< fabs(pt-(*tr).pt()) <<std::endl;
 
     if ( fabs(deltaPhi) > M_PI ) 
       deltaPhi = deltaPhi < 0 ? 2*M_PI + deltaPhi : deltaPhi - 2*M_PI; 
@@ -63,21 +59,14 @@ find_track_match(const reco::TrackRef& track,
     deltaPhi *= deltaPhi;
     deltaR = sqrt(deltaEta+deltaPhi);
 
-    std::cout<<"deltaR: "<< deltaR <<std::endl;
-
     if ( deltaR < 0.17 )
     {
-      std::cout<<"match!"<<std::endl;
-      
       if ( deltaR < best_deltaR )
       {
         best_deltaR = deltaR;
         best_it = it;
       }
-    }
-
-    std::cout<<std::endl;
-    
+    }           
   }
 
   return best_it;
@@ -288,7 +277,7 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
     IgProperty T_PHI = trackerMuonCollection.addProperty("phi", 0.0);
     IgProperty T_ETA = trackerMuonCollection.addProperty("eta", 0.0);
       
-    IgAssociations& muonExtras = storage->getAssociations("MuonTrackExtras_V1");
+    IgAssociations& muonExtras = storage->getAssociations("MuonTrackerExtras_V1");
 
     product = "Muons "
               + edm::TypeID (typeid (reco::MuonCollection)).friendlyClassName() + ":" 
@@ -324,6 +313,13 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
         imuon[T_ETA] = (*mit).track()->eta();  
       
         IgCollectionItem ex = extras.create();
+
+        ex[IPOS] = IgV3d((*mit).track()->vx()/100.0, 
+                         (*mit).track()->vy()/100.0, 
+                         (*mit).track()->vz()/100.0);
+        ex[IP] = IgV3d((*mit).track()->px(), 
+                       (*mit).track()->py(), 
+                       (*mit).track()->pz());
 
         ex[OPOS] = IgV3d(ti->positions()[0].x()/100.0,
                          ti->positions()[0].y()/100.0,

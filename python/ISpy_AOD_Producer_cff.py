@@ -80,7 +80,7 @@ iSpy_sequence = cms.Sequence(ISpyEvent*
                              ISpyEBDigi*
                              ISpyEEDigi*
                              #ISpyElectron*
-                             ISpyGsfElectron*
+                             #ISpyGsfElectron*
                              #ISpyGsfTrack*
                              ISpyHBRecHit*
                              ISpyHERecHit*
@@ -91,7 +91,7 @@ iSpy_sequence = cms.Sequence(ISpyEvent*
                              ISpyMuon*
                              ISpyPhoton*
                              ISpySuperCluster*
-                             ISpyTrack*
+                             #ISpyTrack*
                              ISpyTrackExtrapolation*
                              ISpyTriggerEvent*
                              ISpyVertex)

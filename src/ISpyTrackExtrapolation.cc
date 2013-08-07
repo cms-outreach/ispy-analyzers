@@ -26,7 +26,7 @@ std::vector<reco::TrackExtrapolation>::const_iterator
 find_track_match(const reco::TrackRef& track,
                  const std::vector<reco::TrackExtrapolation>& tracks) 
 {
-  //double pt = (*track).pt();
+  double pt = (*track).pt();
   double eta = (*track).eta();
   double phi = (*track).phi();
   int charge = (*track).charge();
@@ -49,10 +49,10 @@ find_track_match(const reco::TrackRef& track,
     if ( charge != (*tr).charge() )
       continue;
 
-    deltaEta = eta - (*tr).eta();
+    deltaEta = (eta - (*tr).eta());
     deltaEta *= deltaEta;
-    deltaPhi = phi - (*tr).phi();
-    
+    deltaPhi = (phi - (*tr).phi());
+
     if ( fabs(deltaPhi) > M_PI ) 
       deltaPhi = deltaPhi < 0 ? 2*M_PI + deltaPhi : deltaPhi - 2*M_PI; 
                  
@@ -60,13 +60,13 @@ find_track_match(const reco::TrackRef& track,
     deltaR = sqrt(deltaEta+deltaPhi);
 
     if ( deltaR < 0.17 )
-    { 
+    {
       if ( deltaR < best_deltaR )
       {
         best_deltaR = deltaR;
         best_it = it;
       }
-    }    
+    }           
   }
 
   return best_it;
@@ -76,6 +76,7 @@ ISpyTrackExtrapolation::ISpyTrackExtrapolation(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyTrackExtrapolationTag")),
     gsfElectronInputTag_(iConfig.getParameter<edm::InputTag>("iSpyGsfElectronTrackExtrapolationTag")),
     muonInputTag_(iConfig.getParameter<edm::InputTag>("iSpyMuonTrackExtrapolationTag"))
+
 {}
  
 void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -276,7 +277,7 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
     IgProperty T_PHI = trackerMuonCollection.addProperty("phi", 0.0);
     IgProperty T_ETA = trackerMuonCollection.addProperty("eta", 0.0);
       
-    IgAssociations& muonExtras = storage->getAssociations("MuonTrackExtras_V1");
+    IgAssociations& muonExtras = storage->getAssociations("MuonTrackerExtras_V1");
 
     product = "Muons "
               + edm::TypeID (typeid (reco::MuonCollection)).friendlyClassName() + ":" 
@@ -312,6 +313,13 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
         imuon[T_ETA] = (*mit).track()->eta();  
       
         IgCollectionItem ex = extras.create();
+
+        ex[IPOS] = IgV3d((*mit).track()->vx()/100.0, 
+                         (*mit).track()->vy()/100.0, 
+                         (*mit).track()->vz()/100.0);
+        ex[IP] = IgV3d((*mit).track()->px(), 
+                       (*mit).track()->py(), 
+                       (*mit).track()->pz());
 
         ex[OPOS] = IgV3d(ti->positions()[0].x()/100.0,
                          ti->positions()[0].y()/100.0,

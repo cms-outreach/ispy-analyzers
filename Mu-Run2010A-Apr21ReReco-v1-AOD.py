@@ -116,12 +116,12 @@ from FWCore.MessageLogger.MessageLogger_cfi import *
 process.add_(
     cms.Service("ISpyService",
     outputFileName = cms.untracked.string('req.ig'),
-    outputMaxEvents = cms.untracked.int32(10)
+    outputMaxEvents = cms.untracked.int32(100)
     )
 )
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(10)
+    input = cms.untracked.int32(100)
 )
 
 process.p1 = cms.Path(process.iSpy_sequence)

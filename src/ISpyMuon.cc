@@ -101,6 +101,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgCollectionItem item = products.create();
   item[PROD] = product;
 
+  /*
   IgCollection& trackerMuonCollection = storage_->getCollection("TrackerMuons_V1");
   IgProperty T_PT = trackerMuonCollection.addProperty("pt", 0.0);
   IgProperty T_CHARGE = trackerMuonCollection.addProperty("charge", int(0));
@@ -108,6 +109,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty T_PHI = trackerMuonCollection.addProperty("phi", 0.0);
   IgProperty T_ETA = trackerMuonCollection.addProperty("eta", 0.0);
   IgProperty T_CALO_E = trackerMuonCollection.addProperty("calo_energy", 0.0);
+  */
 
   IgCollection& standAloneMuonCollection = storage_->getCollection("StandaloneMuons_V2");
   IgProperty S_PT = standAloneMuonCollection.addProperty("pt", 0.0);
@@ -141,6 +143,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   {
     int charge = (*it).charge();
 
+    /*
     if ( (*it).track().isNonnull() ) // Tracker
     {
       IgCollectionItem imuon = trackerMuonCollection.create();
@@ -176,7 +179,8 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
 	config->error (error);
       }
     }
-	
+    */
+
     if ( (*it).standAloneMuon().isNonnull() ) // Standalone
     {
       IgCollectionItem imuon = standAloneMuonCollection.create();

@@ -57,7 +57,7 @@ iSpy_sequence = cms.Sequence(ISpyEvent*
                              ISpyEBRecHit*
                              ISpyEERecHit*
                              ISpyESRecHit*
-                             ISpyGsfElectron*
+                             #ISpyGsfElectron* electrons are handled in TrackExtrapolation for AOD
                              ISpyHBRecHit*
                              ISpyHERecHit*
                              ISpyHFRecHit*

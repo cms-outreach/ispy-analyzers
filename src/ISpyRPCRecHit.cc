@@ -79,7 +79,7 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
     IgProperty W2 = recHits.addProperty("w2", IgV3d());
 
     IgProperty REGION = recHits.addProperty("region", int(0));
-    IgProperty RING = recHits.addProperty("ring", int(0));
+    //IgProperty RING = recHits.addProperty("ring", int(0));
     IgProperty STATION = recHits.addProperty("station", int(0));
     IgProperty SECTOR = recHits.addProperty("sector", int(0));
     IgProperty LAYER = recHits.addProperty("layer", int(0));

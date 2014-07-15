@@ -165,7 +165,14 @@ ISpyEventSetup::buildTracker3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+     
       p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = det->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -233,7 +240,15 @@ ISpyEventSetup::buildPixelBarrel3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+
       p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = det->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -301,7 +316,15 @@ ISpyEventSetup::buildPixelEndcap3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+
       p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = det->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -373,7 +396,15 @@ ISpyEventSetup::buildPixelEndcapPlus3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+
       p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = det->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -445,7 +476,15 @@ ISpyEventSetup::buildPixelEndcapMinus3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+
       p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = det->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -482,9 +521,6 @@ ISpyEventSetup::buildPixelEndcapMinus3D (IgDataStorage *storage)
   }	
 }
 
-
-
-
 void
 ISpyEventSetup::buildTIB3D (IgDataStorage *storage)
 {
@@ -515,7 +551,15 @@ ISpyEventSetup::buildTIB3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+
       p[0] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -582,7 +626,15 @@ ISpyEventSetup::buildTOB3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+
       p[0] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -649,7 +701,15 @@ ISpyEventSetup::buildTEC3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+
       p[0] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -721,7 +781,15 @@ ISpyEventSetup::buildTECPlus3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+    
       p[0] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -793,7 +861,15 @@ ISpyEventSetup::buildTECMinus3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+
       p[0] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -860,7 +936,15 @@ ISpyEventSetup::buildTID3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+
       p[0] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -931,7 +1015,15 @@ ISpyEventSetup::buildTIDPlus3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+
       p[0] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -991,7 +1083,7 @@ ISpyEventSetup::buildTIDMinus3D (IgDataStorage *storage)
 
     if ( TIDDetId(id).side() != 1 )
       continue;
-
+    
     IgCollectionItem icorner = geometry.create ();
     icorner[DET_ID] = static_cast<int> (id);
 
@@ -1002,7 +1094,15 @@ ISpyEventSetup::buildTIDMinus3D (IgDataStorage *storage)
     {
       // Trapezoidal
       const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-      std::vector< float > parameters = b2->parameters ();
+      //std::vector< float > parameters = b2->parameters ();
+      float parameters[4] = {
+        
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3]
+      };
+
       p[0] = (*it)->toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = (*it)->toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = (*it)->toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -1074,8 +1174,16 @@ ISpyEventSetup::buildTrackerRPhi (IgDataStorage *storage)
       {
 	// Trapezoidal
 	const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-	std::vector< float > parameters = b2->parameters ();
-	p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
+	//std::vector< float > parameters = b2->parameters ();
+	float parameters[4] = {
+          
+          b2->parameters()[0],
+          b2->parameters()[1],
+          b2->parameters()[2],
+          b2->parameters()[3]
+        };
+       
+        p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
 	p[1] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
 	p[2] = det->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
 	p[3] = det->surface().toGlobal(LocalPoint(-parameters[1],parameters[3],parameters[2])); 
@@ -1155,8 +1263,16 @@ ISpyEventSetup::buildTrackerRZ (IgDataStorage *storage)
       {
 	// Trapezoidal
 	const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-	std::vector< float > parameters = b2->parameters ();
-	p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
+	//std::vector< float > parameters = b2->parameters ();
+	float parameters[4] = {
+          
+          b2->parameters()[0],
+          b2->parameters()[1],
+          b2->parameters()[2],
+          b2->parameters()[3]
+        };
+        
+        p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
 	p[1] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
 	p[2] = det->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
 	p[3] = det->surface().toGlobal(LocalPoint(-parameters[1],parameters[3],parameters[2])); 
@@ -1207,15 +1323,15 @@ ISpyEventSetup::buildDriftTubes3D (IgDataStorage *storage)
   IgProperty BACK_4  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_4",  IgV3d());
 
-  std::vector<DTChamber *> vc = dtGeom_->chambers ();
+  std::vector<const DTChamber *> vc = dtGeom_->chambers ();
 
-  for (std::vector<DTChamber *>::const_iterator it = vc.begin (), end = vc.end (); 
+  for (std::vector<const DTChamber *>::const_iterator it = vc.begin (), end = vc.end (); 
        it != end; ++it)
   {
     const DTChamber *chamber = *it;
     if (chamber)
     {
-      DTChamberId chId = chamber->id ();
+      //DTChamberId chId = chamber->id ();
       uint32_t id = chamber->geographicalId ().rawId ();
 
       IgCollectionItem icorner = geometry.create ();
@@ -1261,9 +1377,9 @@ ISpyEventSetup::buildDriftTubesRPhi (IgDataStorage *storage)
   IgProperty BACK_4  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_4",  IgV3d());
 
-  std::vector<DTChamber *> vc = dtGeom_->chambers ();
+  std::vector<const DTChamber *> vc = dtGeom_->chambers ();
 
-  for (std::vector<DTChamber *>::const_iterator it = vc.begin (), end = vc.end (); 
+  for (std::vector<const DTChamber *>::const_iterator it = vc.begin (), end = vc.end (); 
        it != end; ++it)
   {
     if (fabs ((*it)->surface ().position ().z ()) < 10.0)
@@ -1271,7 +1387,7 @@ ISpyEventSetup::buildDriftTubesRPhi (IgDataStorage *storage)
       const DTChamber *chamber = *it;
       if (chamber)
       {
-	DTChamberId chId = chamber->id ();
+	//DTChamberId chId = chamber->id ();
 	uint32_t id = chamber->geographicalId ().rawId ();
 
 	IgCollectionItem icorner = geometry.create ();
@@ -1318,14 +1434,14 @@ ISpyEventSetup::buildDriftTubesRZ (IgDataStorage *storage)
   IgProperty BACK_4  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_4",  IgV3d());
 
-  std::vector<DTChamber *> vc = dtGeom_->chambers ();
+  std::vector<const DTChamber *> vc = dtGeom_->chambers ();
 
   double p0 = M_PI / 2.0;
   double pD = M_PI / 12.0;
 	
   double pMin = p0 - pD;
   double pMax = p0 + pD;
-  for (std::vector<DTChamber *>::const_iterator it = vc.begin (), end = vc.end (); 
+  for (std::vector<const DTChamber *>::const_iterator it = vc.begin (), end = vc.end (); 
        it != end; ++it)
   {
     double p = (*it)->surface ().position ().phi ();
@@ -1337,7 +1453,7 @@ ISpyEventSetup::buildDriftTubesRZ (IgDataStorage *storage)
       const DTChamber *chamber = *it;
       if (chamber)
       {
-	DTChamberId chId = chamber->id ();
+	//DTChamberId chId = chamber->id ();
 	uint32_t id = chamber->geographicalId ().rawId ();
 
 	IgCollectionItem icorner = geometry.create ();
@@ -1415,6 +1531,8 @@ ISpyEventSetup::buildCSC3D (IgDataStorage *storage, const std::string &name, int
 {
   IgCollection &geometry = storage->getCollection (name.c_str());
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1423,10 +1541,11 @@ ISpyEventSetup::buildCSC3D (IgDataStorage *storage, const std::string &name, int
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
+  */
 
-  std::vector<CSCChamber *> vc = cscGeom_->chambers ();
+  std::vector<const CSCChamber *> vc = cscGeom_->chambers ();
     
-  for (std::vector<CSCChamber *>::const_iterator it = vc.begin (), end = vc.end (); 
+  for (std::vector<const CSCChamber *>::const_iterator it = vc.begin (), end = vc.end (); 
        it != end; ++it)
   {
     const CSCChamber *cscChamber = *it;
@@ -1441,7 +1560,7 @@ ISpyEventSetup::buildCSC3D (IgDataStorage *storage, const std::string &name, int
 	    
       IgCollectionItem icorner = geometry.create ();
       icorner[DET_ID] = static_cast<int>(id);
-      addCorners (icorner, cscChamber);	    
+      //addCorners (icorner, cscChamber);	    
     }
   }    
 }
@@ -1451,6 +1570,7 @@ ISpyEventSetup::buildCSCRZ (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("CSCRZ_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1459,15 +1579,15 @@ ISpyEventSetup::buildCSCRZ (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
-
-  std::vector<CSCChamber *> vc = cscGeom_->chambers ();
+  */
+  std::vector<const CSCChamber *> vc = cscGeom_->chambers ();
     
   double p0 = M_PI / 2.0;
   double pD = M_PI / 10.0;
 	
   double pMin = p0 - pD;
   double pMax = p0 + pD;
-  for (std::vector<CSCChamber *>::const_iterator it = vc.begin (), end = vc.end (); 
+  for (std::vector<const CSCChamber *>::const_iterator it = vc.begin (), end = vc.end (); 
        it != end; ++it)
   {
     const CSCChamber *cscChamber = *it;
@@ -1485,7 +1605,7 @@ ISpyEventSetup::buildCSCRZ (IgDataStorage *storage)
 	    
 	IgCollectionItem icorner = geometry.create ();
 	icorner[DET_ID] = static_cast<int>(id);
-	addCorners (icorner, cscChamber);	    
+	//addCorners (icorner, cscChamber);	    
       }
     }    
   }
@@ -1496,6 +1616,7 @@ ISpyEventSetup::buildRPC3D (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPC3D_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1504,10 +1625,10 @@ ISpyEventSetup::buildRPC3D (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
+  */
+  std::vector<const RPCRoll *> vc = rpcGeom_->rolls ();
 
-  std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
-
-  for (std::vector<RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
+  for (std::vector<const RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
        it != end; ++it)
   {
     const RPCRoll *roll = *it;
@@ -1520,7 +1641,7 @@ ISpyEventSetup::buildRPC3D (IgDataStorage *storage)
 	uint32_t id = (*it)->geographicalId ().rawId ();		
 	IgCollectionItem icorner = geometry.create ();
 	icorner[DET_ID] = static_cast<int>(id);
-	addCorners (icorner, *it);	    
+	//addCorners (icorner, *it);	    
       }
     }
   }
@@ -1531,6 +1652,7 @@ ISpyEventSetup::buildRPCBarrel3D (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPCBarrel3D_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1539,10 +1661,10 @@ ISpyEventSetup::buildRPCBarrel3D (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
+  */
+  std::vector<const RPCRoll *> vc = rpcGeom_->rolls ();
 
-  std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
-
-  for (std::vector<RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
+  for (std::vector<const RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
        it != end; ++it)
   {
     const RPCRoll *roll = *it;
@@ -1556,7 +1678,7 @@ ISpyEventSetup::buildRPCBarrel3D (IgDataStorage *storage)
 	uint32_t id = (*it)->geographicalId ().rawId ();		
 	IgCollectionItem icorner = geometry.create ();
 	icorner[DET_ID] = static_cast<int>(id);
-	addCorners (icorner, *it);	    
+	//addCorners (icorner, *it);	    
       }
     }
   }
@@ -1567,6 +1689,7 @@ ISpyEventSetup::buildRPCPlusEndcap3D (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPCPlusEndcap3D_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1575,10 +1698,10 @@ ISpyEventSetup::buildRPCPlusEndcap3D (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
+  */
+  std::vector<const RPCRoll *> vc = rpcGeom_->rolls ();
 
-  std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
-
-  for (std::vector<RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
+  for (std::vector<const RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
        it != end; ++it)
   {
     const RPCRoll *roll = *it;
@@ -1592,7 +1715,7 @@ ISpyEventSetup::buildRPCPlusEndcap3D (IgDataStorage *storage)
 	uint32_t id = (*it)->geographicalId ().rawId ();		
 	IgCollectionItem icorner = geometry.create ();
 	icorner[DET_ID] = static_cast<int>(id);
-	addCorners (icorner, *it);	    
+	//addCorners (icorner, *it);	    
       }
     }
   }
@@ -1603,6 +1726,7 @@ ISpyEventSetup::buildRPCMinusEndcap3D (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPCMinusEndcap3D_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1611,10 +1735,10 @@ ISpyEventSetup::buildRPCMinusEndcap3D (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
+  */
+  std::vector<const RPCRoll *> vc = rpcGeom_->rolls ();
 
-  std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
-
-  for (std::vector<RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
+  for (std::vector<const RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
        it != end; ++it)
   {
     const RPCRoll *roll = *it;
@@ -1628,7 +1752,7 @@ ISpyEventSetup::buildRPCMinusEndcap3D (IgDataStorage *storage)
 	uint32_t id = (*it)->geographicalId ().rawId ();		
 	IgCollectionItem icorner = geometry.create ();
 	icorner[DET_ID] = static_cast<int>(id);
-	addCorners (icorner, *it);	    
+	//addCorners (icorner, *it);	    
       }
     }
   }
@@ -1639,6 +1763,7 @@ ISpyEventSetup::buildRPCRPhi (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPCRPhi_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1647,10 +1772,10 @@ ISpyEventSetup::buildRPCRPhi (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
+  */
+  std::vector<const RPCRoll *> vc = rpcGeom_->rolls ();
 
-  std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
-
-  for (std::vector<RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
+  for (std::vector<const RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
        it != end; ++it)
   {
     if (fabs ((*it)->surface ().position ().eta ()) < 0.2)
@@ -1665,7 +1790,7 @@ ISpyEventSetup::buildRPCRPhi (IgDataStorage *storage)
 	  uint32_t id = (*it)->geographicalId ().rawId ();		
 	  IgCollectionItem icorner = geometry.create ();
 	  icorner[DET_ID] = static_cast<int>(id);
-	  addCorners (icorner, *it);	    
+	  //addCorners (icorner, *it);	    
 	}
       }
     }
@@ -1677,6 +1802,7 @@ ISpyEventSetup::buildRPCRZ (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPCRZ_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1685,15 +1811,15 @@ ISpyEventSetup::buildRPCRZ (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
-
-  std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
+  */
+  std::vector<const RPCRoll *> vc = rpcGeom_->rolls ();
 
   double p0 = M_PI / 2.0;
   double pD = M_PI / 20.0;
 	
   double pMin = p0 - pD;
   double pMax = p0 + pD;
-  for (std::vector<RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
+  for (std::vector<const RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
        it != end; ++it)
   {
     double p = (*it)->surface ().position ().phi ();
@@ -1712,7 +1838,7 @@ ISpyEventSetup::buildRPCRZ (IgDataStorage *storage)
 	  uint32_t id = (*it)->geographicalId ().rawId ();		
 	  IgCollectionItem icorner = geometry.create ();
 	  icorner[DET_ID] = static_cast<int>(id);
-	  addCorners (icorner, *it);	    
+	  //addCorners (icorner, *it);	    
 	}
       }
     }
@@ -2010,7 +2136,14 @@ ISpyEventSetup::addCorners (IgCollectionItem & icorner, const GeomDet *det)
   if (dynamic_cast<const TrapezoidalPlaneBounds *> (b))
   {
     const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-    std::vector< float > parameters = b2->parameters ();
+    //std::vector< float > parameters = b2->parameters ();
+    float parameters[4] = {
+      
+      b2->parameters()[0],
+      b2->parameters()[1],
+      b2->parameters()[2],
+      b2->parameters()[3]
+    };
 
     p[0] = det->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
     p[1] = det->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
@@ -2040,7 +2173,7 @@ ISpyEventSetup::addCorners (IgCollectionItem & icorner, const GeomDet *det)
   icorner["back_1"] = IgV3d(static_cast<double>(p[4].x()/100.0), static_cast<double>(p[4].y()/100.0), static_cast<double>(p[4].z()/100.0));
   icorner["back_2"] = IgV3d(static_cast<double>(p[5].x()/100.0), static_cast<double>(p[5].y()/100.0), static_cast<double>(p[5].z()/100.0));
   icorner["back_4"] = IgV3d(static_cast<double>(p[6].x()/100.0), static_cast<double>(p[6].y()/100.0), static_cast<double>(p[6].z()/100.0));
-  icorner["back_3"] = IgV3d(static_cast<double>(p[7].x()/100.0), static_cast<double>(p[7].y()/100.0), static_cast<double>(p[7].z()/100.0));
+  icorner["back3"] = IgV3d(static_cast<double>(p[7].x()/100.0), static_cast<double>(p[7].y()/100.0), static_cast<double>(p[7].z()/100.0));
 }
 
 const std::string

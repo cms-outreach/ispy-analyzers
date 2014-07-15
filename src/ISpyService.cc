@@ -12,6 +12,7 @@
 #include "FWCore/ServiceRegistry/interface/ServiceMaker.h"
 #include "FWCore/ServiceRegistry/interface/ActivityRegistry.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
+#include "FWCore/ServiceRegistry/interface/StreamContext.h"
 #include "FWCore/Version/interface/GetReleaseVersion.h"
 
 #include <iostream>
@@ -36,8 +37,8 @@ ISpyService::ISpyService (const ParameterSet& iPSet, ActivityRegistry& iRegistry
   iRegistry.watchPostBeginJob(this,&ISpyService::postBeginJob);
   iRegistry.watchPostEndJob(this,&ISpyService::postEndJob);
 
-  iRegistry.watchPreProcessEvent(this,&ISpyService::preEventProcessing);
-  iRegistry.watchPostProcessEvent(this,&ISpyService::postEventProcessing);
+  iRegistry.watchPreEvent(this,&ISpyService::preEvent);
+  iRegistry.watchPostEvent(this,&ISpyService::postEvent);
 
   makeHeader();
 }
@@ -143,10 +144,10 @@ ISpyService::postEndJob(void)
 }
 
 void
-ISpyService::preEventProcessing(const edm::EventID& event, const edm::Timestamp& timestamp)
+ISpyService::preEvent(const edm::StreamContext& sc)
 {
-  currentRun_   = event.run();
-  currentEvent_ = event.event();
+  currentRun_   = sc.eventID().run();
+  currentEvent_ = sc.eventID().event();
 
   storages_[0] = new IgDataStorage;
   storages_[1] = new IgDataStorage;
@@ -171,7 +172,7 @@ ISpyService::preEventProcessing(const edm::EventID& event, const edm::Timestamp&
 }
 
 void
-ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup& eventSetup)
+ISpyService::postEvent(const edm::StreamContext& sc)
 {    
   if ( ! storages_[0]->empty() )
   {

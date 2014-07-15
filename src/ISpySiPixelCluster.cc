@@ -78,7 +78,7 @@ ISpySiPixelCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
 
     for (; it != end; ++it)
     {
-      edmNew::DetSet<SiPixelCluster> ds = *it;
+      //edmNew::DetSet<SiPixelCluster> ds = *it;
       const uint32_t detID = it->detId ();
       DetId detid (detID);
 

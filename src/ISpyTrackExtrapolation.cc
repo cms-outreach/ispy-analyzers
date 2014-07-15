@@ -26,7 +26,7 @@ std::vector<reco::TrackExtrapolation>::const_iterator
 find_track_match(const reco::TrackRef& track,
                  const std::vector<reco::TrackExtrapolation>& tracks) 
 {
-  double pt = (*track).pt();
+  //double pt = (*track).pt();
   double eta = (*track).eta();
   double phi = (*track).phi();
   int charge = (*track).charge();

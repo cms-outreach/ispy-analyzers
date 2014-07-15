@@ -67,7 +67,7 @@ void ISpyPFRecTrack::analyze(const edm::Event& event, const edm::EventSetup& eve
     IgCollection& trajpts = storage->getCollection("PFTrajectoryPoints_V1");
 	
     IgProperty POS = trajpts.addProperty("pos", IgV3d());
-    IgProperty DIR = trajpts.addProperty("dir", IgV3d());
+    //IgProperty DIR = trajpts.addProperty("dir", IgV3d());
 	
     IgAssociations& tracktrajs = storage->getAssociations("PFRecTrackTrajectoryPoints_V1");
     

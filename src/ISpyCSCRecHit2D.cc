@@ -92,8 +92,8 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
     IgProperty  T  = recHits.addProperty("tpeak", 0.0);
     IgProperty POS = recHits.addProperty("positionWithinStrip", 0.0);
     IgProperty ERR = recHits.addProperty("errorWithinStrip", 0.0);
-    //IgProperty CHS = recHits.addProperty("strips", std::string());
-    //IgProperty WIS = recHits.addProperty("wireGroups", std::string());
+    IgProperty CHS = recHits.addProperty("strips", std::string());
+    IgProperty WIS = recHits.addProperty("wireGroups", std::string());
 
     for ( CSCRecHit2DCollection::const_iterator it = collection->begin(), itEnd = collection->end(); 
           it != itEnd; ++it )
@@ -141,29 +141,22 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
       irechit[POS] = static_cast<double>((*it).positionWithinStrip());
       irechit[ERR] = static_cast<double>((*it).errorWithinStrip());
 
-      /*
-#ifdef CMSSW_5_X
-      // Not sure how to use the new interface so 
-      // don't write out CHS and WIS for now 
-#else
       std::stringstream chs;
+      for ( unsigned int i = 0; i < (*it).nStrips(); i++ ) 
+        chs<< (*it).channels(i) <<" ";
 
-      for ( std::vector<int>::const_iterator cc = 
-              (*it).channels().begin(), ccEnd = (*it).channels().end(); 
-            cc != ccEnd; ++cc )
-        chs<< *cc <<" ";
-      
       irechit[CHS] = chs.str(); 
 
       std::stringstream wis;
-      const unsigned int wgroupsize=(*it).wgroups().size();
-      
-      for ( unsigned int icc=0; icc<wgroupsize; ++icc )
-      	wis<< (*it).wgroups().at(icc) <<" ";
 
+      int nwgs = (*it).nWireGroups();
+      if ( nwgs == 1 ) {
+        wis << "central wire: " << (*it).hitWire() << " of " << nwgs << " wiregroup"; 
+      } else {
+        wis << "central wire: " << (*it).hitWire() << " of " << nwgs << " wiregroups"; 
+      }
+   
       irechit[WIS] = wis.str();
-#endif
-      */
     }
   }
 

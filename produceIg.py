@@ -10,7 +10,7 @@ process.load("Configuration.StandardSequences.Geometry_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.GlobalTag.globaltag = 'FT_R_42_V10A::All'
+process.GlobalTag.globaltag = 'GR_R_42_V25::All'
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(

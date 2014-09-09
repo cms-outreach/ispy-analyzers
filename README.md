@@ -31,27 +31,48 @@ and input the commands as explained below.
     cd ISpy/Analyzers/ 
 ```
 
-and checkout the appropriate branch
-    git checkout Run2010B 
+5) Checkout the appropriate branch:
 
-Change to ISpy/Services/ directory using
+```
+    git checkout Run2010B 
+```
+
+6) Change to the ISpy/Services/ directory:
+
+```
     cd ../../ISpy/Services/ 
+```
 
-and checkout the appropriate branch
+7) Checkout the appropriate branch
+
+```
     git checkout Run2010B 
+```
 
-Change back to src directory
+8) Change back to src directory
+
+```
     cd ../.. 
+```
 
-and compile the code with the command
+9) Compile the code with the command:
+
+```
     scram b
-    
-Once compiled, change to ISpy/Analyzers/src
+```
+
+10) Once compiled, change to ISpy/Analyzers/src:
+
+```
     cd ISpy/Analyzers/src
-    
-and run the example configuration file
+```
+
+11) Run the example configuration file:
+
+```
     cmsRun produceIg.py
-    
+```
+
 which will produce a file with the name Run2010B_0.ig
 
 The file produceIg.py is annotated; make your own changes as appropriate.

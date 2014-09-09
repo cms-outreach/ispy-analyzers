@@ -6,19 +6,30 @@ the instructions below).
 To produce files in the VM open a terminal with the X terminal emulator (an icon bottom-left of the VM screen)
 and input the commands as explained below.
 
-Write on the command line
+1) Create a CMSSW environment: 
+
+```
     cmsrel CMSSW_4_2_8
-    cmsenv
+```
 
-change to the CMSSW_4_2_8/src/ directory
+2) Change to the CMSSW_4_2_8/src/ directory:
+
+```
     cd CMSSW_4_2_8/src/
+```
 
-and clone the necessary source code
+3) Clone the necessary source code:
+
+```
     git clone https://github.com/cms-outreach/ispy-analyzers.git ISpy/Analyzers 
-    git clone https://github.com/cms-outreach/ispy-services.git ISpy/Services 
+    git clone https://github.com/cms-outreach/ispy-services.git ISpy/Services
+```
 
-After this, change to the ISpy/Analyzers/ directory
+4) Change to the ISpy/Analyzers/ directory:
+
+```
     cd ISpy/Analyzers/ 
+```
 
 and checkout the appropriate branch
     git checkout Run2010B 

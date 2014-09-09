@@ -12,6 +12,7 @@ process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
 process.GlobalTag.globaltag = 'GR_R_42_V25::All'
 
+# The files below can be changed to anything included in the release
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
 'root://eospublic.cern.ch//eos/opendata/cms/Run2010B/BTau/AOD/Apr21ReReco-v1/0000/00E16FBB-9071-E011-83D3-003048673F12.root',
@@ -34,6 +35,11 @@ process.source.lumisToProcess.extend(myLumis)
  
 from FWCore.MessageLogger.MessageLogger_cfi import *
 
+# outputFileName, as the name implies, is the name of the event display file produced.
+# outputMaxEvents is the number of events produced in each file.
+# Actually in the file name the text "_N" will be added before the ".ig"
+# For example, if maxEvents (see below) is 100, and outputMaxEvents is 25, then 4 files
+# will be produced: Run2010B_0.ig, Run2010B_1.ig, Run2010B_2.ig, and Run2010B_3.ig
 process.add_(
     cms.Service("ISpyService",
     outputFileName = cms.untracked.string('Run2010B.ig'),
@@ -41,6 +47,7 @@ process.add_(
     )
 )
 
+# This number is the total number of events run over. "-1" indicates all.
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(-1)
 )

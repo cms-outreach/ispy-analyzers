@@ -1,8 +1,8 @@
 #include "ISpy/Analyzers/interface/ISpyRotation.h"
-#include "Geometry/CommonDetUnit/interface/GeomDetUnit.h"
+#include "Geometry/CommonDetUnit/interface/GeomDet.h"
 
 
-void ISpyRotation::getAxisAngle(const GeomDetUnit* det, Basic3DVector<double>& axis, double& angle)
+void ISpyRotation::getAxisAngle(const GeomDet* det, Basic3DVector<double>& axis, double& angle)
 {
   TkRotation<double> r = det->surface().rotation();
  

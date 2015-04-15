@@ -102,8 +102,6 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgCollectionItem item = products.create();
   item[PROD] = product;
 
-  /*
-  std::cout<<"Get Tracker"<<std::endl;
   IgCollection& trackerMuonCollection = storage_->getCollection("TrackerMuons_V1");
   IgProperty T_PT = trackerMuonCollection.addProperty("pt", 0.0);
   IgProperty T_CHARGE = trackerMuonCollection.addProperty("charge", int(0));
@@ -111,9 +109,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty T_PHI = trackerMuonCollection.addProperty("phi", 0.0);
   IgProperty T_ETA = trackerMuonCollection.addProperty("eta", 0.0);
   IgProperty T_CALO_E = trackerMuonCollection.addProperty("calo_energy", 0.0);
-  */
-  /*
-  std::cout<<"Get Standalone"<<std::endl;
+  
   IgCollection& standAloneMuonCollection = storage_->getCollection("StandaloneMuons_V2");
   IgProperty S_PT = standAloneMuonCollection.addProperty("pt", 0.0);
   IgProperty S_CHARGE = standAloneMuonCollection.addProperty("charge", int(0));
@@ -121,9 +117,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty S_PHI = standAloneMuonCollection.addProperty("phi", 0.0);
   IgProperty S_ETA = standAloneMuonCollection.addProperty("eta", 0.0);
   IgProperty S_CALO_E = standAloneMuonCollection.addProperty("calo_energy", 0.0);
-  */
 
-  std::cout<<"Get Global"<<std::endl;
   IgCollection& globalMuonCollection = storage_->getCollection("GlobalMuons_V1");
   IgProperty G_PT = globalMuonCollection.addProperty("pt", 0.0);
   IgProperty G_CHARGE = globalMuonCollection.addProperty("charge", int(0));
@@ -132,28 +126,21 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty G_ETA = globalMuonCollection.addProperty("eta", 0.0);
   IgProperty G_CALO_E = globalMuonCollection.addProperty("calo_energy", 0.0);
 
-  /*
-  std::cout<<"Get Extras"<<std::endl;
   IgCollection& extras = storage_->getCollection("Extras_V1");
   IgProperty IPOS = extras.addProperty("pos_1", IgV3d());
   IgProperty IP   = extras.addProperty("dir_1", IgV3d());
   IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
   IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
-  std::cout<<"Get TrackExtras"<<std::endl;
   IgAssociations& trackExtras = storage_->getAssociations("MuonTrackExtras_V1");
-  */
-  //IgCollection& points = storage_->getCollection("Points_V1");
+ 
+  IgCollection& points = storage_->getCollection("Points_V1");
 
-   
   for (reco::MuonCollection::const_iterator it = collection->begin(), end = collection->end(); 
        it != end; ++it) 
   {
     int charge = (*it).charge();
 
-    std::cout<<"Muon"<<std::endl;
-
-    /*
     if ( (*it).track().isNonnull() ) // Tracker
     {
       IgCollectionItem imuon = trackerMuonCollection.create();
@@ -189,8 +176,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
 	config->error (error);
       }
     }
-    */
-    /*
+  
     if ( (*it).standAloneMuon().isNonnull() ) // Standalone
     {
       IgCollectionItem imuon = standAloneMuonCollection.create();
@@ -235,8 +221,6 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, S_CALO_E);
     }
-    */
-    
     
     if ( (*it).combinedMuon().isNonnull() ) // Global
     {
@@ -271,7 +255,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       {
         std::string error = 
           "### Error: ISpyMuon::refitTrack exception caught for GlobalMuon:";
-        error += e.explainSelf();
+        //error += e.explainSelf();
 	config->error (error);
       }
     }

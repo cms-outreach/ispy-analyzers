@@ -12,6 +12,7 @@
 #include "FWCore/ServiceRegistry/interface/ServiceMaker.h"
 #include "FWCore/ServiceRegistry/interface/ActivityRegistry.h"
 #include "FWCore/ServiceRegistry/interface/Service.h"
+#include "FWCore/ServiceRegistry/interface/StreamContext.h"
 #include "FWCore/Version/interface/GetReleaseVersion.h"
 
 #include <iostream>
@@ -36,8 +37,8 @@ ISpyService::ISpyService (const ParameterSet& iPSet, ActivityRegistry& iRegistry
   iRegistry.watchPostBeginJob(this,&ISpyService::postBeginJob);
   iRegistry.watchPostEndJob(this,&ISpyService::postEndJob);
 
-  iRegistry.watchPreProcessEvent(this,&ISpyService::preEventProcessing);
-  iRegistry.watchPostProcessEvent(this,&ISpyService::postEventProcessing);
+  iRegistry.watchPreEvent(this,&ISpyService::preEvent);
+  iRegistry.watchPostEvent(this,&ISpyService::postEvent);
 
   makeHeader();
 }
@@ -61,10 +62,8 @@ ISpyService::postBeginJob (void)
   
   outputFileName_.append(currentExt_);
   open(outputFileName_, zipFile0_);
- 
-  // Do we always want to do this?
-  // Perhaps specify whether or not we want to do this
-  // with a cfg parameter?
+  
+  // Do we want to open one all the time?
   open(outputESFileName_, zipFile1_);
 }
 
@@ -102,9 +101,9 @@ ISpyService::writeHeader(zipFile& zfile)
   zi.external_fa = 0;
 
   ziperr_ = zipOpenNewFileInZip(zfile, hs.c_str(), &zi,
-                                  0, 0, 0, 0, 0, // other stuff                                                                                          
-                                  Z_DEFLATED, // method                                                                                                  
-                                  9);
+				0, 0, 0, 0, 0, // other stuff                                                                         
+				Z_DEFLATED, // method                                                                                 
+				9);
   assert(ziperr_ == ZIP_OK);
 
   std::stringstream doss;
@@ -145,14 +144,12 @@ ISpyService::postEndJob(void)
 }
 
 void
-ISpyService::preEventProcessing(const edm::EventID& event, const edm::Timestamp& timestamp)
+ISpyService::preEvent(const edm::StreamContext& sc)
 {
-  currentRun_   = event.run();
-  currentEvent_ = event.event();
+  currentRun_   = sc.eventID().run();
+  currentEvent_ = sc.eventID().event();
 
   storages_[0] = new IgDataStorage;
-
-  // See related comment in postBeginJob 
   storages_[1] = new IgDataStorage;
 
   // If an ig file has already been written but we have yet to
@@ -175,7 +172,7 @@ ISpyService::preEventProcessing(const edm::EventID& event, const edm::Timestamp&
 }
 
 void
-ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup& eventSetup)
+ISpyService::postEvent(const edm::StreamContext& sc)
 {    
   if ( ! storages_[0]->empty() )
   {
@@ -244,19 +241,21 @@ ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup&
     zi.tmz_date.tm_hour = tt.tm_hour;
     zi.tmz_date.tm_mday = tt.tm_mday;
     zi.tmz_date.tm_mon  = tt.tm_mon;
-    zi.tmz_date.tm_year = tt.tm_year;
-   
+    zi.tmz_date.tm_year = tt.tm_year;   
     zi.dosDate = 0;
     zi.internal_fa = 0;
     zi.external_fa = 0;
+    
+    ziperr_ = zipOpenNewFileInZip(zipFile1_, goss.str().c_str(), &zi,
+                                    0, 0, 0, 0, 0, 
+                                    Z_DEFLATED, 9);
+    assert(ziperr_ == ZIP_OK);
 
     std::stringstream doss;
     doss << *storages_[1];
     write(doss, zipFile1_);
 
-    ziperr_ = zipOpenNewFileInZip(zipFile1_, goss.str().c_str(), &zi,
-                                    0, 0, 0, 0, 0, 
-                                    Z_DEFLATED, 9);
+    ziperr_ = zipCloseFileInZip(zipFile1_);
     assert(ziperr_ == ZIP_OK);
   }
   
@@ -267,7 +266,7 @@ ISpyService::postEventProcessing(const edm::Event& event, const edm::EventSetup&
 void 
 ISpyService::write(std::stringstream& soss, zipFile& zfile)
 {
-  long int size_buf = sizeof(std::string::size_type) + soss.str().length();
+  long int size_buf = soss.str().length();
   void* buf = (void*) malloc(size_buf);
   memcpy((void*) buf, soss.str().c_str(), size_buf);
 

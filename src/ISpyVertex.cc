@@ -76,9 +76,9 @@ void ISpyVertex::analyze(const edm::Event& event, const edm::EventSetup& eventSe
                      (*it).position().y()/100.0,
                      (*it).position().z()/100.0);
 
-      v[XERR] = (*it).xError();
-      v[YERR] = (*it).yError();
-      v[ZERR] = (*it).zError();
+      v[XERR] = (*it).xError()/100.0;
+      v[YERR] = (*it).yError()/100.0;
+      v[ZERR] = (*it).zError()/100.0;
 
       v[CHI2] = (*it).chi2();
       v[NDOF] = (*it).ndof();     

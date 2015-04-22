@@ -78,6 +78,7 @@ ISpyTrackingRecHit::analyze( const edm::Event& event, const edm::EventSetup& eve
         if ((*it).isValid () && !(*it).geographicalId ().null ())
         {
           LocalPoint point = ISpyLocalPosition::localPosition(&(*it), geom.product ());
+
           float x = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).x () / 100.0;
           float y = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).y () / 100.0;
           float z = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).z () / 100.0;

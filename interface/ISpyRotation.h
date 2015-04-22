@@ -3,12 +3,12 @@
 
 #include "DataFormats/GeometryVector/interface/Basic3DVector.h"
 
-class GeomDetUnit;
+class GeomDet;
 
 class ISpyRotation
 {
 public:
-  static void getAxisAngle(const GeomDetUnit* det, Basic3DVector<double>& axis, double& angle);
+  static void getAxisAngle(const GeomDet* det, Basic3DVector<double>& axis, double& angle);
 };
 
 #endif // ANALYZER_ISPY_ROTATION_H

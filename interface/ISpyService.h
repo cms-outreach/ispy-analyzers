@@ -8,6 +8,7 @@ class IgDataStorage;
 
 namespace edm {
   class ActivityRegistry;
+  class StreamContext;
   class ParameterSet;
   class EventID;
   class Timestamp;
@@ -22,8 +23,8 @@ namespace edm {
 
       void 		postBeginJob (void);
       void 		postEndJob (void);
-      void 		preEventProcessing (const edm::EventID&, const edm::Timestamp&);
-      void 		postEventProcessing (const edm::Event&, const edm::EventSetup&);
+      void 		preEvent (const edm::StreamContext&);
+      void 		postEvent (const edm::StreamContext&);
 
       IgDataStorage * 	storage (void) { return storages_[0]; }
       IgDataStorage * 	esStorage (void) { return storages_[1]; }

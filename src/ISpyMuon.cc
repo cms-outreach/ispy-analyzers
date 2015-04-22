@@ -96,6 +96,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
                         + inputTag_.instance() + ":" 
                         + inputTag_.process();
 
+  std::cout<<"Get Products_V1"<<std::endl;
   IgCollection& products = storage_->getCollection("Products_V1");
   IgProperty PROD = products.addProperty("Product", std::string ());
   IgCollectionItem item = products.create();
@@ -108,7 +109,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty T_PHI = trackerMuonCollection.addProperty("phi", 0.0);
   IgProperty T_ETA = trackerMuonCollection.addProperty("eta", 0.0);
   IgProperty T_CALO_E = trackerMuonCollection.addProperty("calo_energy", 0.0);
-
+  
   IgCollection& standAloneMuonCollection = storage_->getCollection("StandaloneMuons_V2");
   IgProperty S_PT = standAloneMuonCollection.addProperty("pt", 0.0);
   IgProperty S_CHARGE = standAloneMuonCollection.addProperty("charge", int(0));
@@ -132,10 +133,9 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
   IgAssociations& trackExtras = storage_->getAssociations("MuonTrackExtras_V1");
-
+ 
   IgCollection& points = storage_->getCollection("Points_V1");
-  IgProperty POS = points.addProperty("pos", IgV3d());
-   
+
   for (reco::MuonCollection::const_iterator it = collection->begin(), end = collection->end(); 
        it != end; ++it) 
   {
@@ -172,11 +172,11 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       {
         std::string error = 
           "### Error: ISpyMuon::refitTrack exception caught for TrackerMuon:";
-        error += e.explainSelf();
+        //error += e.explainSelf();
 	config->error (error);
       }
     }
-	
+  
     if ( (*it).standAloneMuon().isNonnull() ) // Standalone
     {
       IgCollectionItem imuon = standAloneMuonCollection.create();
@@ -191,6 +191,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
                           (*it).standAloneMuon()->vz()/100.0);
       imuon[S_PHI] = (*it).standAloneMuon()->phi();
       imuon[S_ETA] = (*it).standAloneMuon()->eta();
+      
       
       if ( (*it).standAloneMuon()->innerOk() && (*it).standAloneMuon()->outerOk() )
       {
@@ -215,6 +216,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
         trackExtras.associate(imuon, eitem);
       }
       
+      
 
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, S_CALO_E);
@@ -222,8 +224,10 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     
     if ( (*it).combinedMuon().isNonnull() ) // Global
     {
+      std::cout<<"create global muon"<<std::endl;
       IgCollectionItem imuon = globalMuonCollection.create();
-        
+      std::cout<<"created"<<std::endl;
+
       if ((*it).isMatchesValid () && (dtGeomValid_ || cscGeomValid_)) 
         addChambers(it);
 
@@ -251,7 +255,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       {
         std::string error = 
           "### Error: ISpyMuon::refitTrack exception caught for GlobalMuon:";
-        error += e.explainSelf();
+        //error += e.explainSelf();
 	config->error (error);
       }
     }
@@ -301,8 +305,14 @@ ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
 
     if ( const TrapezoidalPlaneBounds* b2 = dynamic_cast<const TrapezoidalPlaneBounds*>(b) )
     {
-      std::vector<float> parameters = b2->parameters();
-     
+      //std::vector<float> parameters = b2->parameters();
+      float parameters[4] = {
+        b2->parameters()[0],
+        b2->parameters()[1],
+        b2->parameters()[2],
+        b2->parameters()[3] 
+      };
+
       p[0] = geomDet->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
       p[1] = geomDet->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
       p[2] = geomDet->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 
@@ -329,21 +339,21 @@ ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
       p[7] = geomDet->surface().toGlobal(LocalPoint(-width/2,-length/2,-thickness/2));    
     }
 
-    chamber["front_1"] =        
+    chamber[FRONT_1] =        
       IgV3d(static_cast<double>(p[0].x()/100.0), static_cast<double>(p[0].y()/100.0), static_cast<double>(p[0].z()/100.0));
-    chamber["front_2"] = 
+    chamber[FRONT_2] = 
       IgV3d(static_cast<double>(p[1].x()/100.0), static_cast<double>(p[1].y()/100.0), static_cast<double>(p[1].z()/100.0));
-    chamber["front_4"] = 
+    chamber[FRONT_4] = 
       IgV3d(static_cast<double>(p[2].x()/100.0), static_cast<double>(p[2].y()/100.0), static_cast<double>(p[2].z()/100.0));
-    chamber["front_3"] = 
+    chamber[FRONT_3] = 
       IgV3d(static_cast<double>(p[3].x()/100.0), static_cast<double>(p[3].y()/100.0), static_cast<double>(p[3].z()/100.0));
-    chamber["back_1"] = 
+    chamber[BACK_1] = 
       IgV3d(static_cast<double>(p[4].x()/100.0), static_cast<double>(p[4].y()/100.0), static_cast<double>(p[4].z()/100.0));
-    chamber["back_2"] = 
+    chamber[BACK_2] = 
       IgV3d(static_cast<double>(p[5].x()/100.0), static_cast<double>(p[5].y()/100.0), static_cast<double>(p[5].z()/100.0));
-    chamber["back_4"] = 
+    chamber[BACK_4] = 
       IgV3d(static_cast<double>(p[6].x()/100.0), static_cast<double>(p[6].y()/100.0), static_cast<double>(p[6].z()/100.0));
-    chamber["back_3"] = 
+    chamber[BACK_3] = 
       IgV3d(static_cast<double>(p[7].x()/100.0), static_cast<double>(p[7].y()/100.0), static_cast<double>(p[7].z()/100.0));
 
   }

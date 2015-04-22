@@ -2,7 +2,6 @@
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Analyzers/interface/ISpyRotation.h"
 #include "ISpy/Services/interface/IgCollection.h"
-
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -100,8 +99,8 @@ void ISpyDTDigi::analyze (const edm::Event& event, const edm::EventSetup& eventS
 
 	const DTLayer* layer = geom->layer(dtlayerId);
 
-	const DTChamber* chamber = layer->chamber();
-	const DTChamberId chamberId = chamber->id();
+	//const DTChamber* chamber = layer->chamber();
+	//const DTChamberId chamberId = chamber->id();
 
 	const GeomDetUnit* det = geom->idToDetUnit(dtlayerId);
 

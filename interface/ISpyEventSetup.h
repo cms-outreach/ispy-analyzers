@@ -36,10 +36,20 @@ private:
   void	buildTracker3D (IgDataStorage *);
   void	buildPixelBarrel3D (IgDataStorage *);
   void	buildPixelEndcap3D (IgDataStorage *);
+  void buildPixelEndcapMinus3D(IgDataStorage *);
+  void buildPixelEndcapPlus3D(IgDataStorage *);
+
   void	buildTIB3D (IgDataStorage *);
   void	buildTOB3D (IgDataStorage *);
+
   void	buildTEC3D (IgDataStorage *);
+  void buildTECPlus3D(IgDataStorage *);
+  void buildTECMinus3D(IgDataStorage *);
+
   void	buildTID3D (IgDataStorage *);
+  void buildTIDPlus3D(IgDataStorage*);
+  void buildTIDMinus3D(IgDataStorage*);
+
   void	buildTrackerRPhi (IgDataStorage *);
   void	buildTrackerRZ (IgDataStorage *);
   void 	buildDriftTubes3D (IgDataStorage *);
@@ -48,8 +58,11 @@ private:
   void	buildCalo3D (IgDataStorage *);
   void	buildCaloRPhi (IgDataStorage *);
   void	buildCaloRZ (IgDataStorage *);
-  void 	buildCSC3D (IgDataStorage *);
+
+  void 	buildCSC3D (IgDataStorage *, const std::string&, int);
+
   void 	buildCSCRZ (IgDataStorage *);
+
   void	buildRPC3D (IgDataStorage *);
   void	buildRPCBarrel3D (IgDataStorage *);
   void	buildRPCPlusEndcap3D (IgDataStorage *);
@@ -58,6 +71,8 @@ private:
   void	buildRPCRZ (IgDataStorage *);
   void	buildMagneticField (IgDataStorage *);
   void	build3D (IgDataStorage *, const std::string&, DetId::Detector, int);
+  void buildEndcap3D(IgDataStorage *, const std::string&, DetId::Detector, int, int); 
+
   void	buildRPhi (IgDataStorage *, const std::string&, DetId::Detector, int, double);
   void	buildRZ (IgDataStorage *, const std::string&, DetId::Detector, int, double, double);
   void	buildLego (IgDataStorage *, const std::string&);

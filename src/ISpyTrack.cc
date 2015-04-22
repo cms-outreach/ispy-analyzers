@@ -179,7 +179,7 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
 	  {
 	    if ((*it)->isValid () && !(*it)->geographicalId ().null ())
 	    {
-	      IgCollectionItem hit = hits.create ();
+              IgCollectionItem hit = hits.create ();
 	      LocalPoint point = ISpyLocalPosition::localPosition(&(**it), geometry.product());
 
 	      hit[HIT_POS] = IgV3d(geometry->idToDet((*it)->geographicalId())->surface().toGlobal(point).x()/100.0,
@@ -187,7 +187,7 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
 				   geometry->idToDet((*it)->geographicalId())->surface().toGlobal(point).z()/100.0);
 
 	      trackHits.associate (item, hit);
-
+              
               IgCollectionItem det = dets.create();
               det[DET_ID] = static_cast<int>((*it)->geographicalId().rawId());
 
@@ -198,7 +198,14 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
  
               if(  const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *>(b) )
               {
-                std::vector<float> parameters = b2->parameters();
+                //std::vector<float> parameters = b2->parameters();
+                float parameters[4] = {
+                  b2->parameters()[0],
+                  b2->parameters()[1],
+                  b2->parameters()[2],
+                  b2->parameters()[3]
+                };
+
                 p[0] = detUnit->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
                 p[1] = detUnit->surface().toGlobal(LocalPoint(-parameters[0],-parameters[3],parameters[2])); 
                 p[2] = detUnit->surface().toGlobal(LocalPoint(parameters[1],parameters[3],parameters[2])); 

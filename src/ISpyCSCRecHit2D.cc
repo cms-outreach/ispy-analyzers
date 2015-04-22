@@ -142,22 +142,21 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
       irechit[ERR] = static_cast<double>((*it).errorWithinStrip());
 
       std::stringstream chs;
+      for ( unsigned int i = 0; i < (*it).nStrips(); i++ ) 
+        chs<< (*it).channels(i) <<" ";
 
-      for ( std::vector<int>::const_iterator cc = 
-              (*it).channels().begin(), ccEnd = (*it).channels().end(); 
-            cc != ccEnd; ++cc )
-        chs<< *cc <<" ";
-      
       irechit[CHS] = chs.str(); 
 
       std::stringstream wis;
 
-      for ( std::vector<int>::const_iterator cc 
-              = (*it).wgroups().begin(), ccEnd = (*it).wgroups().end();
-            cc != ccEnd; ++cc )
-        wis<< *cc <<" ";
-      
-      irechit[WIS] = wis.str(); 
+      int nwgs = (*it).nWireGroups();
+      if ( nwgs == 1 ) {
+        wis << "central wire: " << (*it).hitWire() << " of " << nwgs << " wiregroup"; 
+      } else {
+        wis << "central wire: " << (*it).hitWire() << " of " << nwgs << " wiregroups"; 
+      }
+   
+      irechit[WIS] = wis.str();
     }
   }
 

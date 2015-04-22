@@ -92,7 +92,7 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
          it!=itEnd; ++it)
     {       
       const GeomDetUnit *det = geom->idToDetUnit ((*it).rpcId ());
-      
+
       // warning:  error bars aren't right for tilted wires
       LocalPoint xyzLocal = it->localPosition ();
       float x = xyzLocal.x ();

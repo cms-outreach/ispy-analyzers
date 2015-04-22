@@ -96,7 +96,6 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
                         + inputTag_.instance() + ":" 
                         + inputTag_.process();
 
-  std::cout<<"Get Products_V1"<<std::endl;
   IgCollection& products = storage_->getCollection("Products_V1");
   IgProperty PROD = products.addProperty("Product", std::string ());
   IgCollectionItem item = products.create();

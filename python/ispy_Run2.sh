@@ -14,11 +14,12 @@ cat > ${CFGFILE}<<EOF
 import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("ISPY")
-process.load("Configuration.StandardSequences.Geometry_cff")
+#process.load("Configuration.StandardSequences.Geometry_cff")
+process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.GlobalTag.globaltag = 'GR_E_V43::All'
+process.GlobalTag.globaltag = 'GR_E_V47::All'
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring('${FILENAME}'))

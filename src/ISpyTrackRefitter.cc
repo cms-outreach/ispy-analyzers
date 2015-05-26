@@ -16,6 +16,7 @@ ISpyTrackRefitter::refitTrack(IgCollectionItem& item,
   if ( track.isNonnull() )
   {
     IgCollection &points = storage->getCollection("Points_V1");
+    IgProperty POS = points.addProperty("pos", IgV3d());
 
     reco::TransientTrack aRealTrack(track, field);
 
@@ -116,7 +117,7 @@ ISpyTrackRefitter::refitTrack(IgCollectionItem& item,
         float z = trj.globalPosition ().z () / 100.0;		   
         
         IgCollectionItem ipoint = points.create ();
-        ipoint["pos"] = IgV3d(x, y, z);
+        ipoint[POS] = IgV3d(x, y, z);
         association.associate (item, ipoint);		
         
         nGood++;
@@ -160,7 +161,7 @@ ISpyTrackRefitter::refitTrack(IgCollectionItem& item,
         float z = (1.0-w2)*z1 + w2*z2;
 
         IgCollectionItem ipoint = points.create ();
-        ipoint["pos"] = IgV3d(x,y,z);
+        ipoint[POS] = IgV3d(x,y,z);
         association.associate (item, ipoint);		
     
         nGood++;
@@ -189,7 +190,7 @@ ISpyTrackRefitter::refitTrack(IgCollectionItem& item,
         float y = trj.globalPosition ().y () / 100.0;
         float z = trj.globalPosition ().z () / 100.0;		   
         IgCollectionItem ipoint = points.create ();
-        ipoint["pos"] = IgV3d (x,y,z);
+        ipoint[POS] = IgV3d (x,y,z);
         association.associate (item, ipoint);		
       
         nGood++;

@@ -132,8 +132,6 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
   IgAssociations& trackExtras = storage_->getAssociations("MuonTrackExtras_V1");
- 
-  IgCollection& points = storage_->getCollection("Points_V1");
 
   for (reco::MuonCollection::const_iterator it = collection->begin(), end = collection->end(); 
        it != end; ++it) 
@@ -143,7 +141,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     if ( (*it).track().isNonnull() ) // Tracker
     {
       IgCollectionItem imuon = trackerMuonCollection.create();
-      
+
       if ( (*it).isMatchesValid() && (dtGeomValid_ || cscGeomValid_))                
         addChambers(it);
 
@@ -157,7 +155,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
 
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, T_CALO_E);
-
+      
       IgAssociations& muonTrackerPoints = storage_->getAssociations("MuonTrackerPoints_V1");
 
       try
@@ -223,9 +221,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     
     if ( (*it).combinedMuon().isNonnull() ) // Global
     {
-      std::cout<<"create global muon"<<std::endl;
       IgCollectionItem imuon = globalMuonCollection.create();
-      std::cout<<"created"<<std::endl;
 
       if ((*it).isMatchesValid () && (dtGeomValid_ || cscGeomValid_)) 
         addChambers(it);
@@ -260,7 +256,6 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     }
   }
 }
-
 
 void
 ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)

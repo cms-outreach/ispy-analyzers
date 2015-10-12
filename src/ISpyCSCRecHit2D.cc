@@ -144,6 +144,8 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
 #ifdef CMSSW_5_X
       // Not sure how to use the new interface so 
       // don't write out CHS and WIS for now 
+      irechit[CHS] = "";
+      irechit[WIS] = "";
 #else
       std::stringstream chs;
 

@@ -100,8 +100,8 @@ void ISpyDTDigi::analyze (const edm::Event& event, const edm::EventSetup& eventS
 
 	const DTLayer* layer = geom->layer(dtlayerId);
 
-	const DTChamber* chamber = layer->chamber();
-	const DTChamberId chamberId = chamber->id();
+	//const DTChamber* chamber = layer->chamber();
+	//const DTChamberId chamberId = chamber->id();
 
 	const GeomDetUnit* det = geom->idToDetUnit(dtlayerId);
 

@@ -1215,7 +1215,7 @@ ISpyEventSetup::buildDriftTubes3D (IgDataStorage *storage)
     const DTChamber *chamber = *it;
     if (chamber)
     {
-      DTChamberId chId = chamber->id ();
+      //DTChamberId chId = chamber->id ();
       uint32_t id = chamber->geographicalId ().rawId ();
 
       IgCollectionItem icorner = geometry.create ();
@@ -1271,7 +1271,7 @@ ISpyEventSetup::buildDriftTubesRPhi (IgDataStorage *storage)
       const DTChamber *chamber = *it;
       if (chamber)
       {
-	DTChamberId chId = chamber->id ();
+	//DTChamberId chId = chamber->id ();
 	uint32_t id = chamber->geographicalId ().rawId ();
 
 	IgCollectionItem icorner = geometry.create ();
@@ -1337,7 +1337,7 @@ ISpyEventSetup::buildDriftTubesRZ (IgDataStorage *storage)
       const DTChamber *chamber = *it;
       if (chamber)
       {
-	DTChamberId chId = chamber->id ();
+	//DTChamberId chId = chamber->id ();
 	uint32_t id = chamber->geographicalId ().rawId ();
 
 	IgCollectionItem icorner = geometry.create ();
@@ -1415,6 +1415,8 @@ ISpyEventSetup::buildCSC3D (IgDataStorage *storage, const std::string &name, int
 {
   IgCollection &geometry = storage->getCollection (name.c_str());
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1423,7 +1425,7 @@ ISpyEventSetup::buildCSC3D (IgDataStorage *storage, const std::string &name, int
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
-
+  */
   std::vector<CSCChamber *> vc = cscGeom_->chambers ();
     
   for (std::vector<CSCChamber *>::const_iterator it = vc.begin (), end = vc.end (); 
@@ -1441,7 +1443,7 @@ ISpyEventSetup::buildCSC3D (IgDataStorage *storage, const std::string &name, int
 	    
       IgCollectionItem icorner = geometry.create ();
       icorner[DET_ID] = static_cast<int>(id);
-      addCorners (icorner, cscChamber);	    
+      //addCorners (icorner, cscChamber);	    
     }
   }    
 }
@@ -1451,6 +1453,7 @@ ISpyEventSetup::buildCSCRZ (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("CSCRZ_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1459,7 +1462,7 @@ ISpyEventSetup::buildCSCRZ (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
-
+  */
   std::vector<CSCChamber *> vc = cscGeom_->chambers ();
     
   double p0 = M_PI / 2.0;
@@ -1485,7 +1488,7 @@ ISpyEventSetup::buildCSCRZ (IgDataStorage *storage)
 	    
 	IgCollectionItem icorner = geometry.create ();
 	icorner[DET_ID] = static_cast<int>(id);
-	addCorners (icorner, cscChamber);	    
+	//addCorners (icorner, cscChamber);	    
       }
     }    
   }
@@ -1496,6 +1499,7 @@ ISpyEventSetup::buildRPC3D (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPC3D_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1504,7 +1508,7 @@ ISpyEventSetup::buildRPC3D (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
-
+  */
   std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
 
   for (std::vector<RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
@@ -1520,7 +1524,7 @@ ISpyEventSetup::buildRPC3D (IgDataStorage *storage)
 	uint32_t id = (*it)->geographicalId ().rawId ();		
 	IgCollectionItem icorner = geometry.create ();
 	icorner[DET_ID] = static_cast<int>(id);
-	addCorners (icorner, *it);	    
+	//addCorners (icorner, *it);	    
       }
     }
   }
@@ -1531,6 +1535,7 @@ ISpyEventSetup::buildRPCBarrel3D (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPCBarrel3D_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1539,7 +1544,7 @@ ISpyEventSetup::buildRPCBarrel3D (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
-
+  */
   std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
 
   for (std::vector<RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
@@ -1556,7 +1561,7 @@ ISpyEventSetup::buildRPCBarrel3D (IgDataStorage *storage)
 	uint32_t id = (*it)->geographicalId ().rawId ();		
 	IgCollectionItem icorner = geometry.create ();
 	icorner[DET_ID] = static_cast<int>(id);
-	addCorners (icorner, *it);	    
+	//addCorners (icorner, *it);	    
       }
     }
   }
@@ -1567,6 +1572,7 @@ ISpyEventSetup::buildRPCPlusEndcap3D (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPCPlusEndcap3D_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1575,7 +1581,7 @@ ISpyEventSetup::buildRPCPlusEndcap3D (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
-
+  */
   std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
 
   for (std::vector<RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
@@ -1592,7 +1598,7 @@ ISpyEventSetup::buildRPCPlusEndcap3D (IgDataStorage *storage)
 	uint32_t id = (*it)->geographicalId ().rawId ();		
 	IgCollectionItem icorner = geometry.create ();
 	icorner[DET_ID] = static_cast<int>(id);
-	addCorners (icorner, *it);	    
+	//addCorners (icorner, *it);	    
       }
     }
   }
@@ -1603,6 +1609,7 @@ ISpyEventSetup::buildRPCMinusEndcap3D (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPCMinusEndcap3D_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1611,7 +1618,7 @@ ISpyEventSetup::buildRPCMinusEndcap3D (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
-
+  */
   std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
 
   for (std::vector<RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
@@ -1628,7 +1635,7 @@ ISpyEventSetup::buildRPCMinusEndcap3D (IgDataStorage *storage)
 	uint32_t id = (*it)->geographicalId ().rawId ();		
 	IgCollectionItem icorner = geometry.create ();
 	icorner[DET_ID] = static_cast<int>(id);
-	addCorners (icorner, *it);	    
+	//addCorners (icorner, *it);	    
       }
     }
   }
@@ -1639,6 +1646,7 @@ ISpyEventSetup::buildRPCRPhi (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPCRPhi_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1647,7 +1655,7 @@ ISpyEventSetup::buildRPCRPhi (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
-
+  */
   std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
 
   for (std::vector<RPCRoll *>::const_iterator it = vc.begin (), end = vc.end (); 
@@ -1665,7 +1673,7 @@ ISpyEventSetup::buildRPCRPhi (IgDataStorage *storage)
 	  uint32_t id = (*it)->geographicalId ().rawId ();		
 	  IgCollectionItem icorner = geometry.create ();
 	  icorner[DET_ID] = static_cast<int>(id);
-	  addCorners (icorner, *it);	    
+	  //addCorners (icorner, *it);	    
 	}
       }
     }
@@ -1677,6 +1685,7 @@ ISpyEventSetup::buildRPCRZ (IgDataStorage *storage)
 {
   IgCollection &geometry = storage->getCollection ("RPCRZ_V1");
   IgProperty DET_ID  = geometry.addProperty("detid", int (0)); 
+  /*
   IgProperty FRONT_1 = geometry.addProperty("front_1", IgV3d());
   IgProperty FRONT_2 = geometry.addProperty("front_2", IgV3d());
   IgProperty FRONT_3 = geometry.addProperty("front_3", IgV3d());
@@ -1685,7 +1694,7 @@ ISpyEventSetup::buildRPCRZ (IgDataStorage *storage)
   IgProperty BACK_2  = geometry.addProperty("back_2",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
-
+  */
   std::vector<RPCRoll *> vc = rpcGeom_->rolls ();
 
   double p0 = M_PI / 2.0;
@@ -1712,7 +1721,7 @@ ISpyEventSetup::buildRPCRZ (IgDataStorage *storage)
 	  uint32_t id = (*it)->geographicalId ().rawId ();		
 	  IgCollectionItem icorner = geometry.create ();
 	  icorner[DET_ID] = static_cast<int>(id);
-	  addCorners (icorner, *it);	    
+	  //addCorners (icorner, *it);	    
 	}
       }
     }

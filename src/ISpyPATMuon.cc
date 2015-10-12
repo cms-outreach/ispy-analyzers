@@ -103,8 +103,8 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
  
   IgAssociations& trackExtras = storage->getAssociations("PATMuonTrackExtras_V1");
 
-  IgCollection& points = storage->getCollection("Points_V1");
-  IgProperty POS = points.addProperty("pos", IgV3d());
+  //IgCollection& points = storage->getCollection("Points_V1");
+  //IgProperty POS = points.addProperty("pos", IgV3d());
 
   for ( std::vector<pat::Muon>::const_iterator t = collection->begin(), tEnd = collection->end(); 
         t != tEnd; ++t )

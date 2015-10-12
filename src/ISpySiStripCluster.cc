@@ -77,7 +77,7 @@ ISpySiStripCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
 
     for (; it != end; ++it)
     {
-      edmNew::DetSet<SiStripCluster> ds = *it;
+      //edmNew::DetSet<SiStripCluster> ds = *it;
       const uint32_t detID = it->detId ();
       DetId detid (detID);
 

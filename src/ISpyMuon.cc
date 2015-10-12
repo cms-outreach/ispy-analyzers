@@ -133,8 +133,8 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
  
   IgAssociations& trackExtras = storage_->getAssociations("MuonTrackExtras_V1");
 
-  IgCollection& points = storage_->getCollection("Points_V1");
-  IgProperty POS = points.addProperty("pos", IgV3d());
+  //IgCollection& points = storage_->getCollection("Points_V1");
+  //IgProperty POS = points.addProperty("pos", IgV3d());
    
   for (reco::MuonCollection::const_iterator it = collection->begin(), end = collection->end(); 
        it != end; ++it) 
@@ -329,21 +329,21 @@ ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
       p[7] = geomDet->surface().toGlobal(LocalPoint(-width/2,-length/2,-thickness/2));    
     }
 
-    chamber["front_1"] =        
+    chamber[FRONT_1] =        
       IgV3d(static_cast<double>(p[0].x()/100.0), static_cast<double>(p[0].y()/100.0), static_cast<double>(p[0].z()/100.0));
-    chamber["front_2"] = 
+    chamber[FRONT_2] = 
       IgV3d(static_cast<double>(p[1].x()/100.0), static_cast<double>(p[1].y()/100.0), static_cast<double>(p[1].z()/100.0));
-    chamber["front_4"] = 
+    chamber[FRONT_4] = 
       IgV3d(static_cast<double>(p[2].x()/100.0), static_cast<double>(p[2].y()/100.0), static_cast<double>(p[2].z()/100.0));
-    chamber["front_3"] = 
+    chamber[FRONT_3] = 
       IgV3d(static_cast<double>(p[3].x()/100.0), static_cast<double>(p[3].y()/100.0), static_cast<double>(p[3].z()/100.0));
-    chamber["back_1"] = 
+    chamber[BACK_1] = 
       IgV3d(static_cast<double>(p[4].x()/100.0), static_cast<double>(p[4].y()/100.0), static_cast<double>(p[4].z()/100.0));
-    chamber["back_2"] = 
+    chamber[BACK_2] = 
       IgV3d(static_cast<double>(p[5].x()/100.0), static_cast<double>(p[5].y()/100.0), static_cast<double>(p[5].z()/100.0));
-    chamber["back_4"] = 
+    chamber[BACK_4] = 
       IgV3d(static_cast<double>(p[6].x()/100.0), static_cast<double>(p[6].y()/100.0), static_cast<double>(p[6].z()/100.0));
-    chamber["back_3"] = 
+    chamber[BACK_3] = 
       IgV3d(static_cast<double>(p[7].x()/100.0), static_cast<double>(p[7].y()/100.0), static_cast<double>(p[7].z()/100.0));
 
   }

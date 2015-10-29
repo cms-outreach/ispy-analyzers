@@ -97,8 +97,6 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
   edm::Handle<std::vector<reco::TrackExtrapolation> > collection;
   event.getByLabel(inputTag_, collection);
 
-  std::cout<<"TrackExtrapolation"<<std::endl;
-
   if ( ! collection.isValid() ) 
   {
     std::string error = "### Error: TrackExtrapolation "

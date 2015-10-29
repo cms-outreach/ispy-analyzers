@@ -3,23 +3,15 @@ from ISpy.Analyzers.ISpyEvent_cfi import *
 from ISpy.Analyzers.ISpyBeamSpot_cfi import *
 
 from ISpy.Analyzers.ISpyCaloCluster_cfi import *
-
 from ISpy.Analyzers.ISpyCaloTower_cfi import *
 from ISpy.Analyzers.ISpyCaloTau_cfi import *
 from ISpy.Analyzers.ISpyCaloMET_cfi import *
-
 
 from ISpy.Analyzers.ISpyEBRecHit_cfi import *
 from ISpy.Analyzers.ISpyEERecHit_cfi import *
 from ISpy.Analyzers.ISpyESRecHit_cfi import *
 
-from ISpy.Analyzers.ISpyEBDigi_cfi import *
-from ISpy.Analyzers.ISpyEEDigi_cfi import *
-
-from ISpy.Analyzers.ISpyElectron_cfi import *
 from ISpy.Analyzers.ISpyGsfElectron_cfi import *
-from ISpy.Analyzers.ISpyGsfPFRecTrack_cfi import *
-from ISpy.Analyzers.ISpyGsfTrack_cfi import *
 
 from ISpy.Analyzers.ISpyHBRecHit_cfi import *
 from ISpy.Analyzers.ISpyHERecHit_cfi import *
@@ -43,8 +35,6 @@ from ISpy.Analyzers.ISpyPhoton_cfi import *
 from ISpy.Analyzers.ISpyPixelDigi_cfi import *
 from ISpy.Analyzers.ISpyPreshowerCluster_cfi import *
 from ISpy.Analyzers.ISpyRPCRecHit_cfi import *
-
-
 
 from ISpy.Analyzers.ISpySuperCluster_cfi import *
 from ISpy.Analyzers.ISpyTrack_cfi import *
@@ -70,18 +60,12 @@ ISpySuperCluster.iSpySuperClusterTag = cms.InputTag("correctedHybridSuperCluster
 iSpy_sequence = cms.Sequence(ISpyEvent*
                              ISpyBeamSpot*
                              ISpyCaloCluster*
-                             #ISpyCaloHit*
-                             ISpyCaloTower*
                              ISpyCaloMET*
                              ISpyCaloTau*
                              ISpyEBRecHit*
                              ISpyEERecHit*
                              ISpyESRecHit*
-                             ISpyEBDigi*
-                             ISpyEEDigi*
-                             #ISpyElectron*
-                             #ISpyGsfElectron*
-                             #ISpyGsfTrack*
+                             #ISpyGsfElectron* Electron and Tracker Muons are handled in TrackExtrapolation
                              ISpyHBRecHit*
                              ISpyHERecHit*
                              ISpyHFRecHit*
@@ -90,8 +74,6 @@ iSpy_sequence = cms.Sequence(ISpyEvent*
                              ISpyMET*
                              ISpyMuon*
                              ISpyPhoton*
-                             ISpySuperCluster*
-                             #ISpyTrack*
                              ISpyTrackExtrapolation*
                              ISpyTriggerEvent*
                              ISpyVertex)

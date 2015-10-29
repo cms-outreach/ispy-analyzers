@@ -2,11 +2,10 @@ import FWCore.ParameterSet.Config as cms
 import FWCore.PythonUtilities.LumiList as LumiList
 
 process = cms.Process("ISPY")
-#goodJSON = 'Cert_136033-149442_7TeV_Apr21ReReco_Collisions10_JSON_v2.txt' this is from the last release; we need a new one
-#myLumis = LumiList.LumiList(filename = goodJSON).getCMSSWString().split(',')
+goodJSON = 'Cert_160404-180252_7TeV_ReRecoNov08_Collisions11_JSON.txt'
+myLumis = LumiList.LumiList(filename = goodJSON).getCMSSWString().split(',')
 
 process.load("ISpy/Analyzers/ISpy_AOD_Producer_cff")
-#process.load("Configuration.StandardSequences.Geometry_cff")
 process.load('Configuration.Geometry.GeometryIdeal_cff')
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
@@ -40,8 +39,8 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
     #'/store/data/Run2011A/MuOnia/AOD/12Oct2013-v1/00000/002104A5-2A44-E311-B69F-00304867918A.root'
 ))
 
-#process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
-#process.source.lumisToProcess.extend(myLumis)
+process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
+process.source.lumisToProcess.extend(myLumis)
 
 from FWCore.MessageLogger.MessageLogger_cfi import *
 
@@ -59,7 +58,7 @@ process.add_(
 
 # This number is the total number of events run over. "-1" indicates all.
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(25)
 )
 
 process.p1 = cms.Path(process.iSpy_sequence)

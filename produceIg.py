@@ -29,17 +29,15 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
     # can't find file? '/store/data/Run2011A/ForwardTriggers/AOD/12Oct2013-v1/00000/2657E5CA-8945-E311-B334-02163E008CCD.root'
 
     #'/store/data/Run2011A/HT/AOD/12Oct2013-v1/00000/20E00925-AD48-E311-ADD5-0025905964B6.root'
-
-    # no events with this file? '/store/data/Run2011A/Jet/AOD/12Oct2013-v1/10000/06E59C16-0A40-E311-B387-02163E008D9F.root'
-
+    #'/store/data/Run2011A/Jet/AOD/12Oct2013-v1/20000/000D4260-D23E-E311-A850-02163E008D77.root'
     #'/store/data/Run2011A/MET/AOD/12Oct2013-v1/20000/000A5D59-B842-E311-B073-003048679296.root'
     #'/store/data/Run2011A/METBTag/AOD/12Oct2013-v1/00000/D639BB50-3344-E311-987E-003048679236.root'
     #'/store/data/Run2011A/MinimumBias/AOD/12Oct2013-v1/00000/000971D5-7F46-E311-A57D-02163E008F6D.root'
 
-    # no events? '/store/data/Run2011A/MinimumBias0/AOD/12Oct2013-v1/00000/04B6A98D-1D48-E311-BBF7-003048F23FA2.root'
+    # no events? '/store/data/Run2011A/MinimumBias0/AOD/12Oct2013-v1/00000/04B6A98D-1D48-E311-BBF7-003048F23FA2.root'    
     # no events? '/store/data/Run2011A/MinimumBias1/AOD/12Oct2013-v1/20000/0675F4B9-D647-E311-A9D5-02163E00CFE4.root'
     # no events? '/store/data/Run2011A/MinimumBias2/AOD/12Oct2013-v1/00000/0423BC6D-FA47-E311-AC9D-C860001BD84A.root'
-
+    
     #'/store/data/Run2011A/MuEG/AOD/12Oct2013-v1/20000/003DD74E-653E-E311-9F63-002590494D18.root'
     #'/store/data/Run2011A/MuHad/AOD/12Oct2013-v1/00000/006A70B9-7845-E311-ADC1-003048679188.root'
     '/store/data/Run2011A/MuOnia/AOD/12Oct2013-v1/00000/002104A5-2A44-E311-B69F-00304867918A.root'

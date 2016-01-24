@@ -40,7 +40,7 @@ process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
     
     #'/store/data/Run2011A/MuEG/AOD/12Oct2013-v1/20000/003DD74E-653E-E311-9F63-002590494D18.root'
     #'/store/data/Run2011A/MuHad/AOD/12Oct2013-v1/00000/006A70B9-7845-E311-ADC1-003048679188.root'
-    '/store/data/Run2011A/MuOnia/AOD/12Oct2013-v1/00000/002104A5-2A44-E311-B69F-00304867918A.root'
+    '/eos/opendata/cms/Run2011A/MuOnia/AOD/12Oct2013-v1/00000/002104A5-2A44-E311-B69F-00304867918A.root'
 ))
 
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()

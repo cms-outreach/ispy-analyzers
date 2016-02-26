@@ -12,14 +12,16 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/JetReco/interface/PFJet.h"
-#include "DataFormats/JetReco/interface/PFJetCollection.h"
 
 using namespace edm::service;
 using namespace edm;
 using namespace reco;
 
 ISpyPFJet::ISpyPFJet(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPFJetTag")){}
+: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPFJetTag"))
+{
+  jetToken_ = consumes<PFJetCollection>(inputTag_);
+}
 
 void ISpyPFJet::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -37,7 +39,7 @@ void ISpyPFJet::analyze(const edm::Event& event, const edm::EventSetup& eventSet
   IgDataStorage *storage = config->storage();
 
   edm::Handle<PFJetCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(jetToken_, collection);
 
   if ( collection.isValid() )
   {

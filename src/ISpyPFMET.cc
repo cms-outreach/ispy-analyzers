@@ -12,14 +12,16 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/METReco/interface/PFMET.h"
-#include "DataFormats/METReco/interface/PFMETCollection.h"
 
 using namespace edm::service;
 using namespace edm;
 using namespace reco;
 
 ISpyPFMET::ISpyPFMET(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPFMETTag")){}
+: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPFMETTag"))
+{
+  metToken_ = consumes<PFMETCollection>(inputTag_);
+}
 
 void ISpyPFMET::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -37,7 +39,7 @@ void ISpyPFMET::analyze(const edm::Event& event, const edm::EventSetup& eventSet
   IgDataStorage *storage = config->storage();
 
   edm::Handle<PFMETCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(metToken_, collection);
 
   if ( collection.isValid() )
   {

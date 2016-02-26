@@ -34,7 +34,9 @@ ISpyMuon::ISpyMuon(const edm::ParameterSet& iConfig)
     out_(iConfig.getUntrackedParameter<double>("propagatorOut", 0.0)),
     step_(iConfig.getUntrackedParameter<double>("propagatorStep", 0.05)),
     dtGeomValid_(false), cscGeomValid_(false)
-{}      
+{
+  muonToken_ = consumes<reco::MuonCollection>(inputTag_);
+}      
 
 void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -76,7 +78,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     config->error("### Error: Muons  CSC Geometry not valid");
 
   edm::Handle<reco::MuonCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(muonToken_, collection);
 
   if ( ! collection.isValid() )
   {

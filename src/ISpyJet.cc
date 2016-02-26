@@ -3,7 +3,6 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/JetReco/interface/CaloJet.h"
-#include "DataFormats/JetReco/interface/CaloJetCollection.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -20,7 +19,10 @@ using namespace edm::service;
 ISpyJet::ISpyJet (const edm::ParameterSet& iConfig)
     : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyJetTag")),
       energyCut_(iConfig.getUntrackedParameter<double>("energyCut", 0.1))
-{}
+{
+  jetToken_ = consumes<reco::CaloJetCollection>(inputTag_);
+  consumesMany<CaloTowerCollection>();
+}
 
 void
 ISpyJet::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -36,10 +38,10 @@ ISpyJet::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
   }
     
   edm::Handle<reco::CaloJetCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(jetToken_, collection);
     
   std::vector<edm::Handle<CaloTowerCollection> > towerCollections;
-  event.getManyByType (towerCollections);
+  event.getManyByType(towerCollections);
 
   if (collection.isValid ())
   {	

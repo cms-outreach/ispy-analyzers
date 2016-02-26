@@ -4,6 +4,8 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
+#include "DataFormats/JetReco/interface/CaloJetCollection.h"
+
 class ISpyJet : public edm::EDAnalyzer
 {
 public:
@@ -14,6 +16,7 @@ public:
 private:
   edm::InputTag	inputTag_;
   double 	energyCut_;
+  edm::EDGetTokenT<reco::CaloJetCollection> jetToken_;
 };
 
 #endif // ANALYZER_ISPY_JET_H

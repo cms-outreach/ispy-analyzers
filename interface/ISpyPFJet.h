@@ -4,6 +4,8 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
+#include "DataFormats/JetReco/interface/PFJetCollection.h"
+
 class ISpyPFJet : public edm::EDAnalyzer
 {
 public:
@@ -12,5 +14,6 @@ public:
     virtual void analyze(const edm::Event&, const edm::EventSetup&);
 private:
     edm::InputTag inputTag_;
+    edm::EDGetTokenT<reco::PFJetCollection> jetToken_;
 };
 #endif // ANALYZER_ISPY_PFJET_H

@@ -3,7 +3,6 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/METReco/interface/MET.h"
-#include "DataFormats/METReco/interface/METFwd.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -17,7 +16,9 @@ using namespace reco;
 
 ISpyMET::ISpyMET (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyMETTag"))
-{}
+{
+  metToken_ = consumes<METCollection>(inputTag_);
+}
 
 void
 ISpyMET::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -33,7 +34,7 @@ ISpyMET::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
   }
     
   edm::Handle<METCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(metToken_, collection);
 
   if (collection.isValid ())
   {	

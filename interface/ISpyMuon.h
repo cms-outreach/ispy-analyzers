@@ -45,6 +45,9 @@ private:
   void addCaloEnergy(reco::MuonCollection::const_iterator it, 
                      IgCollectionItem& imuon,
                      IgProperty& property);
+
+
+  edm::EDGetTokenT<reco::MuonCollection> muonToken_;
 };
 
 #endif

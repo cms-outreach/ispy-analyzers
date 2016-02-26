@@ -4,6 +4,8 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
+#include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
+
 class ISpyHORecHit : public edm::EDAnalyzer
 {
 public:
@@ -13,6 +15,7 @@ public:
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
 private:
   edm::InputTag	inputTag_;
+  edm::EDGetTokenT<HORecHitCollection> rechitToken_;
 };
 
 #endif // ANALYZER_ISPY_HOREC_HIT_H

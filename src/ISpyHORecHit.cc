@@ -2,7 +2,6 @@
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 #include "DataFormats/HcalRecHit/interface/HORecHit.h"
 
 #include "FWCore/Framework/interface/Event.h"
@@ -24,7 +23,9 @@ using namespace edm::service;
 
 ISpyHORecHit::ISpyHORecHit (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyHORecHitTag"))
-{}
+{
+  rechitToken_ = consumes<HORecHitCollection>(inputTag_);
+}
 
 void
 ISpyHORecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -54,7 +55,7 @@ ISpyHORecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
   }
   
   edm::Handle<HORecHitCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(rechitToken_, collection);
 
   if (collection.isValid ())
   {	    

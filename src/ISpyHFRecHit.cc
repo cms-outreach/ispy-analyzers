@@ -2,7 +2,6 @@
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 #include "DataFormats/HcalRecHit/interface/HFRecHit.h"
 
 #include "FWCore/Framework/interface/Event.h"
@@ -24,7 +23,9 @@ using namespace edm::service;
 
 ISpyHFRecHit::ISpyHFRecHit (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyHFRecHitTag"))
-{}
+{
+  rechitToken_ = consumes<HFRecHitCollection>(inputTag_);
+}
 
 void
 ISpyHFRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -54,7 +55,7 @@ ISpyHFRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
   }
 
   edm::Handle<HFRecHitCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(rechitToken_, collection);
 
   if (collection.isValid ())
   {	    

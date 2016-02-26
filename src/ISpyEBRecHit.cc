@@ -2,9 +2,8 @@
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/EcalRecHit/interface/EcalRecHit.h"
-#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 #include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHit.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -25,7 +24,9 @@ using namespace edm::service;
 
 ISpyEBRecHit::ISpyEBRecHit (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyEBRecHitTag"))
-{}
+{
+  rechitToken_ = consumes<EcalRecHitCollection>(inputTag_);
+}
 
 void
 ISpyEBRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -55,7 +56,7 @@ ISpyEBRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
   }
 
   edm::Handle<EcalRecHitCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(rechitToken_,collection);
 
   if (collection.isValid ())
   {	    

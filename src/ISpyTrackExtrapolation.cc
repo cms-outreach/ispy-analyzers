@@ -13,9 +13,7 @@
 
 #include "DataFormats/JetReco/interface/TrackExtrapolation.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
-#include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/MuonReco/interface/Muon.h"
-#include "DataFormats/MuonReco/interface/MuonFwd.h"
 
 #include <vector>
 
@@ -77,7 +75,11 @@ ISpyTrackExtrapolation::ISpyTrackExtrapolation(const edm::ParameterSet& iConfig)
     gsfElectronInputTag_(iConfig.getParameter<edm::InputTag>("iSpyGsfElectronTrackExtrapolationTag")),
     muonInputTag_(iConfig.getParameter<edm::InputTag>("iSpyMuonTrackExtrapolationTag"))
 
-{}
+{
+  trackToken_ = consumes<std::vector<reco::TrackExtrapolation> >(inputTag_);
+  electronToken_ = consumes<reco::GsfElectronCollection>(gsfElectronInputTag_);
+  muonToken_ = consumes<reco::MuonCollection>(muonInputTag_);
+}
  
 void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -95,9 +97,7 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
   IgDataStorage *storage = config->storage();
 
   edm::Handle<std::vector<reco::TrackExtrapolation> > collection;
-  event.getByLabel(inputTag_, collection);
-
-  std::cout<<"TrackExtrapolation"<<std::endl;
+  event.getByToken(trackToken_, collection);
 
   if ( ! collection.isValid() ) 
   {
@@ -186,7 +186,7 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
   }
 
   edm::Handle<reco::GsfElectronCollection> electron_collection;
-  event.getByLabel(gsfElectronInputTag_, electron_collection);
+  event.getByToken(electronToken_, electron_collection);
 
   if ( electron_collection.isValid() ) 
   {
@@ -266,7 +266,7 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
   }
   
   edm::Handle<reco::MuonCollection> muon_collection;
-  event.getByLabel(muonInputTag_, muon_collection);
+  event.getByToken(muonToken_, muon_collection);
 
   if ( muon_collection.isValid() )
   {

@@ -4,6 +4,10 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
+#include "DataFormats/JetReco/interface/TrackExtrapolation.h"
+#include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
+#include "DataFormats/MuonReco/interface/MuonFwd.h"
+
 class ISpyTrackExtrapolation : public edm::EDAnalyzer
 {
 public:
@@ -14,5 +18,9 @@ private:
   edm::InputTag inputTag_;
   edm::InputTag gsfElectronInputTag_;
   edm::InputTag muonInputTag_;
+
+  edm::EDGetTokenT<std::vector<reco::TrackExtrapolation> > trackToken_;
+  edm::EDGetTokenT<reco::GsfElectronCollection> electronToken_;
+  edm::EDGetTokenT<reco::MuonCollection> muonToken_;
 };
 #endif // ANALYZER_ISPY_TRACKEXTRAPOLATION_H

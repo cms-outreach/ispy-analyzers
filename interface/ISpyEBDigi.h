@@ -4,6 +4,9 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
+#include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
+#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
+
 class ISpyEBDigi : public edm::EDAnalyzer
 {
 public:
@@ -13,5 +16,8 @@ public:
 private:
   edm::InputTag inputDigiTag_;
   edm::InputTag inputRecHitTag_;
+
+  edm::EDGetTokenT<EBDigiCollection> digiToken_;
+  edm::EDGetTokenT<EcalRecHitCollection> rechitToken_;
 };
 #endif // ANALYZER_ISPY_EBDIGI_H

@@ -3,6 +3,7 @@
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/EgammaCandidates/interface/PhotonFwd.h"
 
 class ISpyPhoton : public edm::EDAnalyzer
 {
@@ -13,6 +14,8 @@ public:
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
 private:
   edm::InputTag inputTag_;
+  edm::EDGetTokenT<reco::PhotonCollection> photonToken_;
+  
 };
 
 #endif // ANALYZER_ISPY_PHOTON_H

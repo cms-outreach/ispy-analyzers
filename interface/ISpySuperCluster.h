@@ -4,6 +4,7 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/CaloRecHit/interface/CaloCluster.h"
+#include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
 
 class ISpySuperCluster : public edm::EDAnalyzer
 {
@@ -15,6 +16,7 @@ public:
 private:
   edm::InputTag inputTag_;
   const std::string algoName(reco::CaloCluster::AlgoId key);
+  edm::EDGetTokenT<reco::SuperClusterCollection> clusterToken_;
 };
 
 #endif // ANALYZER_ISPY_SUPERCLUSTER_H

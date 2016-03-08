@@ -2,7 +2,6 @@
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/RPCRecHit/interface/RPCRecHitCollection.h"
 #include "DataFormats/RPCRecHit/interface/RPCRecHit.h"
 #include "DataFormats/MuonDetId/interface/RPCDetId.h"
 
@@ -25,7 +24,9 @@ using namespace edm::service;
 
 ISpyRPCRecHit::ISpyRPCRecHit (const edm::ParameterSet& iConfig)
     : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyRPCRecHitTag"))
-{}
+{
+  rechitToken_ = consumes<RPCRecHitCollection>(inputTag_);
+}
 
 void
 ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -55,7 +56,7 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
   }
     
   edm::Handle<RPCRecHitCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(rechitToken_, collection);
 
   if ( collection.isValid() && geom.isValid() )
   {	    

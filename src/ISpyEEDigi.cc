@@ -9,9 +9,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
-#include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHit.h"
-#include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 #include "DataFormats/EcalDetId/interface/EcalSubdetector.h"
 
 #include "ISpy/Services/interface/IgCollection.h"
@@ -27,7 +25,10 @@ using namespace edm;
 ISpyEEDigi::ISpyEEDigi(const edm::ParameterSet& iConfig)
   : inputDigiTag_(iConfig.getParameter<edm::InputTag>("iSpyEEDigiTag")),
     inputRecHitTag_(iConfig.getParameter<edm::InputTag>("iSpyEERecHitTag"))
-{}
+{
+  digiToken_ = consumes<EEDigiCollection>(inputDigiTag_);
+  rechitToken_ = consumes<EcalRecHitCollection>(inputRecHitTag_);
+}
 
 void ISpyEEDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -56,7 +57,7 @@ void ISpyEEDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSe
   }
 
   edm::Handle<EEDigiCollection> digiCollection;
-  event.getByLabel(inputDigiTag_, digiCollection);
+  event.getByToken(digiToken_, digiCollection);
 
   if ( ! digiCollection.isValid() )
   {
@@ -69,7 +70,7 @@ void ISpyEEDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSe
   }
 
   edm::Handle<EcalRecHitCollection> recHitCollection;
-  event.getByLabel (inputRecHitTag_, recHitCollection);
+  event.getByToken(rechitToken_, recHitCollection);
 
   if ( ! recHitCollection.isValid() )
   {

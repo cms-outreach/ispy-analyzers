@@ -16,13 +16,15 @@
 #include "Geometry/Records/interface/CaloGeometryRecord.h"
 
 #include "DataFormats/EgammaReco/interface/SuperCluster.h"
-#include "DataFormats/EgammaReco/interface/SuperClusterFwd.h"
 
 using namespace edm::service;
 using namespace edm;
 
 ISpySuperCluster::ISpySuperCluster(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpySuperClusterTag")){}
+: inputTag_(iConfig.getParameter<edm::InputTag>("iSpySuperClusterTag"))
+{
+  clusterToken_ = consumes<reco::SuperClusterCollection>(inputTag_);
+}
 
 void ISpySuperCluster::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -50,7 +52,7 @@ void ISpySuperCluster::analyze(const edm::Event& event, const edm::EventSetup& e
   }
 
   edm::Handle<reco::SuperClusterCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(clusterToken_, collection);
 
   if ( collection.isValid() )
   {

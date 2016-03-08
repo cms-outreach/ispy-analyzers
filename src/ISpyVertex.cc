@@ -12,14 +12,16 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/VertexReco/interface/Vertex.h"
-#include "DataFormats/VertexReco/interface/VertexFwd.h"
 
 using namespace edm::service;
 using namespace edm;
 using namespace reco;
 
 ISpyVertex::ISpyVertex(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyVertexTag")){}
+: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyVertexTag"))
+{
+  vertexToken_ = consumes<VertexCollection>(inputTag_);
+}
 
 void ISpyVertex::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -37,7 +39,7 @@ void ISpyVertex::analyze(const edm::Event& event, const edm::EventSetup& eventSe
   IgDataStorage *storage = config->storage();
 
   edm::Handle<VertexCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(vertexToken_, collection);
 
   if ( collection.isValid() )
   {

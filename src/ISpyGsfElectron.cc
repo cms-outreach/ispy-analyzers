@@ -10,7 +10,6 @@
 #include "FWCore/Utilities/interface/Exception.h"
 
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
-#include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrackExtra.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
@@ -24,7 +23,9 @@ using namespace reco;
 
 ISpyGsfElectron::ISpyGsfElectron(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyGsfElectronTag"))
-{}
+{
+  electronToken_ = consumes<GsfElectronCollection>(inputTag_);
+}
 
 void ISpyGsfElectron::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -42,7 +43,7 @@ void ISpyGsfElectron::analyze(const edm::Event& event, const edm::EventSetup& ev
   IgDataStorage *storage = config->storage();
 
   edm::Handle<GsfElectronCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(electronToken_, collection);
 
   if ( collection.isValid() )
   {

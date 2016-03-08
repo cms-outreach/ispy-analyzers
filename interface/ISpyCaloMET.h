@@ -3,6 +3,7 @@
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/METReco/interface/CaloMETCollection.h"
 
 class ISpyCaloMET : public edm::EDAnalyzer
 {
@@ -12,5 +13,6 @@ public:
     virtual void analyze(const edm::Event&, const edm::EventSetup&);
 private:
     edm::InputTag inputTag_;
+    edm::EDGetTokenT<reco::CaloMETCollection> metToken_;
 };
 #endif // ANALYZER_ISPY_CALOMET_H

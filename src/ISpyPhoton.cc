@@ -12,14 +12,16 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/EgammaCandidates/interface/Photon.h"
-#include "DataFormats/EgammaCandidates/interface/PhotonFwd.h"
  
 using namespace edm::service;
 using namespace edm;
 using namespace reco;
 
 ISpyPhoton::ISpyPhoton(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPhotonTag")){}
+: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPhotonTag"))
+{
+  photonToken_ = consumes<PhotonCollection>(inputTag_);
+}
 
 void ISpyPhoton::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -37,7 +39,7 @@ void ISpyPhoton::analyze(const edm::Event& event, const edm::EventSetup& eventSe
   IgDataStorage *storage = config->storage();
 
   edm::Handle<PhotonCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(photonToken_, collection);
 
   if ( collection.isValid() )
   {

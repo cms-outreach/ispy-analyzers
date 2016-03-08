@@ -3,7 +3,6 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/CSCRecHit/interface/CSCSegment.h"
-#include "DataFormats/CSCRecHit/interface/CSCSegmentCollection.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -24,7 +23,9 @@ using namespace edm::service;
 
 ISpyCSCSegment::ISpyCSCSegment (const edm::ParameterSet& iConfig)
   :  inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyCSCSegmentTag"))
-{}
+{
+  segmentToken_ = consumes<CSCSegmentCollection>(inputTag_); 
+}
 
 void 
 ISpyCSCSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -44,7 +45,7 @@ ISpyCSCSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
    
   edm::ESHandle<CSCGeometry> geom;
   eventSetup.get<MuonGeometryRecord> ().get (geom);
- 
+  
   if ( ! geom.isValid() )
   {
     std::string error = 
@@ -54,7 +55,7 @@ ISpyCSCSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
   }
 
   edm::Handle<CSCSegmentCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(segmentToken_, collection);
 
   if ( collection.isValid () )
   {	    

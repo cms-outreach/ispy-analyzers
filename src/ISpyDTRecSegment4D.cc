@@ -3,7 +3,6 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/DTRecHit/interface/DTRecSegment4D.h"
-#include "DataFormats/DTRecHit/interface/DTRecSegment4DCollection.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -20,7 +19,9 @@ using namespace edm::service;
 
 ISpyDTRecSegment4D::ISpyDTRecSegment4D (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyDTRecSegment4DTag"))
-{}
+{
+  segmentToken_ = consumes<DTRecSegment4DCollection>(inputTag_);
+}
 
 void 
 ISpyDTRecSegment4D::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -50,7 +51,7 @@ ISpyDTRecSegment4D::analyze (const edm::Event& event, const edm::EventSetup& eve
   }
 
   edm::Handle<DTRecSegment4DCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(segmentToken_, collection);
 
   if (collection.isValid ())
   {	    

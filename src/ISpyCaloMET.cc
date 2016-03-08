@@ -12,14 +12,16 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/METReco/interface/CaloMET.h"
-#include "DataFormats/METReco/interface/CaloMETCollection.h"
 
 using namespace edm::service;
 using namespace edm;
 using namespace reco;
 
 ISpyCaloMET::ISpyCaloMET(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCaloMETTag")){}
+: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCaloMETTag"))
+{
+  metToken_ = consumes<CaloMETCollection>(inputTag_);
+}
 
 void ISpyCaloMET::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -37,7 +39,7 @@ void ISpyCaloMET::analyze(const edm::Event& event, const edm::EventSetup& eventS
   IgDataStorage *storage = config->storage();
 
   edm::Handle<CaloMETCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(metToken_, collection);
 
   if ( collection.isValid() )
   {

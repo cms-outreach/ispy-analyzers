@@ -11,7 +11,6 @@
 #include "FWCore/Utilities/interface/Exception.h"
 
 #include "DataFormats/DTDigi/interface/DTDigi.h"
-#include "DataFormats/DTDigi/interface/DTDigiCollection.h"
 
 #include "Geometry/DTGeometry/interface/DTLayer.h"
 #include "Geometry/DTGeometry/interface/DTGeometry.h"
@@ -21,7 +20,9 @@ using namespace edm::service;
 
 ISpyDTDigi::ISpyDTDigi(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyDTDigiTag"))
-{}
+{
+  digiToken_ = consumes<DTDigiCollection>(inputTag_);
+}
 
 void ISpyDTDigi::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -50,7 +51,7 @@ void ISpyDTDigi::analyze (const edm::Event& event, const edm::EventSetup& eventS
   }
 
   edm::Handle<DTDigiCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(digiToken_, collection);
 
   if(collection.isValid())
   {

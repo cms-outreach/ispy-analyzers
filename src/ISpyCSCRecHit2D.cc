@@ -13,7 +13,6 @@
 
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/CSCRecHit/interface/CSCRecHit2DCollection.h"
 #include "DataFormats/CSCRecHit/interface/CSCRecHit2D.h"
 #include "DataFormats/MuonDetId/interface/CSCDetId.h"
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
@@ -29,7 +28,10 @@ using namespace edm::service;
 using namespace edm;
 
 ISpyCSCRecHit2D::ISpyCSCRecHit2D(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCSCRecHit2DTag")){}
+: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCSCRecHit2DTag"))
+{
+  rechitToken_ = consumes<CSCRecHit2DCollection>(inputTag_); 
+}
 
 void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -59,7 +61,7 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
   }
 
   edm::Handle<CSCRecHit2DCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(rechitToken_, collection);
    
   if ( collection.isValid() )
   {

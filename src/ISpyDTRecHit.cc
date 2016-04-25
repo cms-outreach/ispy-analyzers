@@ -13,7 +13,6 @@
 
 #include "DataFormats/DTRecHit/interface/DTRecHit1D.h"
 #include "DataFormats/DTRecHit/interface/DTRecHit1DPair.h"
-#include "DataFormats/DTRecHit/interface/DTRecHitCollection.h" 
 
 #include "Geometry/DTGeometry/interface/DTLayer.h"
 #include "Geometry/DTGeometry/interface/DTGeometry.h"
@@ -24,7 +23,9 @@ using namespace DTEnums;
 
 ISpyDTRecHit::ISpyDTRecHit(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyDTRecHitTag"))
-{}
+{
+  rechitToken_ = consumes<DTRecHitCollection>(inputTag_);
+}
 
 void ISpyDTRecHit::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -53,7 +54,7 @@ void ISpyDTRecHit::analyze (const edm::Event& event, const edm::EventSetup& even
   }
 
   edm::Handle<DTRecHitCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(rechitToken_, collection);
 
   if ( collection.isValid () )
   {

@@ -3,7 +3,6 @@
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/TrackingRecHit/interface/TrackingRecHitFwd.h"
 #include "DataFormats/TrackingRecHit/interface/TrackingRecHit.h"
 
 #include "FWCore/Framework/interface/Event.h"
@@ -21,8 +20,10 @@
 using namespace edm::service;
 
 ISpyTrackingRecHit::ISpyTrackingRecHit (const edm::ParameterSet& iConfig)
-  : inputTags_(iConfig.getParameter<std::vector<edm::InputTag> >("iSpyTrackingRecHitTags"))
-{}
+  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyTrackingRecHitTag"))
+{
+  rechitToken_ = consumes<TrackingRecHitCollection>(inputTag_);
+}
 
 void
 ISpyTrackingRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -51,53 +52,49 @@ ISpyTrackingRecHit::analyze( const edm::Event& event, const edm::EventSetup& eve
     return;
   }
 
-  for ( VInputTag::const_iterator ti = inputTags_.begin();
-	ti != inputTags_.end(); ++ti )
-  {
-    edm::Handle<TrackingRecHitCollection> collection;
-    event.getByLabel(*ti, collection);
+  edm::Handle<TrackingRecHitCollection> collection;
+  event.getByToken(rechitToken_, collection);
   
-    if (collection.isValid ())
-    {	 
-      std::string product = "TrackingRecHits "
-                            + edm::TypeID (typeid (TrackingRecHitCollection)).friendlyClassName() + ":" 
-                            + (*ti).label() + ":"
-                            + (*ti).instance() + ":" 
-                            + (*ti).process();
+  if (collection.isValid ())
+  {	 
+    std::string product = "TrackingRecHits "
+                          + edm::TypeID (typeid (TrackingRecHitCollection)).friendlyClassName() + ":" 
+                          + inputTag_.label() + ":"
+                          + inputTag_.instance() + ":" 
+                          + inputTag_.process();
 
-      IgCollection& products = storage->getCollection("Products_V1");
-      IgProperty PROD = products.addProperty("Product", std::string ());
-      IgCollectionItem item = products.create();
-      item[PROD] = product;
+    IgCollection& products = storage->getCollection("Products_V1");
+    IgProperty PROD = products.addProperty("Product", std::string ());
+    IgCollectionItem item = products.create();
+    item[PROD] = product;
 	
-      IgCollection &recHits = storage->getCollection("TrackingRecHits_V1");
-      IgProperty POS = recHits.addProperty("pos", IgV3d());
+    IgCollection &recHits = storage->getCollection("TrackingRecHits_V1");
+    IgProperty POS = recHits.addProperty("pos", IgV3d());
 
-      for (TrackingRecHitCollection::const_iterator it=collection->begin(), itEnd=collection->end(); it!=itEnd; ++it)
-      {
-        if ((*it).isValid () && !(*it).geographicalId ().null ())
-        {
-          LocalPoint point = ISpyLocalPosition::localPosition(&(*it), geom.product ());
-
-          float x = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).x () / 100.0;
-          float y = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).y () / 100.0;
-          float z = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).z () / 100.0;
-
-          IgCollectionItem irechit = recHits.create();
-          irechit[POS] = IgV3d (static_cast<double>(x), static_cast<double>(y), static_cast<double>(z));
-        }	           
-      }
-    }
-  
-    else 
+    for (TrackingRecHitCollection::const_iterator it=collection->begin(), itEnd=collection->end(); it!=itEnd; ++it)
     {
-      std::string error = "### Error: TrackingRecHits "
-                          + edm::TypeID (typeid (TrackingRecHitCollection)).friendlyClassName () + ":" 
-                          + (*ti).label() + ":"
-                          + (*ti).instance() + ":" 
-                          + (*ti).process() + " are not found.";
-      config->error (error);
+      if ((*it).isValid () && !(*it).geographicalId ().null ())
+      {
+        LocalPoint point = ISpyLocalPosition::localPosition(&(*it), geom.product ());
+        
+        float x = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).x () / 100.0;
+        float y = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).y () / 100.0;
+        float z = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).z () / 100.0;
+
+        IgCollectionItem irechit = recHits.create();
+        irechit[POS] = IgV3d (static_cast<double>(x), static_cast<double>(y), static_cast<double>(z));
+      }	           
     }
+  }
+  
+  else 
+  {
+    std::string error = "### Error: TrackingRecHits "
+                        + edm::TypeID (typeid (TrackingRecHitCollection)).friendlyClassName () + ":" 
+                        + inputTag_.label() + ":"
+                        + inputTag_.instance() + ":" 
+                        + inputTag_.process() + " are not found.";
+    config->error (error);
   }
 }
 

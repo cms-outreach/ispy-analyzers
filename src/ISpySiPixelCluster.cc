@@ -2,9 +2,6 @@
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/Common/interface/DetSetVectorNew.h"
-#include "DataFormats/SiPixelCluster/interface/SiPixelCluster.h"
-
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -24,7 +21,9 @@ using namespace edm::service;
 
 ISpySiPixelCluster::ISpySiPixelCluster (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpySiPixelClusterTag"))
-{}
+{
+  clusterToken_ = consumes<edm::DetSetVector<SiPixelCluster> >(inputTag_);
+}
 
 void 
 ISpySiPixelCluster::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -53,13 +52,13 @@ ISpySiPixelCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
     return;
   }
     
-  edm::Handle<edmNew::DetSetVector<SiPixelCluster> > collection;
-  event.getByLabel (inputTag_, collection);
+  edm::Handle<edm::DetSetVector<SiPixelCluster> > collection;
+  event.getByToken(clusterToken_, collection);
 
   if (collection.isValid ())
   {	    
     std::string product = "SiPixelClusters "
-			  + edm::TypeID (typeid (edmNew::DetSetVector<SiPixelCluster>)).friendlyClassName () + ":" 
+			  + edm::TypeID (typeid (edm::DetSetVector<SiPixelCluster>)).friendlyClassName () + ":" 
 			  + inputTag_.label() + ":"
 			  + inputTag_.instance() + ":" 
 			  + inputTag_.process();
@@ -73,20 +72,20 @@ ISpySiPixelCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
     IgProperty DET_ID   = clusters.addProperty ("detid", int (0)); 
     IgProperty POS 	    = clusters.addProperty ("pos", IgV3d());
 
-    edmNew::DetSetVector<SiPixelCluster>::const_iterator it = collection->begin ();
-    edmNew::DetSetVector<SiPixelCluster>::const_iterator end = collection->end ();
+    edm::DetSetVector<SiPixelCluster>::const_iterator it = collection->begin ();
+    edm::DetSetVector<SiPixelCluster>::const_iterator end = collection->end ();
 
     for (; it != end; ++it)
     {
-      //edmNew::DetSet<SiPixelCluster> ds = *it;
+      //edm::DetSet<SiPixelCluster> ds = *it;
       const uint32_t detID = it->detId ();
       DetId detid (detID);
 
       const PixelGeomDetUnit* theDet = dynamic_cast<const PixelGeomDetUnit *>(geom->idToDet (detid));
       const PixelTopology *theTopol =  &(theDet->specificTopology ());
 	    
-      edmNew::DetSet<SiPixelCluster>::const_iterator icluster = it->begin ();
-      edmNew::DetSet<SiPixelCluster>::const_iterator iclusterEnd = it->end ();
+      edm::DetSet<SiPixelCluster>::const_iterator icluster = it->begin ();
+      edm::DetSet<SiPixelCluster>::const_iterator iclusterEnd = it->end ();
 
       for(; icluster != iclusterEnd; ++icluster)
       { 
@@ -103,7 +102,7 @@ ISpySiPixelCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
   else 
   {
     std::string error = "### Error: SiPixelClusters "
-			+ edm::TypeID (typeid (edmNew::DetSetVector<SiPixelCluster>)).friendlyClassName () + ":" 
+			+ edm::TypeID (typeid (edm::DetSetVector<SiPixelCluster>)).friendlyClassName () + ":" 
 			+ inputTag_.label() + ":"
 			+ inputTag_.instance() + ":" 
 			+ inputTag_.process() + " are not found.";

@@ -23,7 +23,9 @@ using namespace edm::service;
 
 ISpySiStripCluster::ISpySiStripCluster (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpySiStripClusterTag"))
-{}
+{
+  clusterToken_ = consumes<edm::DetSetVector<SiStripCluster> >(inputTag_);
+}
 
 void 
 ISpySiStripCluster::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -52,13 +54,13 @@ ISpySiStripCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
     return;
   }
 
-  edm::Handle<edmNew::DetSetVector<SiStripCluster> > collection;
-  event.getByLabel (inputTag_, collection);
+  edm::Handle<edm::DetSetVector<SiStripCluster> > collection;
+  event.getByToken(clusterToken_, collection);
 
   if (collection.isValid ())
   {	    
     std::string product = "SiStripClusters "
-			  + edm::TypeID (typeid (edmNew::DetSetVector<SiStripCluster>)).friendlyClassName () + ":" 
+			  + edm::TypeID (typeid (edm::DetSetVector<SiStripCluster>)).friendlyClassName () + ":" 
 			  + inputTag_.label() + ":"
 			  + inputTag_.instance() + ":" 
 			  + inputTag_.process();
@@ -72,20 +74,20 @@ ISpySiStripCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
     IgProperty DET_ID   = clusters.addProperty ("detid", int (0)); 
     IgProperty POS 	    = clusters.addProperty ("pos", IgV3d());
 
-    edmNew::DetSetVector<SiStripCluster>::const_iterator it = collection->begin ();
-    edmNew::DetSetVector<SiStripCluster>::const_iterator end = collection->end ();
+    edm::DetSetVector<SiStripCluster>::const_iterator it = collection->begin ();
+    edm::DetSetVector<SiStripCluster>::const_iterator end = collection->end ();
 
     for (; it != end; ++it)
     {
-      //edmNew::DetSet<SiStripCluster> ds = *it;
+      //edm::DetSet<SiStripCluster> ds = *it;
       const uint32_t detID = it->detId ();
       DetId detid (detID);
 
       const StripGeomDetUnit* theDet = dynamic_cast<const StripGeomDetUnit *>(geom->idToDet (detid));
       const StripTopology* theTopol = dynamic_cast<const StripTopology *>( &(theDet->specificTopology ()));
 
-      edmNew::DetSet<SiStripCluster>::const_iterator icluster = it->begin ();
-      edmNew::DetSet<SiStripCluster>::const_iterator iclusterEnd = it->end ();
+      edm::DetSet<SiStripCluster>::const_iterator icluster = it->begin ();
+      edm::DetSet<SiStripCluster>::const_iterator iclusterEnd = it->end ();
 
       for(; icluster != iclusterEnd; ++icluster)
       { 
@@ -100,7 +102,7 @@ ISpySiStripCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
   else 
   {
     std::string error = "### Error: SiStripClusters "
-			+ edm::TypeID (typeid (edmNew::DetSetVector<SiStripCluster>)).friendlyClassName () + ":" 
+			+ edm::TypeID (typeid (edm::DetSetVector<SiStripCluster>)).friendlyClassName () + ":" 
 			+ inputTag_.label() + ":"
 			+ inputTag_.instance() + ":" 
 			+ inputTag_.process() + " are not found.";

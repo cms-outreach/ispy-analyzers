@@ -3,6 +3,7 @@
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/CSCDigi/interface/CSCStripDigiCollection.h"
 
 class ISpyCSCStripDigi : public edm::EDAnalyzer
 {
@@ -14,6 +15,7 @@ public:
 private:
   edm::InputTag 		inputTag_;
   int 				thresholdOffset_;
+  edm::EDGetTokenT<CSCStripDigiCollection> digiToken_;
 };
 
 #endif //ANALYZER_ISPY_CSCSTRIPDIGI_H

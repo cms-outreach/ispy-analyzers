@@ -17,14 +17,15 @@
 
 #include "DataFormats/MuonDetId/interface/CSCDetId.h"
 #include "DataFormats/CSCDigi/interface/CSCWireDigi.h"
-#include "DataFormats/CSCDigi/interface/CSCWireDigiCollection.h"
 
 using namespace edm::service;
 using namespace edm;
 
 ISpyCSCWireDigi::ISpyCSCWireDigi(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCSCWireDigiTag"))
-{}
+{
+  digiToken_ = consumes<CSCWireDigiCollection>(inputTag_);
+}
 
 void ISpyCSCWireDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -53,7 +54,7 @@ void ISpyCSCWireDigi::analyze(const edm::Event& event, const edm::EventSetup& ev
   }
 
   edm::Handle<CSCWireDigiCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(digiToken_, collection);
 
   if(collection.isValid())
   {

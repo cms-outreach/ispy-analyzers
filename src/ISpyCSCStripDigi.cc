@@ -17,7 +17,6 @@
 
 #include "DataFormats/MuonDetId/interface/CSCDetId.h"
 #include "DataFormats/CSCDigi/interface/CSCStripDigi.h"
-#include "DataFormats/CSCDigi/interface/CSCStripDigiCollection.h"
 
 using namespace edm::service;
 using namespace edm;
@@ -25,7 +24,9 @@ using namespace edm;
 ISpyCSCStripDigi::ISpyCSCStripDigi(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCSCStripDigiTag")),
     thresholdOffset_(iConfig.getParameter<int>("thresholdOffset"))
-{}
+{
+  digiToken_ = consumes<CSCStripDigiCollection>(inputTag_);
+}
 
 void ISpyCSCStripDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -54,7 +55,7 @@ void ISpyCSCStripDigi::analyze(const edm::Event& event, const edm::EventSetup& e
   }
 
   edm::Handle<CSCStripDigiCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(digiToken_, collection);
 
   if ( collection.isValid() )
   {

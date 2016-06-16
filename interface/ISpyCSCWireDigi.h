@@ -3,6 +3,7 @@
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
+#include "DataFormats/CSCDigi/interface/CSCWireDigiCollection.h"
 
 class ISpyCSCWireDigi : public edm::EDAnalyzer
 {
@@ -13,6 +14,7 @@ public:
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
 private:
   edm::InputTag		inputTag_;
+  edm::EDGetTokenT<CSCWireDigiCollection> digiToken_;
 };
 
 #endif // ANALYZER_ISPY_CSCWIREDIGI_H

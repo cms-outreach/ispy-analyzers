@@ -16,13 +16,15 @@
 #include "Geometry/CSCGeometry/interface/CSCLayerGeometry.h"
 
 #include "DataFormats/MuonDetId/interface/CSCDetId.h"
-#include "DataFormats/CSCDigi/interface/CSCCorrelatedLCTDigiCollection.h"
+
 using namespace edm::service;
 using namespace edm;
 
 ISpyCSCLCTDigi::ISpyCSCLCTDigi(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCSCLCTDigiTag"))
-{}
+{
+  digiToken_ = consumes<CSCCorrelatedLCTDigiCollection>(inputTag_);
+}
 
 void ISpyCSCLCTDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -51,7 +53,7 @@ void ISpyCSCLCTDigi::analyze(const edm::Event& event, const edm::EventSetup& eve
   }
 
   edm::Handle<CSCCorrelatedLCTDigiCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(digiToken_, collection);
 
   if(collection.isValid())
   {

@@ -1,4 +1,4 @@
-#include "ISpy/Analyzers/interface/ISpyCSCLCTDigi.h"
+#include "ISpy/Analyzers/interface/ISpyCSCCorrelatedLCTDigi.h"
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Services/interface/IgCollection.h"
 
@@ -20,20 +20,20 @@
 using namespace edm::service;
 using namespace edm;
 
-ISpyCSCLCTDigi::ISpyCSCLCTDigi(const edm::ParameterSet& iConfig)
-  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCSCLCTDigiTag"))
+ISpyCSCCorrelatedLCTDigi::ISpyCSCCorrelatedLCTDigi(const edm::ParameterSet& iConfig)
+  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCSCCorrelatedLCTDigiTag"))
 {
   digiToken_ = consumes<CSCCorrelatedLCTDigiCollection>(inputTag_);
 }
 
-void ISpyCSCLCTDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
+void ISpyCSCCorrelatedLCTDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
   edm::Service<ISpyService> config;
 
   if ( ! config.isAvailable() )
   {
     throw cms::Exception ("Configuration")
-      << "ISpyCSCLCTDigi requires the ISpyService\n"
+      << "ISpyCSCCorrelatedLCTDigi requires the ISpyService\n"
       "which is not present in the configuration file.\n"
       "You must add the service in the configuration file\n"
       "or remove the module that requires it";
@@ -47,7 +47,7 @@ void ISpyCSCLCTDigi::analyze(const edm::Event& event, const edm::EventSetup& eve
   if ( ! geom.isValid() )
   {
     std::string error = 
-      "### Error: ISpyCSCLCTDigi::analyze: Invalid MuonGeometryRecord ";
+      "### Error: ISpyCSCCorrelatedLCTDigi::analyze: Invalid MuonGeometryRecord ";
     config->error (error);
     return;
   }
@@ -57,7 +57,7 @@ void ISpyCSCLCTDigi::analyze(const edm::Event& event, const edm::EventSetup& eve
 
   if(collection.isValid())
   {
-    std::string product = "CSCLCTDigis "
+    std::string product = "CSCCorrelatedLCTDigis "
 			  + edm::TypeID (typeid (CSCCorrelatedLCTDigiCollection)).friendlyClassName() + ":"
 			  + inputTag_.label() + ":"
 			  + inputTag_.instance() + ":"
@@ -68,11 +68,11 @@ void ISpyCSCLCTDigi::analyze(const edm::Event& event, const edm::EventSetup& eve
     IgCollectionItem item = products.create();
     item[PROD] = product;
 
-    IgCollection& digis = storage->getCollection("CSCLCTDigis_V1");
+    IgCollection& digis = storage->getCollection("CSCCorrelatedLCTDigis_V1");
 
     IgProperty POS = digis.addProperty("pos", IgV3d());
 
-    IgProperty DETID = digis.addProperty("DetId", int(0));
+    IgProperty DETID = digis.addProperty("detid", int(0));
     IgProperty EC = digis.addProperty("endcap", int(0));
     IgProperty ST = digis.addProperty("station", int(0));
     IgProperty RG = digis.addProperty("ring", int(0));
@@ -117,4 +117,4 @@ void ISpyCSCLCTDigi::analyze(const edm::Event& event, const edm::EventSetup& eve
   }
 }
 
-DEFINE_FWK_MODULE(ISpyCSCLCTDigi);
+DEFINE_FWK_MODULE(ISpyCSCCorrelatedLCTDigi);

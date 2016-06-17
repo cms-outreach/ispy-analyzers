@@ -65,7 +65,7 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
                           + inputTag_.label() + ":"
                           + inputTag_.instance() + ":" 
                           + inputTag_.process();
-    
+
     IgCollection& products = storage->getCollection("Products_V1");
     IgProperty PROD = products.addProperty("Product", std::string ());
     IgCollectionItem item = products.create();
@@ -92,7 +92,17 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
     for (RPCRecHitCollection::const_iterator it=collection->begin(), itEnd=collection->end(); 
          it!=itEnd; ++it)
     {       
-      const GeomDetUnit *det = geom->idToDetUnit ((*it).rpcId ());
+      const GeomDet *det = geom->idToDet((*it).rpcId());
+
+      if ( ! det ) 
+      {
+        std::string error = "### Error: RPCRecHits bad RPCDetId";
+        std::stringstream ss;
+        ss << (*it).rpcId();
+        error += ss.str();
+        config->error(error);
+        continue;
+      }
 
       // warning:  error bars aren't right for tilted wires
       LocalPoint xyzLocal = it->localPosition ();
@@ -104,23 +114,23 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
 
       GlobalPoint gp;
       IgCollectionItem irechit = recHits.create();
-      
+    
       gp = det->surface().toGlobal(LocalPoint((x - dx), y, z));
       irechit[U1] = IgV3d(gp.x()/100.0, gp.y()/100.0, gp.z()/100.0);
-
+      
       gp = det->surface().toGlobal (LocalPoint((x + dx), y, z));
       irechit[U2] = IgV3d(gp.x()/100.0, gp.y()/100.0, gp.z()/100.0);
       
       gp = det->surface().toGlobal(LocalPoint(x, (y - dy), z));
       irechit[V1] = IgV3d(gp.x()/100.0, gp.y()/100.0, gp.z()/100.0);
-
+      
       gp = det->surface().toGlobal(LocalPoint (x, (y + dy), z));
       irechit[V2] = IgV3d(gp.x()/100.0, gp.y()/100.0, gp.z()/100.0);
       
       gp = det->surface().toGlobal(xyzLocal); // no error in z
       irechit[W1] = IgV3d(gp.x()/100.0, gp.y()/100.0, gp.z()/100.0);
       irechit[W2] = IgV3d(gp.x()/100.0, gp.y()/100.0, gp.z()/100.0);    
-
+    
       irechit[DETID] = static_cast<int>((*it).rpcId().rawId());
       irechit[REGION] = static_cast<int>((*it).rpcId().region());
       irechit[STATION] = static_cast<int>((*it).rpcId().station());

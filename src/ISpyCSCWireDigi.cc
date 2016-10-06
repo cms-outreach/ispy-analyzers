@@ -69,10 +69,10 @@ void ISpyCSCWireDigi::analyze(const edm::Event& event, const edm::EventSetup& ev
     IgCollectionItem item = products.create();
     item[PROD] = product;
 
-    IgCollection& digis = storage->getCollection("CSCWireDigis_V1");
+    IgCollection& digis = storage->getCollection("CSCWireDigis_V2");
 
-    IgProperty POS = digis.addProperty("pos", IgV3d());
-    IgProperty LEN = digis.addProperty("length", 0.0);
+    IgProperty POS1 = digis.addProperty("pos1", IgV3d());
+    IgProperty POS2 = digis.addProperty("pos2", IgV3d());
 
     IgProperty EC = digis.addProperty("endcap", int(0));
     IgProperty ST = digis.addProperty("station", int(0));
@@ -93,15 +93,18 @@ void ISpyCSCWireDigi::analyze(const edm::Event& event, const edm::EventSetup& ev
 	int wireGroup = (*dit).getWireGroup();
 	const CSCLayer* layer = geom->layer(id);
 	const CSCLayerGeometry* layerGeom = layer->geometry();
-	
-	const LocalPoint centerWireGroup = layerGeom->localCenterOfWireGroup(wireGroup);
-	const Surface::GlobalPoint pos = (geom->idToDet(id))->surface().toGlobal(centerWireGroup);
 
-	digi[POS] = IgV3d(static_cast<double>(pos.x()/100.0),
-			  static_cast<double>(pos.y()/100.0),
-			  static_cast<double>(pos.z()/100.0));
-        
-	digi[LEN] = static_cast<double>(layerGeom->lengthOfWireGroup(wireGroup)/100.0);
+        float midW = layerGeom->middleWireOfGroup(wireGroup);
+	std::pair< LocalPoint, LocalPoint > wP = layerGeom->wireTopology()->wireEnds( midW );
+	GlobalPoint gW1 = layer->toGlobal( wP.first );
+	GlobalPoint gW2 = layer->toGlobal( wP.second );
+
+	digi[POS1] = IgV3d(static_cast<double>(gW1.x()/100.0),
+			   static_cast<double>(gW1.y()/100.0),
+			   static_cast<double>(gW1.z()/100.0));
+	digi[POS2] = IgV3d(static_cast<double>(gW2.x()/100.0),
+			   static_cast<double>(gW2.y()/100.0),
+			   static_cast<double>(gW2.z()/100.0));
 
 	digi[EC] = static_cast<int>(id.endcap());
 	digi[ST] = static_cast<int>(id.station());

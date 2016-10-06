@@ -70,10 +70,10 @@ void ISpyCSCStripDigi::analyze(const edm::Event& event, const edm::EventSetup& e
     IgCollectionItem item = products.create();
     item[PROD] = product;
 
-    IgCollection& digis = storage->getCollection("CSCStripDigis_V1");
+    IgCollection& digis = storage->getCollection("CSCStripDigis_V2");
 
-    IgProperty POS = digis.addProperty("pos", IgV3d());
-    IgProperty LEN = digis.addProperty("length", 0.0);
+    IgProperty POS1 = digis.addProperty("pos1", IgV3d());
+    IgProperty POS2 = digis.addProperty("pos2", IgV3d());
         
     IgProperty EC = digis.addProperty("endcap", int(0));
     IgProperty ST = digis.addProperty("station", int(0));
@@ -101,16 +101,22 @@ void ISpyCSCStripDigi::analyze(const edm::Event& event, const edm::EventSetup& e
 	  int stripId = (*dit).getStrip();
 
 	  const CSCLayer* layer = geom->layer(id);
-	  const CSCLayerGeometry* layerGeom = layer->geometry();
+      	  const CSCLayerGeometry* layerGeom = layer->geometry();
 
-	  Surface::GlobalPoint pos = 
-	    (geom->idToDet(id))->surface().toGlobal(LocalPoint(layerGeom->xOfStrip(stripId), 0.0, 1.0));
+	  std::pair<float, float> yLIM = layerGeom->yLimitsOfStripPlane();
+          float yB = yLIM.first;
+          float yT = yLIM.second;
+	  float xB = layerGeom->xOfStrip(stripId, yB);
+	  float xT = layerGeom->xOfStrip(stripId, yT);
+	  GlobalPoint gST = layer->toGlobal( LocalPoint( xT, yT, 0. ) );
+	  GlobalPoint gSB = layer->toGlobal( LocalPoint( xB, yB, 0. ) );
 
-	  digi[POS] = IgV3d(static_cast<double>(pos.x()/100.0),
-			    static_cast<double>(pos.y()/100.0),
-			    static_cast<double>(pos.z()/100.0));
-
-	  digi[LEN] = layerGeom->length()/100.0;
+	  digi[POS1] = IgV3d(static_cast<double>(gST.x()/100.0),
+	  		     static_cast<double>(gST.y()/100.0),
+      	 		     static_cast<double>(gST.z()/100.0));
+	  digi[POS2] = IgV3d(static_cast<double>(gSB.x()/100.0),
+	  		     static_cast<double>(gSB.y()/100.0),
+      	 		     static_cast<double>(gSB.z()/100.0));
 
 	  digi[EC] = static_cast<int>(id.endcap());
 	  digi[ST] = static_cast<int>(id.station());

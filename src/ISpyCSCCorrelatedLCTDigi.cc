@@ -63,14 +63,17 @@ void ISpyCSCCorrelatedLCTDigi::analyze(const edm::Event& event, const edm::Event
 			  + inputTag_.instance() + ":"
 			  + inputTag_.process();
 
-    IgCollection& products = storage->getCollection("Products_V1");
+    IgCollection& products = storage->getCollection("Products_V2");
     IgProperty PROD = products.addProperty("Product", std::string ());
     IgCollectionItem item = products.create();
     item[PROD] = product;
 
-    IgCollection& digis = storage->getCollection("CSCCorrelatedLCTDigis_V1");
+    IgCollection& digis = storage->getCollection("CSCCorrelatedLCTDigis_V2");
 
-    IgProperty POS = digis.addProperty("pos", IgV3d());
+    IgProperty POS1 = digis.addProperty("pos1", IgV3d());
+    IgProperty POS2 = digis.addProperty("pos2", IgV3d());
+    IgProperty POS3 = digis.addProperty("pos3", IgV3d());
+    IgProperty POS4 = digis.addProperty("pos4", IgV3d());
 
     IgProperty DETID = digis.addProperty("detid", int(0));
     IgProperty EC = digis.addProperty("endcap", int(0));
@@ -92,12 +95,34 @@ void ISpyCSCCorrelatedLCTDigi::analyze(const edm::Event& event, const edm::Event
 	const CSCLayerGeometry *layerGeom = layer->geometry();
 	const float WGCenter = layerGeom->middleWireOfGroup( dit->getKeyWG() );
 	const int halfstrip_id = dit->getStrip();
-	const LocalPoint LocalLCTpos = layerGeom->intersectionOfStripAndWire( halfstrip_id/2. , WGCenter );
-	const Surface::GlobalPoint pos = (geom->idToDet(cscDetId))->surface().toGlobal(LocalLCTpos);
 
-	digi[POS] = IgV3d(static_cast<double>(pos.x()/100.0),
-			  static_cast<double>(pos.y()/100.0),
-			  static_cast<double>(pos.z()/100.0));
+	// Since xOfStrip requires int strip we cannot use it for half-strip ids in the trigger primitive
+	// Instead, jump through (my own) hoops in order to get a precise local x for a half-strip value
+
+        float fstrip = float( halfstrip_id + 0.5 )/2.; // 0->0.25, 1->0.75, 2->1.25, ... 159->79.75
+        LocalPoint lST = layerGeom->topology()->localPosition( MeasurementPoint( fstrip, 0.5 ) );
+        LocalPoint lSB = layerGeom->topology()->localPosition( MeasurementPoint( fstrip, -0.5 ) );
+	GlobalPoint gST = layer->toGlobal( lST );
+	GlobalPoint gSB = layer->toGlobal( lSB );
+
+	std::pair< LocalPoint, LocalPoint > wP = layerGeom->wireTopology()->wireEnds( WGCenter );
+	GlobalPoint gW1 = layer->toGlobal( wP.first );
+	GlobalPoint gW2 = layer->toGlobal( wP.second );
+
+	digi[POS1] = IgV3d(static_cast<double>(gST.x()/100.0),
+			   static_cast<double>(gST.y()/100.0),
+			   static_cast<double>(gST.z()/100.0));
+	digi[POS2] = IgV3d(static_cast<double>(gSB.x()/100.0),
+			   static_cast<double>(gSB.y()/100.0),
+			   static_cast<double>(gSB.z()/100.0));
+
+	digi[POS3] = IgV3d(static_cast<double>(gW1.x()/100.0),
+			   static_cast<double>(gW1.y()/100.0),
+			   static_cast<double>(gW1.z()/100.0));
+	digi[POS4] = IgV3d(static_cast<double>(gW2.x()/100.0),
+			   static_cast<double>(gW2.y()/100.0),
+			   static_cast<double>(gW2.z()/100.0));
+
 	digi[DETID] = static_cast<int>(cscDetId.rawId());
 	digi[EC] = static_cast<int>(cscDetId.endcap());
 	digi[ST] = static_cast<int>(cscDetId.station());

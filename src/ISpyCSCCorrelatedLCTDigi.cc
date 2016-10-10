@@ -93,8 +93,8 @@ void ISpyCSCCorrelatedLCTDigi::analyze(const edm::Event& event, const edm::Event
 	IgCollectionItem digi = digis.create();
 	const CSCLayer* layer = geom->chamber(cscDetId)->layer(3);
 	const CSCLayerGeometry *layerGeom = layer->geometry();
-	const float WGCenter = layerGeom->middleWireOfGroup( dit->getKeyWG() );
-	const int halfstrip_id = dit->getStrip();
+	const float WGCenter = layerGeom->middleWireOfGroup( dit->getKeyWG() + 1 ); // BEWARE: LCT counts from 0
+	const int halfstrip_id = dit->getStrip(); // BEWARE: LCT counts from 0
 
 	// Since xOfStrip requires int strip we cannot use it for half-strip ids in the trigger primitive
 	// Instead, jump through (my own) hoops in order to get a precise local x for a half-strip value

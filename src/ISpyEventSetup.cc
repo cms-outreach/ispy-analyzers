@@ -80,17 +80,14 @@ ISpyEventSetup::analyze( const edm::Event& event, const edm::EventSetup& eventSe
     // FIXME: Only if we want full tracker in 3D:
     // buildTracker3D (storage);
     buildPixelBarrel3D (storage);
-    //buildPixelEndcap3D (storage);
     buildPixelEndcapPlus3D(storage);
     buildPixelEndcapMinus3D(storage);
 
     buildTIB3D (storage);
     buildTOB3D (storage);
-    //buildTEC3D (storage);
     buildTECPlus3D(storage);
     buildTECMinus3D(storage);
 
-    //buildTID3D (storage);
     buildTIDPlus3D(storage);
     buildTIDMinus3D(storage);
 
@@ -124,7 +121,6 @@ ISpyEventSetup::analyze( const edm::Event& event, const edm::EventSetup& eventSe
 	
     if (rpcGeom_.isValid ())
     {
-      // buildRPC3D (storage);
       buildRPCBarrel3D (storage);
       buildRPCPlusEndcap3D (storage);
       buildRPCMinusEndcap3D (storage);
@@ -225,6 +221,7 @@ ISpyEventSetup::buildPixelBarrel3D (IgDataStorage *storage)
 
   TrackerGeometry::DetContainer::const_iterator it  = trackerGeom_->detsPXB ().begin ();
   TrackerGeometry::DetContainer::const_iterator end = trackerGeom_->detsPXB ().end ();
+  
   for (; it != end; ++it)
   {	    
     uint32_t id = (*it)->geographicalId ().rawId ();

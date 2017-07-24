@@ -8,7 +8,6 @@
 #include "DataFormats/TrackerRecHit2D/interface/SiStripMatchedRecHit2D.h"
 
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
-#include "Geometry/CommonDetUnit/interface/GeomDetUnit.h"
 #include "Geometry/CommonDetUnit/interface/GlobalTrackingGeometry.h"
 
 #include "Geometry/CommonTopologies/interface/StripTopology.h"

@@ -11,14 +11,14 @@
 
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/PatCandidates/interface/Photon.h"
-
 using namespace edm::service;
 using namespace edm;
 
 ISpyPATPhoton::ISpyPATPhoton(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATPhotonTag"))
-{}
+{
+  photonToken_ = consumes<std::vector<pat::Photon> >(inputTag_);
+}
 
 void ISpyPATPhoton::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -36,7 +36,7 @@ void ISpyPATPhoton::analyze(const edm::Event& event, const edm::EventSetup& even
   IgDataStorage *storage = config->storage();
 
   edm::Handle<std::vector<pat::Photon> > collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(photonToken_, collection);
 
   if ( collection.isValid() )
   {

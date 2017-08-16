@@ -11,13 +11,14 @@
 
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/PatCandidates/interface/MET.h"
-
 using namespace edm::service;
 using namespace edm;
 
 ISpyPATMET::ISpyPATMET(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATMETTag")){}
+: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATMETTag"))
+{
+  metToken_ = consumes<std::vector<pat::MET> >(inputTag_);
+}
 
 void ISpyPATMET::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -35,7 +36,7 @@ void ISpyPATMET::analyze(const edm::Event& event, const edm::EventSetup& eventSe
   IgDataStorage *storage = config->storage();
 
   edm::Handle<std::vector<pat::MET> > collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(metToken_, collection);
 
   if ( collection.isValid() )
   {

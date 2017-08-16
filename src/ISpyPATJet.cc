@@ -11,13 +11,14 @@
 
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/PatCandidates/interface/Jet.h"
-
 using namespace edm::service;
 using namespace edm;
 
 ISpyPATJet::ISpyPATJet(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATJetTag")){}
+: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATJetTag"))
+{
+  jetToken_ = consumes<std::vector<pat::Jet> >(inputTag_);
+}
 
 void ISpyPATJet::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -35,7 +36,7 @@ void ISpyPATJet::analyze(const edm::Event& event, const edm::EventSetup& eventSe
   IgDataStorage *storage = config->storage();
 
   edm::Handle<std::vector<pat::Jet> > collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(jetToken_, collection);
 
   if ( collection.isValid() )
   {

@@ -3,7 +3,6 @@
 #include "ISpy/Analyzers/interface/ISpyTrackRefitter.h"
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/TrackReco/interface/Track.h"
 #include "DataFormats/TrackReco/interface/TrackBase.h"
 
@@ -21,7 +20,10 @@ using namespace edm::service;
 using namespace edm;
 
 ISpyPATMuon::ISpyPATMuon(const edm::ParameterSet& iConfig)
-  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATMuonTag")){}
+  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATMuonTag"))
+{
+  muonToken_ = consumes<std::vector<pat::Muon> >(inputTag_);
+}
 
 void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -49,7 +51,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
   }
 
   edm::Handle<std::vector<pat::Muon> > collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(muonToken_, collection);
 
   if ( ! collection.isValid() )
   {

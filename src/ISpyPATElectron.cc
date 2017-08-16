@@ -11,7 +11,6 @@
 
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrack.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrackExtra.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
@@ -20,7 +19,10 @@ using namespace edm::service;
 using namespace edm;
 
 ISpyPATElectron::ISpyPATElectron(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATElectronTag")){}
+: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATElectronTag"))
+{
+  electronToken_ = consumes<std::vector<pat::Electron> >(inputTag_);
+}
 
 void ISpyPATElectron::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -38,7 +40,7 @@ void ISpyPATElectron::analyze(const edm::Event& event, const edm::EventSetup& ev
   IgDataStorage *storage = config->storage(); 
 
   edm::Handle<std::vector<pat::Electron> > collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(electronToken_, collection);
 
   if ( collection.isValid() )
   { 

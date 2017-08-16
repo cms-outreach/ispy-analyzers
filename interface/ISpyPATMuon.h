@@ -4,8 +4,8 @@
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/Framework/interface/ESHandle.h"
-#include "MagneticField/Engine/interface/MagneticField.h"
-#include "DataFormats/MuonReco/interface/MuonFwd.h"
+
+#include "DataFormats/PatCandidates/interface/Muon.h"
 
 class IgCollection;
 class IgDataStorage;
@@ -24,6 +24,7 @@ public:
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
 private:
   edm::InputTag inputTag_;
+  edm::EDGetTokenT<std::vector<pat::Muon> > muonToken_;
 
   double in_;
   double out_;

@@ -191,7 +191,6 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       imuon[S_PHI] = (*it).standAloneMuon()->phi();
       imuon[S_ETA] = (*it).standAloneMuon()->eta();
       
-      
       if ( (*it).standAloneMuon()->innerOk() && (*it).standAloneMuon()->outerOk() )
       {
         IgCollectionItem eitem = extras.create();
@@ -214,8 +213,6 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
 
         trackExtras.associate(imuon, eitem);
       }
-      
-      
 
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, S_CALO_E);

@@ -19,7 +19,8 @@ using namespace edm::service;
 using namespace edm;
 
 ISpyPATElectron::ISpyPATElectron(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATElectronTag"))
+  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATElectronTag")),
+    isAOD_(iConfig.getUntrackedParameter<bool>("isAOD", false))
 {
   electronToken_ = consumes<std::vector<pat::Electron> >(inputTag_);
 }
@@ -71,7 +72,7 @@ void ISpyPATElectron::analyze(const edm::Event& event, const edm::EventSetup& ev
     IgProperty OP   = extras.addProperty("dir_2", IgV3d());
  
     IgAssociations& trackExtras = storage->getAssociations("PATElectronExtras_V1");
-
+   
     for ( std::vector<pat::Electron>::const_iterator t = collection->begin(), tEnd = collection->end(); 
           t != tEnd; ++t )
     {
@@ -98,29 +99,46 @@ void ISpyPATElectron::analyze(const edm::Event& event, const edm::EventSetup& ev
       e[ID] = ids.str();
 
       reco::GsfTrackRef gsfTrack = t->gsfTrack();
-      
-      if ( (*gsfTrack).innerOk() && (*gsfTrack).outerOk() )
-      {
-        IgCollectionItem ex = extras.create ();
+
+      if ( ! isAOD_ ) 
+      {  
+        if ( (*gsfTrack).innerOk() && (*gsfTrack).outerOk() )
+        {
+          IgCollectionItem ex = extras.create ();
        
-        ex[IPOS] = IgV3d((*gsfTrack).innerPosition().x()/100.0,
-                         (*gsfTrack).innerPosition().y()/100.0,
-                         (*gsfTrack).innerPosition().z()/100.0);
+          ex[IPOS] = IgV3d((*gsfTrack).innerPosition().x()/100.0,
+                           (*gsfTrack).innerPosition().y()/100.0,
+                           (*gsfTrack).innerPosition().z()/100.0);
 
-        ex[IP] = IgV3d((*gsfTrack).innerMomentum().x(),
-                       (*gsfTrack).innerMomentum().y(),
-                       (*gsfTrack).innerMomentum().z());
+          ex[IP] = IgV3d((*gsfTrack).innerMomentum().x(),
+                         (*gsfTrack).innerMomentum().y(),
+                         (*gsfTrack).innerMomentum().z());
 
-        ex[OPOS] = IgV3d((*gsfTrack).outerPosition().x()/100.0,
-                         (*gsfTrack).outerPosition().y()/100.0,
-                         (*gsfTrack).outerPosition().z()/100.0);
+          ex[OPOS] = IgV3d((*gsfTrack).outerPosition().x()/100.0,
+                           (*gsfTrack).outerPosition().y()/100.0,
+                           (*gsfTrack).outerPosition().z()/100.0);
 
-        ex[OP] = IgV3d((*gsfTrack).outerMomentum().x(),
-                       (*gsfTrack).outerMomentum().y(),
-                       (*gsfTrack).outerMomentum().z());
+          ex[OP] = IgV3d((*gsfTrack).outerMomentum().x(),
+                         (*gsfTrack).outerMomentum().y(),
+                         (*gsfTrack).outerMomentum().z());
 
-        trackExtras.associate (e, ex);
+          trackExtras.associate (e, ex);
+        }
       }
+      
+      else 
+      {
+        IgCollectionItem ex = extras.create();
+
+        ex[IPOS] = IgV3d();
+        ex[IP] = IgV3d();
+        ex[OPOS] = IgV3d();
+        ex[OP] = IgV3d();
+
+        trackExtras.associate(e, ex);
+
+      }
+      
     }
   }
   else

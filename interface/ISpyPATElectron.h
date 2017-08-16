@@ -15,6 +15,8 @@ public:
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
 private:
   edm::InputTag inputTag_;
+  bool isAOD_;
+
   edm::EDGetTokenT<std::vector<pat::Electron> > electronToken_;
 };
 

@@ -20,7 +20,8 @@ using namespace edm::service;
 using namespace edm;
 
 ISpyPATMuon::ISpyPATMuon(const edm::ParameterSet& iConfig)
-  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATMuonTag"))
+  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATMuonTag")),
+    isAOD_(iConfig.getUntrackedParameter<bool>("isAOD", false))
 {
   muonToken_ = consumes<std::vector<pat::Muon> >(inputTag_);
 }
@@ -157,29 +158,46 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
                           (*standAloneMuon).vz()/100.0);
       imuon[S_PHI] = (*standAloneMuon).phi();
       imuon[S_ETA] = (*standAloneMuon).eta();
-            
-      if ( (*standAloneMuon).innerOk() && (*standAloneMuon).outerOk() )
+
+      if ( ! isAOD_ ) 
       {
-        IgCollectionItem eitem = extras.create();
+        if ( (*standAloneMuon).innerOk() && (*standAloneMuon).outerOk() )
+        {
+          IgCollectionItem eitem = extras.create();
         
-        eitem[IPOS] = IgV3d((*standAloneMuon).innerPosition().x()/100.0,      
-                            (*standAloneMuon).innerPosition().y()/100.0,      
-                            (*standAloneMuon).innerPosition().z()/100.0);
+          eitem[IPOS] = IgV3d((*standAloneMuon).innerPosition().x()/100.0,      
+                              (*standAloneMuon).innerPosition().y()/100.0,      
+                              (*standAloneMuon).innerPosition().z()/100.0);
 
-        eitem[IP] = IgV3d((*standAloneMuon).innerMomentum().x(),
-                          (*standAloneMuon).innerMomentum().y(),
-                          (*standAloneMuon).innerMomentum().z());
+          eitem[IP] = IgV3d((*standAloneMuon).innerMomentum().x(),
+                            (*standAloneMuon).innerMomentum().y(),
+                            (*standAloneMuon).innerMomentum().z());
 
-        eitem[OPOS] = IgV3d((*standAloneMuon).outerPosition().x()/100.0,
-                            (*standAloneMuon).outerPosition().y()/100.0,
-                            (*standAloneMuon).outerPosition().z()/100.0);
+          eitem[OPOS] = IgV3d((*standAloneMuon).outerPosition().x()/100.0,
+                              (*standAloneMuon).outerPosition().y()/100.0,
+                              (*standAloneMuon).outerPosition().z()/100.0);
           
-        eitem[OP] = IgV3d((*standAloneMuon).outerMomentum().x(),
-                          (*standAloneMuon).outerMomentum().y(),
-                          (*standAloneMuon).outerMomentum().z());
+          eitem[OP] = IgV3d((*standAloneMuon).outerMomentum().x(),
+                            (*standAloneMuon).outerMomentum().y(),
+                            (*standAloneMuon).outerMomentum().z());
 
-        trackExtras.associate(imuon, eitem);
+          trackExtras.associate(imuon, eitem);
+        }
       }
+      
+      else                                                                                                                                                                                                                             
+      {
+        // Need to do track extrapolation                                                                                                                                           
+        IgCollectionItem eitem = extras.create();                                                                                                                                                                           
+                                                                                                                                                                                                                                      
+        eitem[IPOS] = IgV3d();                                                                                                                                                                                                         
+        eitem[IP] = IgV3d();                                                                                                                                                                                                           
+        eitem[OPOS] = IgV3d();                                                                                                                                                                                                         
+        eitem[OP] = IgV3d();                                                                                                                                                                                                           
+                                                                                                                                                                                                
+        trackExtras.associate(imuon, eitem);                                                                                                                                                                                          
+      }
+
     } // Standalone
 
     if ( t->combinedMuon().isNonnull() ) // Global

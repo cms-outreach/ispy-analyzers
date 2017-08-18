@@ -1,5 +1,6 @@
 #include "ISpy/Analyzers/interface/ISpyPackedCandidate.h"
 #include "ISpy/Analyzers/interface/ISpyService.h"
+#include "ISpy/Analyzers/interface/ISpyVector.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -45,37 +46,56 @@ void ISpyPackedCandidate::analyze(const edm::Event& event, const edm::EventSetup
   {
     std::string product = "PackedCandidates "
                           + edm::TypeID (typeid (pat::PackedCandidateCollection)).friendlyClassName() + ":"
-                           + inputTag_.label() + ":"
-                           + inputTag_.instance() + ":"
-                           + inputTag_.process();
-
-     IgCollection& products = storage->getCollection("Products_V1");
-     IgProperty PROD = products.addProperty("Product", std::string ());
-     IgCollectionItem item = products.create();
-     item[PROD] = product;
-
-     IgCollection& candidates = storage->getCollection("PackedCandidates_V1");
-
-     IgProperty PT  = candidates.addProperty("pt", 0.0);
-     IgProperty ETA = candidates.addProperty("eta", 0.0);
-
-     for ( pat::PackedCandidateCollection::const_iterator c = collection->begin(); 
-           c != collection->end(); ++c )
-     {
-       IgCollectionItem cand = candidates.create();
-
-       cand[PT] = (*c).pt();
-       cand[ETA] = (*c).eta();
-     }
-   }
-
-   else
-   {
-     std::string error = "### Error: PackedCandidates "
-                         + edm::TypeID (typeid (pat::PackedCandidateCollection)).friendlyClassName() + ":"
                           + inputTag_.label() + ":"
-                          + inputTag_.instance() + " are not found";
-      config->error(error);
+                          + inputTag_.instance() + ":"
+                          + inputTag_.process();
+
+    IgCollection& products = storage->getCollection("Products_V1");
+    IgProperty PROD = products.addProperty("Product", std::string ());
+    IgCollectionItem item = products.create();
+    item[PROD] = product;
+
+    IgCollection &tracks = storage->getCollection("PackedCandidate_V1");
+    IgProperty VTX = tracks.addProperty("pos", IgV3d());
+    IgProperty P   = tracks.addProperty("dir", IgV3d());
+    IgProperty PT  = tracks.addProperty("pt", 0.0); 
+    IgProperty PHI = tracks.addProperty("phi", 0.0);
+    IgProperty ETA = tracks.addProperty("eta", 0.0);
+    IgProperty CHARGE = tracks.addProperty("charge", int(0));
+    IgProperty CHI2 = tracks.addProperty("chi2", 0.0);
+    IgProperty NDOF = tracks.addProperty("ndof", 0.0);
+    
+    for ( pat::PackedCandidateCollection::const_iterator c = collection->begin(); 
+          c != collection->end(); ++c )
+    {
+      IgCollectionItem track = tracks.create();
+
+      track[VTX] = IgV3d((*c).vx()/100.,
+                         (*c).vy()/100.,
+                         (*c).vz()/100.);
+
+      IgV3d dir = IgV3d((*c).px(),
+                        (*c).py(),
+                        (*c).pz());
+      ISpyVector::normalize(dir);
+      track[P] = dir;
+
+      track[PT] = (*c).pt();
+      track[ETA] = (*c).eta();
+      track[PHI] = (*c).phi();
+      track[CHARGE] = (*c).charge();
+      track[CHI2] = (*c).vertexChi2();
+      track[NDOF] = (*c).vertexNdof();       
+    }
+  }
+
+  else
+  {
+    std::string error = "### Error: PackedCandidates "
+                        + edm::TypeID (typeid (pat::PackedCandidateCollection)).friendlyClassName() + ":"
+                        + inputTag_.label() + ":"
+                        + inputTag_.instance() + " are not found";
+    config->error(error);
   }
 }
 

@@ -1,5 +1,6 @@
 #include "ISpy/Analyzers/interface/ISpyPATElectron.h"
 #include "ISpy/Analyzers/interface/ISpyService.h"
+#include "ISpy/Analyzers/interface/ISpyVector.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -130,15 +131,25 @@ void ISpyPATElectron::analyze(const edm::Event& event, const edm::EventSetup& ev
       {
         IgCollectionItem ex = extras.create();
 
-        ex[IPOS] = IgV3d();
-        ex[IP] = IgV3d();
-        ex[OPOS] = IgV3d();
-        ex[OP] = IgV3d();
+        const reco::SuperClusterRef& sc = t->superCluster();
+      
+        double eta = (*sc).eta();
+        double phi = (*sc).phi();
+        double pt = t->pt();
+      
+        double theta = 2*atan(exp(-eta));
+        
+        IgV3d out_dir = IgV3d(pt*cos(phi), pt*sin(phi), pt/tan(theta));
+        ISpyVector::normalize(out_dir);
+        
+        ex[IPOS] = IgV3d(t->vx()/100.0, t->vy()/100.0, t->vz()/100.0);
+        ex[IP] = IgV3d(t->px(), t->py(), t->pz());
+
+        ex[OPOS] = IgV3d((*sc).x()/100.0, (*sc).y()/100.0, (*sc).z()/100.0);
+        ex[OP] = out_dir;
 
         trackExtras.associate(e, ex);
-
       }
-      
     }
   }
   else

@@ -64,9 +64,9 @@ process.iSpy = cms.Path(process.ISpyEvent*
                         process.ISpyPATElectron*
                         process.ISpyPATJet*
                         process.ISpyPATMET*
-                        process.ISpyPATMuon*
+                        #process.ISpyPATMuon*
                         process.ISpyPATPhoton*
-                        process.ISpyPackedCandidate*
+                        #process.ISpyPackedCandidate*
                         process.ISpyVertex)
 
 process.schedule = cms.Schedule(process.iSpy)

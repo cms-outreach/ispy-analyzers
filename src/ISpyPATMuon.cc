@@ -106,9 +106,6 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
  
   IgAssociations& trackExtras = storage->getAssociations("PATMuonTrackExtras_V1");
 
-  //IgCollection& points = storage->getCollection("Points_V1");
-  //IgProperty POS = points.addProperty("pos", IgV3d());
-
   for ( std::vector<pat::Muon>::const_iterator t = collection->begin(), tEnd = collection->end(); 
         t != tEnd; ++t )
   {   
@@ -139,13 +136,13 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       {
         std::string error = 
           "### Error: ISpyPATMuon::refitTrack exception caught for TrackerMuon:";
-        error += e.explainSelf();
+        //error += e.explainSelf();
 	config->error (error);
       }
     }  // Tracker 
     
     
-    if ( t->standAloneMuon().isNonnull() ) // Standalone
+    if ( t->standAloneMuon().isNonnull() && ! isAOD_ ) // Standalone
     {
       reco::TrackRef standAloneMuon = t->standAloneMuon();
 
@@ -159,45 +156,29 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       imuon[S_PHI] = (*standAloneMuon).phi();
       imuon[S_ETA] = (*standAloneMuon).eta();
 
-      if ( ! isAOD_ ) 
+      if ( (*standAloneMuon).innerOk() && (*standAloneMuon).outerOk() )
       {
-        if ( (*standAloneMuon).innerOk() && (*standAloneMuon).outerOk() )
-        {
-          IgCollectionItem eitem = extras.create();
+        IgCollectionItem eitem = extras.create();
         
-          eitem[IPOS] = IgV3d((*standAloneMuon).innerPosition().x()/100.0,      
-                              (*standAloneMuon).innerPosition().y()/100.0,      
-                              (*standAloneMuon).innerPosition().z()/100.0);
+        eitem[IPOS] = IgV3d((*standAloneMuon).innerPosition().x()/100.0,      
+                            (*standAloneMuon).innerPosition().y()/100.0,      
+                            (*standAloneMuon).innerPosition().z()/100.0);
 
-          eitem[IP] = IgV3d((*standAloneMuon).innerMomentum().x(),
-                            (*standAloneMuon).innerMomentum().y(),
-                            (*standAloneMuon).innerMomentum().z());
+        eitem[IP] = IgV3d((*standAloneMuon).innerMomentum().x(),
+                          (*standAloneMuon).innerMomentum().y(),
+                          (*standAloneMuon).innerMomentum().z());
 
-          eitem[OPOS] = IgV3d((*standAloneMuon).outerPosition().x()/100.0,
-                              (*standAloneMuon).outerPosition().y()/100.0,
-                              (*standAloneMuon).outerPosition().z()/100.0);
+        eitem[OPOS] = IgV3d((*standAloneMuon).outerPosition().x()/100.0,
+                            (*standAloneMuon).outerPosition().y()/100.0,
+                            (*standAloneMuon).outerPosition().z()/100.0);
           
-          eitem[OP] = IgV3d((*standAloneMuon).outerMomentum().x(),
-                            (*standAloneMuon).outerMomentum().y(),
-                            (*standAloneMuon).outerMomentum().z());
+        eitem[OP] = IgV3d((*standAloneMuon).outerMomentum().x(),
+                          (*standAloneMuon).outerMomentum().y(),
+                          (*standAloneMuon).outerMomentum().z());
 
-          trackExtras.associate(imuon, eitem);
-        }
+        trackExtras.associate(imuon, eitem);
       }
       
-      else                                                                                                                                                                                                                             
-      {
-        // Need to do track extrapolation                                                                                                                                           
-        IgCollectionItem eitem = extras.create();                                                                                                                                                                           
-                                                                                                                                                                                                                                      
-        eitem[IPOS] = IgV3d();                                                                                                                                                                                                         
-        eitem[IP] = IgV3d();                                                                                                                                                                                                           
-        eitem[OPOS] = IgV3d();                                                                                                                                                                                                         
-        eitem[OP] = IgV3d();                                                                                                                                                                                                           
-                                                                                                                                                                                                
-        trackExtras.associate(imuon, eitem);                                                                                                                                                                                          
-      }
-
     } // Standalone
 
     if ( t->combinedMuon().isNonnull() ) // Global
@@ -227,7 +208,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       {
         std::string error = 
           "### Error: ISpyPATMuon::refitTrack exception caught for GlobalMuon:";
-        error += e.explainSelf();
+        //error += e.explainSelf();
 	config->error (error);
       }
 

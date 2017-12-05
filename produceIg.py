@@ -13,17 +13,7 @@ process.GlobalTag.globaltag = 'FT_53_LV5_AN1::All'
 
 # The files below can be changed to anything included in the release
 process.source = cms.Source("PoolSource", fileNames = cms.untracked.vstring(
-
-    'root://eospublic.cern.ch//eos/opendata/cms/Run2012B/BJetPlusX/AOD/22Jan2013-v1/20000/00009852-3182-E211-A433-0026189438E9.root',
-    'root://eospublic.cern.ch//eos/opendata/cms/Run2012B/BJetPlusX/AOD/22Jan2013-v1/20000/000A1FC1-3682-E211-9B86-003048FFCB74.root',
-
-    'root://eospublic.cern.ch//eos/opendata/cms/Run2012B/BTag/AOD/22Jan2013-v1/20000/005D12FD-E578-E211-8DB1-00259073E374.root',
-    'root://eospublic.cern.ch//eos/opendata/cms/Run2012B/BTag/AOD/22Jan2013-v1/20000/0099F922-1079-E211-BE97-90E6BA442F2C.root',
-
-    'root://eospublic.cern.ch//eos/opendata/cms/Run2012B/Commissioning/AOD/22Jan2013-v1/30000/002C75D6-137C-E211-80F7-20CF305B050B.root',
-    'root://eospublic.cern.ch//eos/opendata/cms/Run2012B/Commissioning/AOD/22Jan2013-v1/30000/005F76B4-E87B-E211-9DF0-20CF3027A5BC.root'
-
-
+    'root://eospublic.cern.ch//eos/opendata/cms/Run2012B/DoubleMuParked/AOD/22Jan2013-v1/10000/1EC938EF-ABEC-E211-94E0-90E6BA442F24.root'
 ))
 
 process.source.lumisToProcess = cms.untracked.VLuminosityBlockRange()
@@ -35,10 +25,11 @@ from FWCore.MessageLogger.MessageLogger_cfi import *
 # outputMaxEvents is the number of events produced in each file.
 # Actually in the file name the text "_N" will be added before the ".ig"
 # For example, if maxEvents (see below) is 100, and outputMaxEvents is 25, then 4 files
-# will be produced: Run2011A_0.ig, Run2011A_1.ig, Run2011A_2.ig, and Run2011A_3.ig
+# will be produced: Run2012B_0.ig, Run2012B_1.ig, Run2012B_2.ig, and Run2012B_3.ig
+
 process.add_(
     cms.Service("ISpyService",
-                outputFileName = cms.untracked.string('Run2012.ig'),
+                outputFileName = cms.untracked.string('DoubleMuParked_Run2012B.ig'),
                 outputMaxEvents = cms.untracked.int32(25)
                )
 )
@@ -72,8 +63,6 @@ process.load('ISpy.Analyzers.ISpyTrackExtrapolation_cfi')
 process.load('ISpy.Analyzers.ISpyTriggerEvent_cfi')
 
 process.load('ISpy.Analyzers.ISpyVertex_cfi')
-
-###
 
 process.ISpyEBRecHit.iSpyEBRecHitTag = cms.InputTag('reducedEcalRecHitsEB')
 process.ISpyEERecHit.iSpyEERecHitTag = cms.InputTag('reducedEcalRecHitsEE')

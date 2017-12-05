@@ -1,7 +1,6 @@
 This package is for production of event display files for the CMS experiment
-at the LHC. This particular branch is for use with the CMS public data release
-of 2015. See http://opendata.cern.ch for more information (and context for 
-the instructions below).
+at the LHC. This particular branch is for use with the release of the 2012 CMS public dataset. 
+See http://opendata.cern.ch for more information (and context for the instructions below).
 
 To produce files in the VM open a terminal with the X terminal emulator (an icon bottom-left of the VM screen)
 and input the commands as explained below.
@@ -9,13 +8,13 @@ and input the commands as explained below.
 * Create a CMSSW environment: 
 
 ```
-    cmsrel CMSSW_5_3_32
+    cmsrel CMSSW_5_3_36
 ```
 
-* Change to the CMSSW_5_3_32/src/ directory:
+* Change to the CMSSW_5_3_36/src/ directory:
 
 ```
-    cd CMSSW_5_3_32/src/
+    cd CMSSW_5_3_36/src/
 ```
 * Initialize the CMSSW environment:
 
@@ -38,7 +37,7 @@ and input the commands as explained below.
 * Checkout the appropriate branch:
 
 ```
-    git checkout Run2011A 
+    git checkout Run2012 
 ```
 
 * Change to the ISpy/Services/ directory:
@@ -71,6 +70,6 @@ and input the commands as explained below.
     cmsRun produceIg.py
 ```
 
-which will produce a file with the name X_Run2011A_0.ig
+which will produce a file with the name DoubleMuParked_Run2012B_0.ig
 
 The file produceIg.py is annotated; make your own changes as appropriate.

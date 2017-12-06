@@ -8,13 +8,13 @@ and input the commands as explained below.
 * Create a CMSSW environment: 
 
 ```
-    cmsrel CMSSW_5_3_36
+    cmsrel CMSSW_5_3_32
 ```
 
-* Change to the CMSSW_5_3_36/src/ directory:
+* Change to the CMSSW_5_3_32/src/ directory:
 
 ```
-    cd CMSSW_5_3_36/src/
+    cd CMSSW_5_3_32/src/
 ```
 * Initialize the CMSSW environment:
 

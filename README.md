@@ -46,6 +46,12 @@ and input the commands as explained below.
     cd ../../ISpy/Services/ 
 ```
 
+* Checkout the appropriate branch:
+
+```
+    git checkout Run2012
+```
+
 * Change back to src directory
 
 ```

@@ -144,8 +144,8 @@ ISpyEventSetup::buildTracker3D (IgDataStorage *storage)
   IgProperty BACK_4  = geometry.addProperty ("back_3",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty ("back_4",  IgV3d());
 
-  TrackerGeometry::DetUnitContainer::const_iterator it  = trackerGeom_->detUnits ().begin ();
-  TrackerGeometry::DetUnitContainer::const_iterator end = trackerGeom_->detUnits ().end ();
+  TrackerGeometry::DetContainer::const_iterator it  = trackerGeom_->detUnits ().begin ();
+  TrackerGeometry::DetContainer::const_iterator end = trackerGeom_->detUnits ().end ();
   for (; it != end; ++it)
   {	    
     uint32_t id = (*it)->geographicalId ().rawId ();
@@ -1151,8 +1151,8 @@ ISpyEventSetup::buildTrackerRPhi (IgDataStorage *storage)
   IgProperty BACK_4  = geometry.addProperty ("back_3",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty ("back_4",  IgV3d());
 
-  TrackerGeometry::DetUnitContainer::const_iterator it  = trackerGeom_->detUnits ().begin ();
-  TrackerGeometry::DetUnitContainer::const_iterator end = trackerGeom_->detUnits ().end ();
+  TrackerGeometry::DetContainer::const_iterator it  = trackerGeom_->detUnits ().begin ();
+  TrackerGeometry::DetContainer::const_iterator end = trackerGeom_->detUnits ().end ();
 
   for (; it != end; ++it)
   {
@@ -1231,8 +1231,8 @@ ISpyEventSetup::buildTrackerRZ (IgDataStorage *storage)
   IgProperty BACK_4  = geometry.addProperty ("back_3",  IgV3d());
   IgProperty BACK_3  = geometry.addProperty ("back_4",  IgV3d());
 
-  TrackerGeometry::DetUnitContainer::const_iterator it  = trackerGeom_->detUnits ().begin ();
-  TrackerGeometry::DetUnitContainer::const_iterator end = trackerGeom_->detUnits ().end ();
+  TrackerGeometry::DetContainer::const_iterator it  = trackerGeom_->detUnits ().begin ();
+  TrackerGeometry::DetContainer::const_iterator end = trackerGeom_->detUnits ().end ();
 
   double p0 = M_PI / 2.0;
   double pD = M_PI / 20.0;

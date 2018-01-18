@@ -1,7 +1,8 @@
 #ifndef ANALYZER_ISPY_VECTOR_H
-# define ANALYZER_ISPY_VECTOR_H
+#define ANALYZER_ISPY_VECTOR_H
 
-# include "ISpy/Services/interface/IgCollection.h"
+#include "ISpy/Services/interface/IgCollection.h"
+#include <math.h>
 
 class ISpyVector
 {

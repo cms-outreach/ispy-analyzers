@@ -25,8 +25,8 @@ and input the commands as explained below.
 * Clone the necessary source code:
 
 ```
-    git clone https://github.com/cms-outreach/ispy-analyzers.git ISpy/Analyzers 
-    git clone https://github.com/cms-outreach/ispy-services.git ISpy/Services
+    git clone git://github.com/cms-outreach/ispy-analyzers.git ISpy/Analyzers 
+    git clone git://github.com/cms-outreach/ispy-services.git ISpy/Services
 ```
 
 * Change to the ISpy/Analyzers/ directory:

@@ -1867,7 +1867,7 @@ ISpyEventSetup::build3D (IgDataStorage *storage, const std::string &name, DetId:
 
   for (std::vector<DetId>::const_iterator it = ids.begin (), iEnd = ids.end (); it != iEnd; ++it) 
   {
-    const CaloCellGeometry *cell = geom->getGeometry (*it);
+    auto cell = geom->getGeometry (*it);
     const CaloCellGeometry::CornersVec& corners = cell->getCorners ();
     assert (corners.size () == 8);
 
@@ -1937,7 +1937,7 @@ ISpyEventSetup::buildEndcap3D (IgDataStorage *storage, const std::string &name, 
     if ( zside != side )
       continue;
 
-    const CaloCellGeometry *cell = geom->getGeometry (*it);
+    auto cell = geom->getGeometry (*it);
     const CaloCellGeometry::CornersVec& corners = cell->getCorners ();
     assert (corners.size () == 8);
 	
@@ -1990,7 +1990,7 @@ ISpyEventSetup::buildRPhi (IgDataStorage *storage, const std::string &name, DetI
   const std::vector<DetId>& ids (geom->getValidDetIds (det, subdetn));
   for (std::vector<DetId>::const_iterator it = ids.begin (), iEnd = ids.end (); it != iEnd; ++it) 
   {
-    const CaloCellGeometry *cell = geom->getGeometry (*it);
+    auto cell = geom->getGeometry (*it);
     if (cell->getPosition().z() > 0 && cell->getPosition().z() < width)
     {
       const CaloCellGeometry::CornersVec& corners = cell->getCorners ();
@@ -2050,7 +2050,7 @@ ISpyEventSetup::buildRZ (IgDataStorage *storage, const std::string &name, DetId:
   double pMax = p0 + pD;
   for (std::vector<DetId>::const_iterator it = ids.begin (), iEnd = ids.end (); it != iEnd; ++it) 
   {
-    const CaloCellGeometry *cell = geom->getGeometry (*it);
+    auto cell = geom->getGeometry (*it);
     double p = cell->getPosition ().phi ();
     if (p < 0) p += 2 * M_PI;
 

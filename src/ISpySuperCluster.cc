@@ -118,7 +118,7 @@ void ISpySuperCluster::analyze(const edm::Event& event, const edm::EventSetup& e
         rhf[DETID] = (*hi).first;
         rhf[FRACT] = static_cast<double>((*hi).second);
 
-        const CaloCellGeometry *cell = (*geom).getGeometry((*hi).first);
+        auto cell = (*geom).getGeometry((*hi).first);
         const CaloCellGeometry::CornersVec& corners = cell->getCorners();
         
         assert(corners.size() == 8);

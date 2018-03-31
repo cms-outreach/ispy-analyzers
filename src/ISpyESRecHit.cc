@@ -88,7 +88,7 @@ ISpyESRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
 
     for (std::vector<EcalRecHit>::const_iterator it=collection->begin(), itEnd=collection->end(); it!=itEnd; ++it)
     {
-      const CaloCellGeometry *cell = (*geom).getGeometry ((*it).detid ());
+      auto cell = (*geom).getGeometry ((*it).detid ());
       const CaloCellGeometry::CornersVec& corners = cell->getCorners ();
       const GlobalPoint& pos = cell->getPosition ();
       float energy = (*it).energy ();

@@ -94,7 +94,7 @@ void ISpyCaloHit::analyze(const edm::Event& event, const edm::EventSetup& eventS
       {
 	const DetId detid ((*i).id());
 
-	const CaloCellGeometry* cell = (*geom).getGeometry(detid);
+	auto cell = (*geom).getGeometry(detid);
 	const CaloCellGeometry::CornersVec& corners = cell->getCorners();
 	const GlobalPoint& pos = cell->getPosition();
         

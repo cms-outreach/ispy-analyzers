@@ -86,7 +86,7 @@ ISpyCaloTower::analyze( const edm::Event& event, const edm::EventSetup& eventSet
 
     for (CaloTowerCollection::const_iterator it=collection->begin(), itEnd=collection->end(); it!=itEnd; ++it)
     {
-      const CaloCellGeometry *cell = (*geom).getGeometry((*it).id());
+      auto cell = (*geom).getGeometry((*it).id());
 
       const CaloCellGeometry::CornersVec& corners = cell->getCorners();
       assert(corners.size()==8);

@@ -119,7 +119,7 @@ ISpyBasicCluster::analyze (const edm::Event& event, const edm::EventSetup& event
         idetid[DETID] = static_cast<int>((*id).first);
         idetid[FRACT] = static_cast<double>((*id).second);
 
-        const CaloCellGeometry *cell = (*geom).getGeometry ((*id).first);
+        auto cell = (*geom).getGeometry ((*id).first);
         const CaloCellGeometry::CornersVec& corners = cell->getCorners ();
         
         assert(corners.size() == 8);

@@ -89,7 +89,7 @@ ISpyHBRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
     {
       if ((*it).id ().subdet () == HcalBarrel)
       {
-	const CaloCellGeometry *cell = (*geom).getGeometry ((*it).detid ());
+	auto cell = (*geom).getGeometry ((*it).detid ());
 	const CaloCellGeometry::CornersVec& corners = cell->getCorners ();
 	const GlobalPoint& pos = cell->getPosition ();
 	float energy = (*it).energy ();

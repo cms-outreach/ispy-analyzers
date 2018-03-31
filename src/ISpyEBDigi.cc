@@ -129,7 +129,7 @@ void ISpyEBDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSe
     {
       IgCollectionItem d = digis.create();  
 
-      const CaloCellGeometry *cell = (*geom).getGeometry((*di).id());
+      auto cell = (*geom).getGeometry((*di).id());
       const CaloCellGeometry::CornersVec& corners = cell->getCorners();
       const GlobalPoint& pos = cell->getPosition();
  

@@ -93,7 +93,12 @@ ISpyHBRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
 	const CaloCellGeometry::CornersVec& corners = cell->getCorners ();
 	const GlobalPoint& pos = cell->getPosition ();
 	float energy = (*it).energy ();
+
 	float time = (*it).time ();
+        
+        if ( std::isinf(time) ) 
+          time = 0.0;
+
 	float eta = pos.eta ();
 	float phi = pos.phi ();
 

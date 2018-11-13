@@ -13,6 +13,7 @@ class SbVec3f;
 class CSCGeometry;
 class DTGeometry;
 class RPCGeometry;
+class GEMGeometry;
 class IgDataStorage;
 class IgCollectionItem;
 class MuonGeometryRecord;
@@ -39,6 +40,9 @@ private:
   void	buildRPCRPhi(IgDataStorage *);
   void	buildRPCRZ(IgDataStorage *);
 
+  void 	buildGEM3D(IgDataStorage *, const std::string&, int);
+  void	buildGEMRZ(IgDataStorage *);
+
   void	addCorners(IgCollectionItem&, const GeomDet *);
 
   bool muonGeomChanged_;
@@ -46,6 +50,7 @@ private:
   edm::ESHandle<CSCGeometry> cscGeom_;
   edm::ESHandle<DTGeometry> dtGeom_;
   edm::ESHandle<RPCGeometry> rpcGeom_;
+  edm::ESHandle<GEMGeometry> gemGeom_;
   edm::ESWatcher<MuonGeometryRecord> watch_muonGeom_;
 
 };

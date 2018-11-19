@@ -9,6 +9,7 @@
 
 #include "Geometry/DTGeometry/interface/DTGeometry.h"
 #include "Geometry/CSCGeometry/interface/CSCGeometry.h"
+#include "Geometry/GEMGeometry/interface/GEMGeometry.h"
 
 class IgCollection;
 class IgDataStorage;
@@ -39,6 +40,8 @@ private:
   bool dtGeomValid_;
   edm::ESHandle<CSCGeometry> cscGeometry_;
   bool cscGeomValid_;
+  edm::ESHandle<GEMGeometry> gemGeometry_;
+  bool gemGeomValid_;
 
   void addChambers(reco::MuonCollection::const_iterator it);
 

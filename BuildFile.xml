@@ -4,6 +4,7 @@
 <use   name="DataFormats/DTRecHit"/>
 <use   name="DataFormats/L1GlobalTrigger"/>
 <use   name="DataFormats/CSCDigi"/>
+<use   name="DataFormats/GEMDigi"/>
 <use   name="CondFormats/L1TObjects"/>
 <use   name="Geometry/DTGeometry"/>
 <use   name="Geometry/CSCGeometry"/>

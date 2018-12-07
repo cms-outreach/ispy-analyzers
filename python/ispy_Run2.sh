@@ -13,18 +13,13 @@ cat > ${CFGFILE}<<EOF
 
 import FWCore.ParameterSet.Config as cms
 
-from Configuration.StandardSequences.Eras import eras
-process = cms.Process('ISPY',eras.Run2_2018)
-#process = cms.Process("ISPY")
-
+process = cms.Process("ISPY")
 #process.load("Configuration.StandardSequences.Geometry_cff")
 process.load("Configuration.StandardSequences.GeometryRecoDB_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:phase1_2018_realistic', '')
-#process.GlobalTag.globaltag = 'GR_E_V47::All'
+process.GlobalTag.globaltag = 'GR_E_V47::All'
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring('${FILENAME}'))

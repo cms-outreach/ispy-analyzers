@@ -4,10 +4,12 @@
 <use   name="DataFormats/DTRecHit"/>
 <use   name="DataFormats/L1GlobalTrigger"/>
 <use   name="DataFormats/CSCDigi"/>
+<use   name="DataFormats/GEMDigi"/>
 <use   name="CondFormats/L1TObjects"/>
 <use   name="Geometry/DTGeometry"/>
 <use   name="Geometry/CSCGeometry"/>
 <use   name="Geometry/RPCGeometry"/>
+<use   name="Geometry/GEMGeometry"/>
 <use   name="Geometry/CaloGeometry"/>
 <use   name="Geometry/TrackerGeometryBuilder"/>
 <use   name="TrackingTools/TransientTrack"/>

@@ -64,8 +64,14 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     return;
   }
   
+  eventSetup.get<MuonGeometryRecord>().get(gemGeometry_);
   eventSetup.get<MuonGeometryRecord>().get(dtGeometry_);
   eventSetup.get<MuonGeometryRecord>().get(cscGeometry_);
+
+  if ( gemGeometry_.isValid() )
+    gemGeomValid_ = true;
+  else
+    config->error("### Error: Muons  GEM Geometry not valid");
 
   if ( dtGeometry_.isValid() )
     dtGeomValid_ = true;
@@ -278,7 +284,11 @@ ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
                                                          ditEnd = dets.end(); 
         dit != ditEnd; ++dit )
   {
-    if ( dit->detector() == MuonSubdetId::CSC )
+    if ( dit->detector() == MuonSubdetId::GEM )
+    {
+      geomDet = gemGeometry_->idToDet((*dit).id);
+    }
+    else if ( dit->detector() == MuonSubdetId::CSC )
     {
       geomDet = cscGeometry_->idToDet((*dit).id);
     }

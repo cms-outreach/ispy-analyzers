@@ -23,7 +23,13 @@ ISpyPATMuon::ISpyPATMuon(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATMuonTag")),
     isAOD_(iConfig.getUntrackedParameter<bool>("isAOD", false))
 {
+
   muonToken_ = consumes<std::vector<pat::Muon> >(inputTag_);
+
+  in_ = 0.0;
+  out_ = 0.0;
+  step_ = 0.05;
+
 }
 
 void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -136,7 +142,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       {
         std::string error = 
           "### Error: ISpyPATMuon::refitTrack exception caught for TrackerMuon:";
-        //error += e.explainSelf();
+        error += e.explainSelf();
 	config->error (error);
       }
     }  // Tracker 
@@ -208,7 +214,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       {
         std::string error = 
           "### Error: ISpyPATMuon::refitTrack exception caught for GlobalMuon:";
-        //error += e.explainSelf();
+        error += e.explainSelf();
 	config->error (error);
       }
 

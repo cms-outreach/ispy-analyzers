@@ -55,7 +55,7 @@ void ISpyPackedCandidate::analyze(const edm::Event& event, const edm::EventSetup
     IgCollectionItem item = products.create();
     item[PROD] = product;
 
-    IgCollection &tracks = storage->getCollection("PackedCandidate_V1");
+    IgCollection &tracks = storage->getCollection("Tracks_V4");
     IgProperty VTX = tracks.addProperty("pos", IgV3d());
     IgProperty P   = tracks.addProperty("dir", IgV3d());
     IgProperty PT  = tracks.addProperty("pt", 0.0); 
@@ -64,6 +64,13 @@ void ISpyPackedCandidate::analyze(const edm::Event& event, const edm::EventSetup
     IgProperty CHARGE = tracks.addProperty("charge", int(0));
     IgProperty CHI2 = tracks.addProperty("chi2", 0.0);
     IgProperty NDOF = tracks.addProperty("ndof", 0.0);
+
+    IgCollection &extras = storage->getCollection("Extras_V1");
+    IgProperty IPOS = extras.addProperty("pos_1", IgV3d());
+    IgProperty IP   = extras.addProperty("dir_1", IgV3d());
+    IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
+    IgProperty OP   = extras.addProperty("dir_2", IgV3d());
+    IgAssociations &trackExtras = storage->getAssociations("TrackExtras_V1");
     
     for ( pat::PackedCandidateCollection::const_iterator c = collection->begin(); 
           c != collection->end(); ++c )
@@ -85,7 +92,22 @@ void ISpyPackedCandidate::analyze(const edm::Event& event, const edm::EventSetup
       track[PHI] = (*c).phi();
       track[CHARGE] = (*c).charge();
       track[CHI2] = (*c).vertexChi2();
-      track[NDOF] = (*c).vertexNdof();       
+      track[NDOF] = (*c).vertexNdof();
+
+      IgCollectionItem eitem = extras.create();
+
+      eitem[IPOS] = IgV3d((*c).vx()/100.,
+                          (*c).vy()/100.,
+                          (*c).vz()/100.);
+
+      eitem[IP] = dir;
+
+      eitem[OPOS] = IgV3d();
+      
+      eitem[OP] = IgV3d();
+      
+      trackExtras.associate(item,eitem);
+       
     }
   }
 

@@ -74,7 +74,6 @@ ISpyMuonGeometry::analyze(const edm::Event& event, const edm::EventSetup& eventS
       buildGEM3D(storage, "GEMPlus3D_V1", 1);
       buildGEMRZ(storage);
     }
-    else { std::cout << "no gem?" << std::endl; }
 
   }
 
@@ -298,7 +297,7 @@ ISpyMuonGeometry::buildCSC3D(IgDataStorage *storage, const std::string &name, in
       if (dynamic_cast<const TrapezoidalPlaneBounds *> (b))
       {
         const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-        //std::vector< float > parameters = b2->parameters ();
+
         float parameters[4] = {
           b2->parameters()[0],
           b2->parameters()[1],
@@ -569,6 +568,7 @@ ISpyMuonGeometry::buildRPCBarrel3D(IgDataStorage *storage)
             b2->parameters()[1],
             b2->parameters()[2],
             b2->parameters()[3]
+
           };
 
           p[0] = roll->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
@@ -655,6 +655,7 @@ ISpyMuonGeometry::buildRPCPlusEndcap3D(IgDataStorage *storage)
             b2->parameters()[1],
             b2->parameters()[2],
             b2->parameters()[3]
+
           };
 
           p[0] = roll->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
@@ -741,6 +742,7 @@ ISpyMuonGeometry::buildRPCMinusEndcap3D(IgDataStorage *storage)
             b2->parameters()[1],
             b2->parameters()[2],
             b2->parameters()[3]
+
           };
 
           p[0] = roll->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
@@ -828,6 +830,7 @@ ISpyMuonGeometry::buildRPCRPhi(IgDataStorage *storage)
               b2->parameters()[1],
               b2->parameters()[2],
               b2->parameters()[3]
+
             };
 
             p[0] = roll->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
@@ -926,6 +929,7 @@ ISpyMuonGeometry::buildRPCRZ(IgDataStorage *storage)
               b2->parameters()[1],
               b2->parameters()[2],
               b2->parameters()[3]
+
             };
 
             p[0] = roll->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
@@ -1022,6 +1026,7 @@ ISpyMuonGeometry::buildGEMRZ(IgDataStorage *storage)
             b2->parameters()[1],
             b2->parameters()[2],
             b2->parameters()[3]
+
           };
 
           p[0] = gemChamber->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 
@@ -1104,12 +1109,14 @@ ISpyMuonGeometry::buildGEM3D(IgDataStorage *storage, const std::string &name, in
       if (dynamic_cast<const TrapezoidalPlaneBounds *> (b))
       {
         const TrapezoidalPlaneBounds *b2 = dynamic_cast<const TrapezoidalPlaneBounds *> (b);
-        //std::vector< float > parameters = b2->parameters ();
+
         float parameters[4] = {
+
           b2->parameters()[0],
           b2->parameters()[1],
           b2->parameters()[2],
           b2->parameters()[3]
+
         };
 
         p[0] = gemChamber->surface().toGlobal(LocalPoint(parameters[0],-parameters[3],parameters[2])); 

@@ -3,7 +3,6 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/CaloTowers/interface/CaloTower.h"
-#include "DataFormats/CaloTowers/interface/CaloTowerCollection.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -24,12 +23,15 @@ using namespace edm::service;
 
 ISpyCaloTower::ISpyCaloTower (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyCaloTowerTag"))
-{}
+{
+  caloTowerToken_ = consumes<CaloTowerCollection>(inputTag_);
+}
 
 void
 ISpyCaloTower::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
 {
   edm::Service<ISpyService> config;
+  
   if (! config.isAvailable ()) 
   {
     throw cms::Exception ("Configuration")
@@ -40,7 +42,7 @@ ISpyCaloTower::analyze( const edm::Event& event, const edm::EventSetup& eventSet
   }
     
   edm::Handle<CaloTowerCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(caloTowerToken_, collection);
 
   edm::ESHandle<CaloGeometry> geom;
   eventSetup.get<CaloGeometryRecord> ().get (geom);

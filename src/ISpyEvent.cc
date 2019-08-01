@@ -60,10 +60,10 @@ ISpyEvent::analyze( const edm::Event& event, const edm::EventSetup& /* eventSetu
 
   IgDataStorage *storage = config->storage ();
   assert(storage);
-  IgCollection &eventColl = storage->getCollection ("Event_V2");
+  IgCollection &eventColl = storage->getCollection ("Event_V3");
 
   IgProperty RUN   = eventColl.addProperty ("run", static_cast<int>(0));
-  IgProperty EVENT = eventColl.addProperty ("event", static_cast<int>(0));
+  IgProperty EVENT = eventColl.addProperty ("event", static_cast<long long>(0));
   IgProperty LS    = eventColl.addProperty ("ls", static_cast<int>(0));
   IgProperty ORBIT = eventColl.addProperty ("orbit", static_cast<int>(0));
   IgProperty BX    = eventColl.addProperty ("bx", static_cast<int>(0));
@@ -72,7 +72,7 @@ ISpyEvent::analyze( const edm::Event& event, const edm::EventSetup& /* eventSetu
 
   IgCollectionItem eventId = eventColl.create();
   eventId [RUN]   = static_cast<int>(event.id ().run ());
-  eventId [EVENT] = static_cast<int>(event.id ().event ());
+  eventId [EVENT] = static_cast<long long>(event.id ().event ());
   eventId [LS]    = static_cast<int>(event.luminosityBlock ());
   eventId [ORBIT] = static_cast<int>(event.orbitNumber ());
   eventId [BX]    = static_cast<int>(event.bunchCrossing ());

@@ -47,7 +47,7 @@ namespace edm {
       int		eventCounter_;	    
       int		fileCounter_;	    
       int		currentRun_;	    
-      int		currentEvent_;
+      long long		currentEvent_;
       
       zipFile           zipFile0_; // Events
       zipFile           zipFile1_; // Geometry

@@ -18,9 +18,11 @@ using namespace edm;
 using namespace reco;
 
 ISpyVertex::ISpyVertex(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyVertexTag"))
+: priVertexInputTag_(iConfig.getParameter<edm::InputTag>("iSpyPriVertexTag")),
+  secVertexInputTag_(iConfig.getParameter<edm::InputTag>("iSpySecVertexTag"))
 {
-  vertexToken_ = consumes<VertexCollection>(inputTag_);
+  priVertexToken_ = consumes<VertexCollection>(priVertexInputTag_);
+  secVertexToken_ = consumes<VertexCollection>(secVertexInputTag_);
 }
 
 void ISpyVertex::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -38,23 +40,23 @@ void ISpyVertex::analyze(const edm::Event& event, const edm::EventSetup& eventSe
 
   IgDataStorage *storage = config->storage();
 
-  edm::Handle<VertexCollection> collection;
-  event.getByToken(vertexToken_, collection);
+  edm::Handle<VertexCollection> priCollection;
+  event.getByToken(priVertexToken_, priCollection);
 
-  if ( collection.isValid() )
+  if ( priCollection.isValid() )
   {
     std::string product = "Vertices "
                           + edm::TypeID (typeid (VertexCollection)).friendlyClassName() + ":"
-                          + inputTag_.label() + ":"
-                          + inputTag_.instance() + ":"
-                          + inputTag_.process();
+                          + priVertexInputTag_.label() + ":"
+                          + priVertexInputTag_.instance() + ":"
+                          + priVertexInputTag_.process();
 
     IgCollection& products = storage->getCollection("Products_V1");
     IgProperty PROD = products.addProperty("Product", std::string ());
     IgCollectionItem item = products.create();
     item[PROD] = product;
 
-    IgCollection& vertices = storage->getCollection("Vertices_V1");
+    IgCollection& vertices = storage->getCollection("PrimaryVertices_V1");
 
     IgProperty ISV  = vertices.addProperty("isValid", int(0));
     IgProperty ISF  = vertices.addProperty("isFake", int(0));
@@ -67,7 +69,7 @@ void ISpyVertex::analyze(const edm::Event& event, const edm::EventSetup& eventSe
     IgProperty CHI2 = vertices.addProperty("chi2", 0.0);
     IgProperty NDOF = vertices.addProperty("ndof", 0.0);
 
-    for ( VertexCollection::const_iterator it = collection->begin(), itEnd = collection->end(); it != itEnd; ++it )
+    for ( VertexCollection::const_iterator it = priCollection->begin(), itEnd = priCollection->end(); it != itEnd; ++it )
     {
       IgCollectionItem v = vertices.create();
 
@@ -91,10 +93,71 @@ void ISpyVertex::analyze(const edm::Event& event, const edm::EventSetup& eventSe
   {
     std::string error = "### Error: Vertices "
                         + edm::TypeID (typeid (VertexCollection)).friendlyClassName() + ":"
-                        + inputTag_.label() + ":"
-                        + inputTag_.instance() + " are not found";
+                        + priVertexInputTag_.label() + ":"
+                        + priVertexInputTag_.instance() + " are not found";
     config->error(error);
   }
+
+
+  edm::Handle<VertexCollection> secCollection;
+  event.getByToken(secVertexToken_, secCollection);
+
+  if ( secCollection.isValid() )
+  {
+    std::string product = "Vertices "
+                          + edm::TypeID (typeid (VertexCollection)).friendlyClassName() + ":"
+                          + secVertexInputTag_.label() + ":"
+                          + secVertexInputTag_.instance() + ":"
+                          + secVertexInputTag_.process();
+
+    IgCollection& products = storage->getCollection("Products_V1");
+    IgProperty PROD = products.addProperty("Product", std::string ());
+    IgCollectionItem item = products.create();
+    item[PROD] = product;
+
+    IgCollection& vertices = storage->getCollection("SecondaryVertices_V1");
+
+    IgProperty ISV  = vertices.addProperty("isValid", int(0));
+    IgProperty ISF  = vertices.addProperty("isFake", int(0));
+
+    IgProperty POS  = vertices.addProperty("pos", IgV3d());
+    IgProperty XERR = vertices.addProperty("xError", 0.0);
+    IgProperty YERR = vertices.addProperty("yError", 0.0);
+    IgProperty ZERR = vertices.addProperty("zError", 0.0);
+
+    IgProperty CHI2 = vertices.addProperty("chi2", 0.0);
+    IgProperty NDOF = vertices.addProperty("ndof", 0.0);
+
+    for ( VertexCollection::const_iterator it = secCollection->begin(), itEnd = secCollection->end(); it != itEnd; ++it )
+    {
+      IgCollectionItem v = vertices.create();
+
+      v[ISV] = static_cast<int>((*it).isValid());
+      v[ISF] = static_cast<int>((*it).isFake());
+
+      v[POS] = IgV3d((*it).position().x()/100.0,
+                     (*it).position().y()/100.0,
+                     (*it).position().z()/100.0);
+
+      v[XERR] = (*it).xError()/100.0;
+      v[YERR] = (*it).yError()/100.0;
+      v[ZERR] = (*it).zError()/100.0;
+
+      v[CHI2] = (*it).chi2();
+      v[NDOF] = (*it).ndof();     
+    }
+  }
+  
+  else
+  {
+    std::string error = "### Error: Vertices "
+                        + edm::TypeID (typeid (VertexCollection)).friendlyClassName() + ":"
+                        + secVertexInputTag_.label() + ":"
+                        + secVertexInputTag_.instance() + " are not found";
+    config->error(error);
+  }
+
+
 }
 
 DEFINE_FWK_MODULE(ISpyVertex);

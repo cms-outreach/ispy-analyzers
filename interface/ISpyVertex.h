@@ -12,7 +12,10 @@ public:
     virtual ~ISpyVertex(void){}
     virtual void analyze(const edm::Event&, const edm::EventSetup&);
 private:
-    edm::InputTag inputTag_;
-    edm::EDGetTokenT<reco::VertexCollection> vertexToken_;
+    edm::InputTag priVertexInputTag_;
+    edm::InputTag secVertexInputTag_;    
+
+    edm::EDGetTokenT<reco::VertexCollection> priVertexToken_;
+    edm::EDGetTokenT<reco::VertexCollection> secVertexToken_;
 };
 #endif // ANALYZER_ISPY_VERTEX_H

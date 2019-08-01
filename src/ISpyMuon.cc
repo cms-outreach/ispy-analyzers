@@ -146,12 +146,10 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   {
     int charge = (*it).charge();
 
+
     if ( (*it).track().isNonnull() ) // Tracker
     {
       IgCollectionItem imuon = trackerMuonCollection.create();
-
-      if ( (*it).isMatchesValid() && (dtGeomValid_ || cscGeomValid_))                
-        addChambers(it);
 
       imuon[T_PT] = (*it).track()->pt();
       imuon[T_CHARGE] = charge;
@@ -185,9 +183,6 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     if ( (*it).standAloneMuon().isNonnull() ) // Standalone
     {
       IgCollectionItem imuon = standAloneMuonCollection.create();
-      
-      if ((*it).isMatchesValid() && (dtGeomValid_ || cscGeomValid_)) 
-        addChambers(it);
 	
       imuon[S_PT] = (*it).standAloneMuon()->pt();
       imuon[S_CHARGE] = charge;
@@ -223,7 +218,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       if ((*it).isEnergyValid ()) // CaloTower
         addCaloEnergy(it, imuon, S_CALO_E);
     }
-    
+   
     if ( (*it).combinedMuon().isNonnull() ) // Global
     {
       IgCollectionItem imuon = globalMuonCollection.create();
@@ -264,7 +259,11 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
 
 void
 ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
-{ 		    
+{ 
+  // Do not add if not a global muon
+  if ( ! (*it).combinedMuon().isNonnull() )
+     return;
+		    
   IgCollection& chambers = storage_->getCollection("MuonChambers_V1");
   IgProperty DETID = chambers.addProperty("detid", int(0));
   IgProperty FRONT_1 = chambers.addProperty("front_1", IgV3d());

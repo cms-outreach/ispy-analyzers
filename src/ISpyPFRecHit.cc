@@ -115,8 +115,8 @@ void ISpyPFRecHit::analyze(const edm::Event& event, const edm::EventSetup& event
         IgCollectionItem rh = ebrechits.create();
         
         rh[EB_E] = (*rechit).energy();
-        rh[EB_ETA] = (*rechit).position().eta();
-        rh[EB_PHI] = (*rechit).position().phi();
+        rh[EB_ETA] = (*rechit).positionREP().eta();
+        rh[EB_PHI] = (*rechit).positionREP().phi();
         rh[EB_DETID] = (*rechit).detId();
 
         const CaloCellGeometry::CornersVec& corners 
@@ -140,8 +140,8 @@ void ISpyPFRecHit::analyze(const edm::Event& event, const edm::EventSetup& event
         IgCollectionItem rh = eerechits.create();
         
         rh[EE_E] = (*rechit).energy();
-        rh[EE_ETA] = (*rechit).position().eta();
-        rh[EE_PHI] = (*rechit).position().phi();
+        rh[EE_ETA] = (*rechit).positionREP().eta();
+        rh[EE_PHI] = (*rechit).positionREP().phi();
         rh[EE_DETID] = (*rechit).detId();
 
         const CaloCellGeometry::CornersVec& corners 

@@ -54,7 +54,137 @@ The `ig` files are created by running this code in a CMSSW environment, extracti
 
 ## Configuration file walk-through
 
-Coming soon
+This is a typical cfg file for processing AOD:
+
+```
+import FWCore.ParameterSet.Config as cms
+
+process = cms.Process("ISPY")
+
+process.load("Configuration.StandardSequences.MagneticField_cff")
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
+process.load("Configuration.StandardSequences.GeometryDB_cff")
+
+process.GlobalTag.globaltag = '102X_dataRun2_Prompt_v11'
+
+import FWCore.Utilities.FileUtils as FileUtils
+```
+Here one specifies the input file
+```
+process.source = cms.Source('PoolSource',
+                            fileNames = cms.untracked.vstring('file://pickevents_2016_AOD.root'),
+)
+
+from FWCore.MessageLogger.MessageLogger_cfi import *
+```
+Here is the output file name. 
+```
+process.add_(
+    cms.Service("ISpyService",
+    outputFileName = cms.untracked.string('ig_output.ig'),
+    outputIg = cms.untracked.bool(True),
+```
+These are the number of events to write per ig file. The file name specified above is actually a pattern.
+For example, given the maximum number of events below the first 10 events will be written to `ig_output_0.ig`,
+the next 10 will be written to `ig_output_1.ig`, etc.
+```
+    outputMaxEvents = cms.untracked.int32(10), 
+    debug = cms.untracked.bool(True)
+    )
+)
+
+process.options = cms.untracked.PSet(
+    SkipEvent = cms.untracked.vstring('ProductNotFound')
+    )
+```
+These are the number of events to cycle through in the input root file. If `-1` then it will
+go through all of them.
+```
+process.maxEvents = cms.untracked.PSet(
+    input = cms.untracked.int32(-1)
+)
+```
+It is often useful to explicitly load the configurations as below. 
+```
+# Load things explicitly here; mostly AOD stuff
+process.load("ISpy.Analyzers.ISpyEvent_cfi")
+process.load('ISpy.Analyzers.ISpyCSCRecHit2D_cfi')
+process.load('ISpy.Analyzers.ISpyCSCSegment_cfi')
+process.load('ISpy.Analyzers.ISpyDTRecHit_cfi')
+process.load('ISpy.Analyzers.ISpyDTRecSegment4D_cfi')
+process.load('ISpy.Analyzers.ISpyEBRecHit_cfi')
+process.load('ISpy.Analyzers.ISpyEERecHit_cfi')
+process.load('ISpy.Analyzers.ISpyESRecHit_cfi')
+process.load('ISpy.Analyzers.ISpyHBRecHit_cfi')
+process.load('ISpy.Analyzers.ISpyHERecHit_cfi')
+process.load('ISpy.Analyzers.ISpyHFRecHit_cfi')
+process.load('ISpy.Analyzers.ISpyHORecHit_cfi')
+process.load('ISpy.Analyzers.ISpyMET_cfi')
+process.load('ISpy.Analyzers.ISpyPFMET_cfi')
+process.load('ISpy.Analyzers.ISpyMuon_cfi')
+process.load('ISpy.Analyzers.ISpyJet_cfi')
+process.load('ISpy.Analyzers.ISpyPFJet_cfi')
+process.load('ISpy.Analyzers.ISpyPhoton_cfi')
+process.load('ISpy.Analyzers.ISpyRPCRecHit_cfi')
+process.load('ISpy.Analyzers.ISpySuperCluster_cfi')
+```
+Since TrackExtras are not available in AOD the `TrackExtrapolation` collection is 
+used. This handles tracks and gsfElectrons
+```
+process.load('ISpy.Analyzers.ISpyTrackExtrapolation_cfi')
+process.load('ISpy.Analyzers.ISpyTriggerEvent_cfi')
+process.load('ISpy.Analyzers.ISpyVertex_cfi')
+
+```
+There are default input tag names for all of the objects. Here we specify them.
+```
+process.ISpyCSCRecHit2D.iSpyCSCRecHit2DTag = cms.InputTag("csc2DRecHits")
+process.ISpyCSCSegment.iSpyCSCSegmentTag = cms.InputTag("cscSegments")
+process.ISpyDTRecHit.iSpyDTRecHitTag = cms.InputTag('dt1DRecHits')
+process.ISpyDTRecSegment4D.iSpyDTRecSegment4DTag = cms.InputTag('dt4DSegments')
+
+process.ISpyEBRecHit.iSpyEBRecHitTag = cms.InputTag('reducedEcalRecHitsEB')
+process.ISpyEERecHit.iSpyEERecHitTag = cms.InputTag('reducedEcalRecHitsEE')
+process.ISpyESRecHit.iSpyESRecHitTag = cms.InputTag('reducedEcalRecHitsES')
+
+process.ISpyHBRecHit.iSpyHBRecHitTag = cms.InputTag("reducedHcalRecHits:hbhereco")
+process.ISpyHERecHit.iSpyHERecHitTag = cms.InputTag("reducedHcalRecHits:hbhereco")
+process.ISpyHFRecHit.iSpyHFRecHitTag = cms.InputTag("reducedHcalRecHits:hfreco")
+process.ISpyHORecHit.iSpyHORecHitTag = cms.InputTag("reducedHcalRecHits:horeco")
+
+process.ISpyJet.iSpyJetTag = cms.InputTag("iterativeCone5CaloJets")
+
+process.ISpyMET.iSpyMETTag = cms.InputTag("htMetIC5")
+process.ISpyMuon.iSpyMuonTag = cms.InputTag("muons")
+process.ISpyPFJet.iSpyPFJetTag = cms.InputTag('ak4PFJets')
+process.ISpyPhoton.iSpyPhotonTag = cms.InputTag('photons')
+process.ISpyRPCRecHit.iSpyRPCRecHitTag = cms.InputTag("rpcRecHits")
+process.ISpyVertex.iSpyVertexTag = cms.InputTag('offlinePrimaryVertices')
+```
+Now we specify the path and the processes.
+```
+process.iSpy = cms.Path(process.ISpyEvent*
+                        process.ISpyCSCRecHit2D*
+                        process.ISpyCSCSegment*
+                        process.ISpyDTRecHit*
+                        process.ISpyDTRecSegment4D*
+                        process.ISpyEBRecHit*
+                        process.ISpyEERecHit*
+                        process.ISpyESRecHit*
+                        process.ISpyHBRecHit*
+                        process.ISpyHERecHit*
+                        process.ISpyHFRecHit*
+                        process.ISpyHORecHit*
+                        process.ISpyMuon*
+                        process.ISpyPFJet*
+                        process.ISpyPFMET*
+                        process.ISpyPhoton*
+                        process.ISpyRPCRecHit*
+                        process.ISpyTrackExtrapolation*
+                        process.ISpyVertex)
+
+process.schedule = cms.Schedule(process.iSpy)
+```
 
 ## The ig file format
 

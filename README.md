@@ -2,7 +2,7 @@
 
 This package is for production of event display files for the CMS experiment at the LHC. 
 
-Briefly, the event display files, with a file extension `.ig` are zip archives of JSON files. A separate JSON file is made for each event. The JSON file is then easily read in the browser-based event display [iSpy WebGL](https://github.com/cms-outreach/ispy-webgl)
+Briefly, the event display files, with a file extension `.ig` are zip archives of [JSON](https://www.json.org/json-en.html) files. A separate JSON file is made for each event. The JSON file is then easily read in the browser-based event display [iSpy WebGL](https://github.com/cms-outreach/ispy-webgl)
 
 The `ig` files are created by running this code in a CMSSW environment, extracting out the necessary event and geometry information.
 
@@ -49,7 +49,7 @@ The `ig` files are created by running this code in a CMSSW environment, extracti
     cmsRun python/ispy_80X_cfg.py
 ```
 
-* View the ouput in http://cern.ch/ispy-webgl-dev
+* View the output in http://cern.ch/ispy-webgl-dev
 
 
 ## Configuration file walk-through
@@ -185,6 +185,22 @@ process.iSpy = cms.Path(process.ISpyEvent*
 
 process.schedule = cms.Schedule(process.iSpy)
 ```
+
+## Frequently asked questions
+
+#### What data tier can I display?
+
+`RECO` is best. `AOD` is good. `miniAOD` will work but with the caveat that tracks will not be displayed. 
+
+#### How do I know what is in the data file?
+
+In a CMSSW environment you can run the command `edmDumpEventContent [input file name]` which will dump the information on what objects and collections
+are available in the file as well as their input tags to the screen. This is important information for you configuration file.
+
+#### What if there is an object or collection not currently supported? 
+
+Please open an issue.
+
 
 ## The ig file format
 

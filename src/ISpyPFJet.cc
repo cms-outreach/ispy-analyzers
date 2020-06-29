@@ -18,7 +18,9 @@ using namespace edm;
 using namespace reco;
 
 ISpyPFJet::ISpyPFJet(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPFJetTag"))
+  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPFJetTag")),
+    etMin_(iConfig.getParameter<double>("etMin")),
+    etaMax_(iConfig.getParameter<double>("etaMax"))
 {
   jetToken_ = consumes<PFJetCollection>(inputTag_);
 }
@@ -64,10 +66,18 @@ void ISpyPFJet::analyze(const edm::Event& event, const edm::EventSetup& eventSet
     for ( PFJetCollection::const_iterator ij = collection->begin(), ije = collection->end(); 
           ij != ije; ++ij )
     {
+      double et = ij->et();
+      double eta = ij->eta();
+
+      if ( et < etMin_ )
+        continue;
+      if ( fabs(eta) > etaMax_ )
+        continue;
+
       IgCollectionItem jet = jets.create();
       
-      jet[ET]    = static_cast<double>(ij->et());
-      jet[ETA]   = static_cast<double>(ij->eta());
+      jet[ET]    = static_cast<double>(et);
+      jet[ETA]   = static_cast<double>(eta);
       jet[THETA] = static_cast<double>(ij->theta());
       jet[PHI]   = static_cast<double>(ij->phi());
     }

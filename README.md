@@ -8,6 +8,9 @@ The `ig` files are created by running this code in a CMSSW environment, extracti
 
 ## Quick start
 
+**Note:** You should try to match as closely as possible the version of CMSSW in which you run the iSpy analzyers to the CMSSW version used to (re)process the data. 
+This example uses CMSSW_8_0_0. Substitute your own version. 
+
 * Create a CMSSW environment: 
 
 ```

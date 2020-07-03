@@ -213,6 +213,20 @@ are available in the file as well as their input tags to the screen. This is imp
 It's likely you are running over `AOD` using the `ISpyTrack` analyzer. This analyzer only works when `TrackExtras` are present. Use the
 `ISpyTrackExtrapolation` analyzer instead.
 
+#### I want to select PFJets by `pt` and `eta`. How do I do that?
+
+There are minimal selections available in the analyzers as the "philosophy" (if you can call it that) is to dump out the event and do selections on 
+particular objects downstream in the display. However, given the number of reconstructed jets that can appear in the event there is some functionality for
+PFJets. You can, for example, add the last two lines in your cfg file:
+
+```
+process.ISpyPFJet.iSpyPFJetTag = cms.InputTag('ak4PFJets')
+process.ISpyPFJet.etMin = cms.double(30.0)
+process.ISpyPFJet.etaMax = cms.double(2.5)
+```
+
+Don't forget that these are analyzers like any other and that you have the source code. Feel free to add any selections as needed.
+
 #### What if there is an object or collection not currently supported? 
 
 Please open an issue.

@@ -9,18 +9,18 @@ The `ig` files are created by running this code in a CMSSW environment, extracti
 ## Quick start
 
 **Note:** You should try to match as closely as possible the version of CMSSW in which you run the iSpy analzyers to the CMSSW version used to (re)process the data. 
-This example uses CMSSW_8_0_0. Substitute your own version. 
+This example uses CMSSW_10_2_9. Substitute your own version. 
 
 * Create a CMSSW environment: 
 
 ```
-    cmsrel CMSSW_8_0_0
+    cmsrel CMSSW_10_2_9
 ```
 
-* Change to the CMSSW_8_0_0/src/ directory:
+* Change to the CMSSW_10_2_9/src/ directory:
 
 ```
-    cd CMSSW_8_0_0/src/
+    cd CMSSW_10_2_9/src/
 ```
 * Initialize the CMSSW environment:
 
@@ -46,10 +46,18 @@ This example uses CMSSW_8_0_0. Substitute your own version.
     cd ISpy/Analyzers
 ```
 
+* Open `python/ispy_10_X_X_cfg.py` and specify your input file here:
+```
+process.source = cms.Source(
+    'PoolSource',
+    fileNames = cms.untracked.vstring('file:///myAOD.root')
+    )
+```
+
 * Run the example configuration file:
 
 ```
-    cmsRun python/ispy_80X_cfg.py
+    cmsRun python/ispy_10_X_X_cfg.py
 ```
 
 * View the output in http://cern.ch/ispy-webgl-dev
@@ -198,7 +206,12 @@ process.schedule = cms.Schedule(process.iSpy)
 #### How do I know what is in the data file?
 
 In a CMSSW environment you can run the command `edmDumpEventContent [input file name]` which will dump the information on what objects and collections
-are available in the file as well as their input tags to the screen. This is important information for you configuration file.
+are available in the file as well as their input tags to the screen. This is important information for your configuration file.
+
+#### When I run `cmsRun` I get an error about missing `TrackExtras`. What gives?
+
+It's likely you are running over `AOD` using the `ISpyTrack` analyzer. This analyzer only works when `TrackExtras` are present. Use the
+`ISpyTrackExtrapolation` analyzer instead.
 
 #### What if there is an object or collection not currently supported? 
 

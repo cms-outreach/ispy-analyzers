@@ -73,14 +73,19 @@ process.ISpyHERecHit.iSpyHERecHitTag = cms.InputTag("reducedHcalRecHits:hbhereco
 process.ISpyHFRecHit.iSpyHFRecHitTag = cms.InputTag("reducedHcalRecHits:hfreco")
 process.ISpyHORecHit.iSpyHORecHitTag = cms.InputTag("reducedHcalRecHits:horeco")
 
-process.ISpyJet.iSpyJetTag = cms.InputTag("iterativeCone5CaloJets")
-
 process.ISpyMET.iSpyMETTag = cms.InputTag("htMetIC5")
 process.ISpyMuon.iSpyMuonTag = cms.InputTag("muons")
+
 process.ISpyPFJet.iSpyPFJetTag = cms.InputTag('ak4PFJets')
+process.ISpyPFJet.etMin = cms.double(30.0)
+process.ISpyPFJet.etaMax = cms.double(2.5)
+
 process.ISpyPhoton.iSpyPhotonTag = cms.InputTag('photons')
 process.ISpyRPCRecHit.iSpyRPCRecHitTag = cms.InputTag("rpcRecHits")
 process.ISpyVertex.iSpyVertexTag = cms.InputTag('offlinePrimaryVertices')
+
+process.ISpyTrackExtrapolation.iSpyTrackExtrapolationTag = cms.InputTag("trackExtrapolator")
+process.ISpyTrackExtrapolation.trackPtMin = cms.double(2.0)
 
 process.iSpy = cms.Path(process.ISpyEvent*
                         process.ISpyCSCRecHit2D*

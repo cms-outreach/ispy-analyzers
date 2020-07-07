@@ -22,5 +22,7 @@ private:
   edm::EDGetTokenT<std::vector<reco::TrackExtrapolation> > trackToken_;
   edm::EDGetTokenT<reco::GsfElectronCollection> electronToken_;
   edm::EDGetTokenT<reco::MuonCollection> muonToken_;
+
+  double trackPtMin_;
 };
 #endif // ANALYZER_ISPY_TRACKEXTRAPOLATION_H

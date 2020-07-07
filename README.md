@@ -217,12 +217,31 @@ It's likely you are running over `AOD` using the `ISpyTrack` analyzer. This anal
 
 There are minimal selections available in the analyzers as the "philosophy" (if you can call it that) is to dump out the event and do selections on 
 particular objects downstream in the display. However, given the number of reconstructed jets that can appear in the event there is some functionality for
-PFJets. You can, for example, add the last two lines in your cfg file:
+PFJets. You can, for example, add these two lines in your cfg file:
 
 ```
-process.ISpyPFJet.iSpyPFJetTag = cms.InputTag('ak4PFJets')
 process.ISpyPFJet.etMin = cms.double(30.0)
 process.ISpyPFJet.etaMax = cms.double(2.5)
+```
+
+Don't forget that these are analyzers like any other and that you have the source code. Feel free to add any selections as needed.
+
+#### I want to select Tracks by `pt`. How do I do that?
+
+There are minimal selections available in the analyzers as the "philosophy" (if you can call it that) is to dump out the event and do selections on 
+particular objects downstream in the display. However, given the number of reconstructed tracks that can appear in the event there is some functionality for
+tracks. 
+
+You can, for example, add this line to your cfg file (for `RECO`):
+
+```
+process.ISpyTrack.ptMin = cms.double(2.0)
+```
+
+or for `AOD`:
+
+```
+process.ISpyTrackExtrapolation.trackPtMin = cms.double(2.0)
 ```
 
 Don't forget that these are analyzers like any other and that you have the source code. Feel free to add any selections as needed.

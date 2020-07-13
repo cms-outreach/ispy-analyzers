@@ -88,7 +88,8 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 process.load("Configuration.StandardSequences.GeometryDB_cff")
 
-process.GlobalTag.globaltag = '102X_dataRun2_Prompt_v11'
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 import FWCore.Utilities.FileUtils as FileUtils
 ```

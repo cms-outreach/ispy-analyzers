@@ -13,7 +13,10 @@ import FWCore.Utilities.FileUtils as FileUtils
 
 process.source = cms.Source(
     'PoolSource',
-    fileNames = cms.untracked.vstring('file:///myAOD.root')
+    fileNames = cms.untracked.vstring(
+    'root://cmsxrootd.fnal.gov//store/data/Run2018D/DoubleMuon/AOD/PromptReco-v2/000/324/998/00000/AF519538-7FE5-4A4B-BD66-6FE4900CB5C6.root'
+    )
+
     )
 
 from FWCore.MessageLogger.MessageLogger_cfi import *
@@ -31,7 +34,7 @@ process.options = cms.untracked.PSet(
             )
 
 process.maxEvents = cms.untracked.PSet(
-        input = cms.untracked.int32(-1)
+        input = cms.untracked.int32(10)
         )
 
 process.load("ISpy.Analyzers.ISpyEvent_cfi")

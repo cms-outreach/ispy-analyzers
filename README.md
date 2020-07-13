@@ -54,6 +54,18 @@ process.source = cms.Source(
     )
 ```
 
+* You may be able to run the configuration `python/ispy_10_X_X_cfg.py` "out-of-the-box" on the file 
+specified there:
+```
+process.source = cms.Source(
+    'PoolSource',
+    fileNames = cms.untracked.vstring(
+      'root://cmsxrootd.fnal.gov//store/data/Run2018D/DoubleMuon/AOD/PromptReco-v2/000/324/998/00000/AF519538-7FE5-4A4B-BD66-6FE4900CB5C6.root'
+    )
+```
+
+However, you may need to init your GRID proxy `voms-proxy-init --rfc --voms cms`
+
 * Run the example configuration file:
 
 ```

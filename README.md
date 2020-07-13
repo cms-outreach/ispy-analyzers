@@ -64,7 +64,7 @@ process.source = cms.Source(
     )
 ```
 
-However, you may need to init your GRID proxy `voms-proxy-init --rfc --voms cms`
+  However, you may need to init your GRID proxy `voms-proxy-init --rfc --voms cms`
 
 * Run the example configuration file:
 
@@ -220,6 +220,33 @@ process.schedule = cms.Schedule(process.iSpy)
 
 In a CMSSW environment you can run the command `edmDumpEventContent [input file name]` which will dump the information on what objects and collections
 are available in the file as well as their input tags to the screen. This is important information for your configuration file.
+
+#### How do I know what is in the `ig` file? 
+
+Besides loading it into the display? You can view the contents of the file in the terminal by unzipping it:
+
+`unzip igOutput_0.ig`
+
+which shows you something like this:
+
+```
+  inflating: Header                  
+  inflating: Events/Run_324998/Event_319188370  
+  inflating: Events/Run_324998/Event_319160561  
+  inflating: Events/Run_324998/Event_318570049  
+  inflating: Events/Run_324998/Event_318806497  
+  inflating: Events/Run_324998/Event_318456746  
+  inflating: Events/Run_324998/Event_318751820  
+  inflating: Events/Run_324998/Event_318479879  
+  inflating: Events/Run_324998/Event_318521425  
+  inflating: Events/Run_324998/Event_318399858  
+  inflating: Events/Run_324998/Event_318918230  
+```
+
+Each file `Event_` is a text-based JSON file which you can open in a text editor. See the information on the `ig` format below but a quick look at `Products_V1` will show you what was loaded and successfully processed. What wasn't done with so much success will show up in `Errors_V1`. This indicate objects that weren't found for example.
+
+
+
 
 #### When I run `cmsRun` I get an error about missing `TrackExtras`. What gives?
 

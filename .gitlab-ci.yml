@@ -9,7 +9,7 @@ cmssw_compile:
     - set +u && source ${CMS_PATH}/cmsset_default.sh; set -u
     - cmsrel ${CMSSW_RELEASE}
     - cd ${CMSSW_RELEASE}/src
-    - git clone git@github.com:cms-outreach/ispy-services.git ISpy/Services
+    - git clone https://github.com/cms-outreach/ispy-analyzers.git ISpy/Services
     - cmsenv
     - mkdir -p ISpy/Analyzers
     - mv ${CI_PROJECT_DIR}/src ${CMSSW_BASE}/src/ISpy/Analyzers/

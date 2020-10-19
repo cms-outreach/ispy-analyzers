@@ -16,5 +16,6 @@ cmssw_compile:
     - mv ${CI_PROJECT_DIR}/interface ${CMSSW_BASE}/src/ISpy/Analyzers/
     - mv ${CI_PROJECT_DIR}/python ${CMSSW_BASE}/src/ISpy/Analyzers/
     - mv ${CI_PROJECT_DIR}/BuildFile.xml ${CMSSW_BASE}/src/ISpy/Analyzers/
+    - ls -ltr ${CMSSW_BASE}/src
     - scram b
 

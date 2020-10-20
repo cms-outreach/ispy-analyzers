@@ -20,6 +20,9 @@ build_docker:
     - master
   tags:
     - docker-privileged
+  variables:
+    - CMS_PATH: /cvmfs/cms.cern.ch
+    - CMSSW_RELEASE: CMSSW_10_2_9
   image: docker:19.03.1
   services:
   - docker:19.03.1-dind

@@ -21,11 +21,11 @@ build_docker:
   tags:
     - docker-privileged
   variables:
-    - CMS_PATH: /cvmfs/cms.cern.ch
-    - CMSSW_RELEASE: CMSSW_10_2_9
+    CMS_PATH: /cvmfs/cms.cern.ch
+    CMSSW_RELEASE: CMSSW_10_2_9
   image: docker:19.03.1
   services:
-  - docker:19.03.1-dind
+    - docker:19.03.1-dind
   before_script:
     - docker login -u $CI_REGISTRY_USER -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker run -d --name cvmfs --pid=host --user 0 --privileged --restart always -v /shared-mounts:/cvmfsmounts:rshared gitlab-registry.cern.ch/vcs/cvmfs-automounter:master

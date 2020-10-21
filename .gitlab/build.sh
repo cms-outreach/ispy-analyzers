@@ -4,8 +4,9 @@ set -ex
 
 shopt -s expand_aliases
 set +u && source ${CMS_PATH}/cmsset_default.sh; set -u
-cmsrel ${CMSSW_RELEASE}
-cd ${CMSSW_RELEASE}/src
+# CMSSW_RELEASE doesn't propagate to here and is "unbound". Fix.
+cmsrel CMSSW_10_2_9
+cd CMSSW_10_2_9/src
 git clone https://github.com/cms-outreach/ispy-services.git ISpy/Services
 cmsenv
 mkdir -p ISpy/Analyzers

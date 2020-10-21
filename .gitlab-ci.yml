@@ -34,6 +34,4 @@ build_docker:
   variables:
     FROM: gitlab-registry.cern.ch/clange/cmssw-docker/cc7-cms:latest
     TO: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
-    CMS_PATH: /cvmfs/cms.cern.ch
-    CMSSW_RELEASE: CMSSW_10_2_9
 

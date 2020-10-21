@@ -5,7 +5,6 @@ set -ex
 shopt -s expand_aliases
 export BUILD_DIR=${PWD}
 source ${CMS_PATH}/cmsset_default.sh
-cd /home/cmsusr
 # CMSSW_RELEASE doesn't propagate to here and is "unbound". Fix.
 cmsrel CMSSW_10_2_9
 cd CMSSW_10_2_9/src

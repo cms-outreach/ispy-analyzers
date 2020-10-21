@@ -1,6 +1,5 @@
 stages:
-  - build
-  - deploy
+  - docker
 
 cmssw_compile:
   stage: build
@@ -15,7 +14,7 @@ cmssw_compile:
     - master
 
 build_docker:
-  stage: deploy
+  stage: docker
   only:
     - master
   tags:

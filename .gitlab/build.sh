@@ -6,7 +6,7 @@ shopt -s expand_aliases
 export BUILD_DIR=${PWD}
 source ${CMS_PATH}/cmsset_default.sh
 cd /home/cmsusr
-export CMSSW_RELEASE=CMSSW_10_2_9
+export CMSSW_RELEASE=CMSSW_11_0_3
 cmsrel ${CMSSW_RELEASE}
 cd ${CMSSW_RELEASE}/src
 git clone https://github.com/cms-outreach/ispy-services.git ISpy/Services

@@ -1,10 +1,14 @@
 import os
 
 # Stuff for singularity on lxplus
-outPath = os.getenv("ANALYSIS_OUTDIR") + "/"
+outPath = os.getenv('ANALYSIS_OUTDIR')
 
 if not outPath:
-  outPath = "./"
+  outPath = './'
+else:
+  outputPath += './'
+
+print outPath
 
 import FWCore.ParameterSet.Config as cms
 
@@ -32,6 +36,7 @@ from FWCore.MessageLogger.MessageLogger_cfi import *
 process.add_(
         cms.Service("ISpyService",
                         outputFileName = cms.untracked.string(outPath+'igOutput.ig'),
+                        outputESFilename = cms.untracked.string(outPath+'ES.ig'),
                         outputIg = cms.untracked.bool(True),
                         outputMaxEvents = cms.untracked.int32(10),
                         )

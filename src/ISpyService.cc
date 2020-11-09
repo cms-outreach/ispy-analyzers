@@ -64,7 +64,7 @@ ISpyService::postBeginJob (void)
   open(outputFileName_, zipFile0_);
   
   // Do we want to open one all the time?
-  //open(outputESFileName_, zipFile1_);
+  open(outputESFileName_, zipFile1_);
 }
 
 void

@@ -1,4 +1,21 @@
-build_docker:
+stages:
+  - build
+  - deploy
+
+cmssw_compile:
+  stage: build
+  only:
+    - master
+  tags:
+    - cvmfs
+  variables:
+    CMS_PATH: /cvmfs/cms.cern.ch
+    CMSSW_RELEASE: CMSSW_10_2_21
+  script:
+     - /bin/bash ./.gitlab/build.sh
+
+docker_image:
+  stage: deploy
   only:
     - master
   tags:
@@ -10,11 +27,14 @@ build_docker:
     - docker login -u $CI_REGISTRY_USER -p $CI_BUILD_TOKEN $CI_REGISTRY
     - docker run -d --name cvmfs --pid=host --user 0 --privileged --restart always -v /shared-mounts:/cvmfsmounts:rshared gitlab-registry.cern.ch/vcs/cvmfs-automounter:master
   script:
-    - docker run -v /shared-mounts/cvmfs:/cvmfs:rslave -v $(pwd):$(pwd) -w $(pwd) --name ${CI_PROJECT_NAME} ${FROM} /bin/bash ./.gitlab/build.sh
+    - docker run -v /shared-mounts/cvmfs:/cvmfs:rslave -v $(pwd):$(pwd) -w $(pwd) --name ${CI_PROJECT_NAME} ${FROM} /bin/bash ./.gitlab/docker_build.sh
     - SHA256=$(docker commit ${CI_PROJECT_NAME})
     - docker tag ${SHA256} ${TO}
     - docker push ${TO}
+    - docker tag ${SHA256} ${CI_REGISTRY_IMAGE}:latest
+    - docker push ${CI_REGISTRY_IMAGE}:latest
   variables:
     FROM: gitlab-registry.cern.ch/clange/cmssw-docker/cc7-cms:latest
     TO: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
+
 

@@ -39,6 +39,7 @@ namespace edm {
 	    
       std::string       outputFileName_;
       std::string       outputESFileName_;
+      std::string       outputFilePath_;
       std::string       fileExt_;
       std::string       currentExt_;
       std::string       header_;

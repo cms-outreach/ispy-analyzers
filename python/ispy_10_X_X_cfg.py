@@ -6,9 +6,7 @@ outPath = os.getenv('ANALYSIS_OUTDIR')
 if not outPath:
   outPath = './'
 else:
-  outputPath += './'
-
-print outPath
+  outPath += './'
 
 import FWCore.ParameterSet.Config as cms
 

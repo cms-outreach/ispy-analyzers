@@ -33,7 +33,7 @@ process.add_(
         cms.Service("ISpyService",
                         outputFileName = cms.untracked.string('igOutput.ig'),
                         outputESFilename = cms.untracked.string('ES.ig'),
-                        #outputFilePath = cms.untracked.string(outPath),
+                        outputFilePath = cms.untracked.string(outPath),
                         outputIg = cms.untracked.bool(True),
                         outputMaxEvents = cms.untracked.int32(10),
                         )

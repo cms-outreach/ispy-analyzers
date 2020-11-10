@@ -44,8 +44,6 @@ ISpyService::ISpyService (const ParameterSet& iPSet, ActivityRegistry& iRegistry
   outputFileName_ = outputFilePath_ + outputFileName_;
   outputESFileName_ = outputFilePath_ + outputESFileName_;
 
-  std::cout<< outputFileName_ <<std::endl;
-
   makeHeader();
 }
 
@@ -105,8 +103,6 @@ ISpyService::writeHeader(zipFile& zfile)
   zi.dosDate = 0;
   zi.internal_fa = 0;
   zi.external_fa = 0;
-
-  std::cout<< (outputFilePath_ + hs).c_str() <<std::endl;
 
   ziperr_ = zipOpenNewFileInZip(zfile, (outputFilePath_ + hs).c_str(), &zi,
 				0, 0, 0, 0, 0, // other stuff                                                                         

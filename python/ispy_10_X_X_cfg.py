@@ -1,10 +1,12 @@
 import os
 
 # Stuff for singularity on lxplus
-outPath = os.getenv('ANALYSIS_OUTDIR')+'/'
+outPath = os.getenv('ANALYSIS_OUTDIR')
 
 if not outPath:
   outPath = ''
+else:
+  outPath += '/'
 
 import FWCore.ParameterSet.Config as cms
 

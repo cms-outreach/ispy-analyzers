@@ -11,42 +11,45 @@ The `ig` files are created by running this code in a CMSSW environment, extracti
 **Note:** You should try to match as closely as possible the version of CMSSW in which you run the iSpy analzyers to the CMSSW version used to (re)process the data. 
 This example uses CMSSW_10_2_9. Substitute your own version. 
 
-* Create a CMSSW environment: 
+Create a CMSSW environment: 
 
 ```
-    cmsrel CMSSW_10_2_9
+cmsrel CMSSW_10_2_9
 ```
 
-* Change to the CMSSW_10_2_9/src/ directory:
+Change to the CMSSW_10_2_9/src/ directory:
 
 ```
-    cd CMSSW_10_2_9/src/
-```
-* Initialize the CMSSW environment:
-
-```
-    cmsenv
-```
-* Clone the necessary source code:
-
-```
-    git clone https://github.com/cms-outreach/ispy-analyzers.git ISpy/Analyzers 
-    git clone https://github.com/cms-outreach/ispy-services.git ISpy/Services
+cd CMSSW_10_2_9/src/
 ```
 
-* Compile the code with the command:
+Initialize the CMSSW environment:
 
 ```
-    scram b
+cmsenv
 ```
 
-* Once compiled, change to ISpy/Analyzers:
+Clone the necessary source code:
 
 ```
-    cd ISpy/Analyzers
+git clone https://github.com/cms-outreach/ispy-analyzers.git ISpy/Analyzers 
+git clone https://github.com/cms-outreach/ispy-services.git ISpy/Services
 ```
 
-* Open `python/ispy_10_X_X_cfg.py` and specify your input file here:
+Compile the code with the command:
+
+```
+scram b
+```
+
+Once compiled, change to ISpy/Analyzers:
+
+```
+cd ISpy/Analyzers
+```
+
+Open `python/ispy_10_X_X_cfg.py` and specify your input file here:
+
 ```
 process.source = cms.Source(
     'PoolSource',
@@ -54,8 +57,9 @@ process.source = cms.Source(
     )
 ```
 
-* You may be able to run the configuration `python/ispy_10_X_X_cfg.py` "out-of-the-box" on the file 
+You may be able to run the configuration `python/ispy_10_X_X_cfg.py` "out-of-the-box" on the file 
 specified there:
+
 ```
 process.source = cms.Source(
     'PoolSource',
@@ -64,16 +68,55 @@ process.source = cms.Source(
     )
 ```
 
-  However, you may need to init your GRID proxy `voms-proxy-init --rfc --voms cms`
+**NOTE** You may need to init your GRID proxy wiht the command `voms-proxy-init --rfc --voms cms`
 
-* Run the example configuration file:
+Run the example configuration file:
 
 ```
-    cmsRun python/ispy_10_X_X_cfg.py
+cmsRun python/ispy_10_X_X_cfg.py
 ```
 
-* View the output in http://cern.ch/ispy-webgl-dev
+View the output in http://cern.ch/ispy-webgl-dev
 
+## Running in a container
+
+### CMSSW Docker image
+
+In addition to cloning the code to your local area and building and running it on lxplus you can 
+do it locally in a Docker container. CMSSW Docker images are
+available from the [CMSSW Docker image building service](https://cmssw-docker.web.cern.ch/).
+
+If you don't have docker installed already, instructions are [here](https://docs.docker.com/install/).
+
+As above, we will use CMSSW_10_2_X and with the following command fetch an image and start up a container:
+
+```
+docker run -it --name ispy  -v ~/.globus:/home/cmsusr/.globus gitlab-registry.cern.ch/cms-cloud/cmssw-docker/cmssw_10_2_21-slc7_amd64_gcc700:2020-09-22-ef834977
+```
+
+Note that the options `-it` which ensures that the container runs interactively, `--name ispy` whichs names the container for easy use later, and `-v ~/.globus:/home/cmsusr/.globus` which mounts the directory for your GRID credentials.
+
+Once started (it may take a bit of time to download the whole image but this is only done once), you will be in a shell prompt as above:
+
+```
+[11:34:06] cmsusr@c96a44269948 ~/CMSSW_10_2_21/src $
+```
+
+Then you may follow the instructions as above.
+
+Once you exit the container you may start it up again with the command:
+
+```
+docker start -i ispy
+```
+
+### ispy-analyzers image using cvmfs
+
+**[COMING SOON]**
+
+### ispy-analyzers image on lxplus with Singularity
+
+**[COMING SOON]**
 
 ## Configuration file walk-through
 

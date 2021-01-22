@@ -60,8 +60,6 @@ void ISpyVertexCompositeCandidate::analyze(const Event& event, const EventSetup&
     IgProperty CHI2 = vccs.addProperty("chi2", 0.0);
     IgProperty NDOF = vccs.addProperty("ndof", 0.0);
 
-    std::cout<< vccCollection->size() <<" VCCs"<<std::endl;
-
     for ( VertexCompositeCandidateCollection::const_iterator it = vccCollection->begin(), itEnd = vccCollection->end(); it != itEnd; ++it )
     {
       IgCollectionItem v = vccs.create();

@@ -24,5 +24,7 @@ private:
   edm::EDGetTokenT<reco::MuonCollection> muonToken_;
 
   double trackPtMin_;
+  double electronPtMin_;
+  double trackerMuonPtMin_;
 };
 #endif // ANALYZER_ISPY_TRACKEXTRAPOLATION_H

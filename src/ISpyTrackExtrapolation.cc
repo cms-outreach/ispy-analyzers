@@ -75,7 +75,7 @@ ISpyTrackExtrapolation::ISpyTrackExtrapolation(const edm::ParameterSet& iConfig)
     gsfElectronInputTag_(iConfig.getParameter<edm::InputTag>("iSpyGsfElectronTrackExtrapolationTag")),
     muonInputTag_(iConfig.getParameter<edm::InputTag>("iSpyMuonTrackExtrapolationTag")),
     trackPtMin_(iConfig.getParameter<double>("trackPtMin")),
-    electronPtMin_(iConfig.getParameter<double>("electronPtMin_")),
+    electronPtMin_(iConfig.getParameter<double>("electronPtMin")),
     trackerMuonPtMin_(iConfig.getParameter<double>("trackerMuonPtMin"))
 {
   trackToken_ = consumes<std::vector<reco::TrackExtrapolation> >(inputTag_);

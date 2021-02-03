@@ -1,6 +1,8 @@
 #include "ISpy/Analyzers/interface/ISpyPATMuon.h"
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Analyzers/interface/ISpyTrackRefitter.h"
+#include "ISpy/Analyzers/interface/ISpyVector.h"
+
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/TrackReco/interface/Track.h"
@@ -15,6 +17,17 @@
 #include "FWCore/Utilities/interface/Exception.h"
 
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+
+#include "TrackingTools/GeomPropagators/interface/Propagator.h"
+#include "TrackingTools/TrajectoryParametrization/interface/GlobalTrajectoryParameters.h"
+#include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
+#include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
+
+#include "TrackingTools/TrackAssociator/interface/DetIdAssociator.h"
+#include "TrackingTools/Records/interface/DetIdAssociatorRecord.h"
+
+#include "TrackPropagation/SteppingHelixPropagator/interface/SteppingHelixPropagator.h"
+
 
 using namespace edm::service;
 using namespace edm;
@@ -56,6 +69,8 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
     config->error (error);
     return;
   }
+
+  SteppingHelixPropagator propagator(&(*field), alongMomentum);
 
   edm::Handle<std::vector<pat::Muon> > collection;
   event.getByToken(muonToken_, collection);
@@ -109,7 +124,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
   IgProperty IP   = extras.addProperty("dir_1", IgV3d());
   IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
   IgProperty OP   = extras.addProperty("dir_2", IgV3d());
- 
+
   IgAssociations& trackExtras = storage->getAssociations("PATMuonTrackExtras_V1");
 
   for ( std::vector<pat::Muon>::const_iterator t = collection->begin(), tEnd = collection->end(); 
@@ -117,7 +132,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
   {   
     if ( t->track().isNonnull() ) // Tracker
     {
-      reco::TrackRef track = t->track();
+      reco::TrackRef track = t->muonBestTrack();
 
       IgCollectionItem imuon = trackerMuonCollection.create();
       
@@ -128,23 +143,60 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
                           (*track).vz()/100.0);
       imuon[T_PHI] = (*track).phi();
       imuon[T_ETA] = (*track).eta();
+      
+      IgCollectionItem eitem = extras.create();
 
-      IgAssociations& muonTrackerPoints = storage->getAssociations("PATMuonTrackerPoints_V1");
+      GlobalPoint trackP((*track).vx(), (*track).vy(), (*track).vz());
+      GlobalVector trackM((*track).px(), (*track).py(), (*track).pz());
+      
+      GlobalTrajectoryParameters trackParams(trackP, trackM, (*track).charge(), &(*field));
+      FreeTrajectoryState trackState(trackParams);
+      
+      double minR = 1.24*100.;
+      double minZ = 3.0*100.;
 
-      try
-      {
-        ISpyTrackRefitter::refitTrack(imuon, muonTrackerPoints, storage,
-                                     track, &*field, 
-                                     in_, out_, step_);
-      }       
-            
-      catch (cms::Exception& e)
-      {
-        std::string error = 
-          "### Error: ISpyPATMuon::refitTrack exception caught for TrackerMuon:";
-        error += e.explainSelf();
-	config->error (error);
+      TrajectoryStateOnSurface tsos = propagator.propagate(
+        trackState, *Cylinder::build(minR, Surface::PositionType(0,0,0), Surface::RotationType())
+        );
+      
+      if ( tsos.isValid() && tsos.globalPosition().z() > minZ )
+      {          
+        tsos = propagator.propagate(trackState, *Plane::build(Surface::PositionType(0, 0, minZ), Surface::RotationType()));
       }
+        
+      else if ( tsos.isValid() && tsos.globalPosition().z() < -minZ )
+      {
+        tsos = propagator.propagate(trackState, *Plane::build(Surface::PositionType(0, 0, -minZ), Surface::RotationType()));
+      }
+        
+        
+      if ( tsos.isValid() )
+      {
+        
+        eitem[IPOS] = IgV3d((*track).vx()/100.,
+                            (*track).vy()/100.,
+                            (*track).vz()/100.);
+        
+        IgV3d dir = IgV3d((*track).px(), (*track).py(), (*track).pz());
+        ISpyVector::normalize(dir);
+        eitem[IP] = dir;      
+
+        eitem[OPOS] = IgV3d(tsos.globalPosition().x()/100.,
+                            tsos.globalPosition().y()/100.,
+                            tsos.globalPosition().z()/100.);
+        
+        IgV3d odir = IgV3d(tsos.globalMomentum().x(),
+                           tsos.globalMomentum().y(),
+                           tsos.globalMomentum().z());
+
+        ISpyVector::normalize(odir);
+        eitem[OP] = odir;
+
+      }
+        
+      trackExtras.associate(imuon, eitem);
+      
+
     }  // Tracker 
     
     
@@ -187,7 +239,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       
     } // Standalone
 
-    if ( t->combinedMuon().isNonnull() ) // Global
+    if ( t->combinedMuon().isNonnull() && ! isAOD_ ) // Global
     {
       reco::TrackRef combinedMuon = t->combinedMuon();
 

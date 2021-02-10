@@ -34,7 +34,7 @@ docker_image:
     - docker tag ${SHA256} ${CI_REGISTRY_IMAGE}:latest
     - docker push ${CI_REGISTRY_IMAGE}:latest
   variables:
-    FROM: gitlab-registry.cern.ch/clange/cmssw-docker/cc7-cms:latest
+    FROM: gitlab-registry.cern.ch/cms-cloud/cmssw-docker/cc7-cms:latest
     TO: ${CI_REGISTRY_IMAGE}:${CI_COMMIT_SHORT_SHA}
 
 

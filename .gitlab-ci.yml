@@ -2,7 +2,19 @@ stages:
   - build
   - deploy
 
-cmssw_compile:
+cmssw_9_compile:
+  stage: build
+  only:
+    - master
+  tags:
+    - cvmfs
+  variables:
+    CMS_PATH: /cvmfs/cms.cern.ch
+    CMSSW_RELEASE: CMSSW_9_4_2
+  script:
+    - /bin/bash ./.gitlab/build.sh
+
+cmssw_10_compile:
   stage: build
   only:
     - master
@@ -16,6 +28,7 @@ cmssw_compile:
 
 docker_image:
   stage: deploy
+  needs: ["cmssw_10_compile"]
   only:
     - master
   tags:

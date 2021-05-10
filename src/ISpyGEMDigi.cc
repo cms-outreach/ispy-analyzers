@@ -133,7 +133,7 @@ void ISpyGEMDigi::analyze(const edm::Event& event, const edm::EventSetup& eventS
 
         iDigi[ROLL] = gemId.roll();
         iDigi[STR] = stn;
-		std::cout<<"hihi"<<std::endl;
+
       }
     }
   }

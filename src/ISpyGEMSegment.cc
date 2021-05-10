@@ -30,7 +30,7 @@ ISpyGEMSegment::ISpyGEMSegment (const edm::ParameterSet& iConfig)
 void 
 ISpyGEMSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
 {
-  if (event.id ().event () != 600317833) return;
+
   edm::Service<ISpyService> config;
 
   if (! config.isAvailable ()) 
@@ -46,7 +46,7 @@ ISpyGEMSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
    
   edm::ESHandle<GEMGeometry> geom;
   eventSetup.get<MuonGeometryRecord> ().get (geom);
-  
+
   if ( ! geom.isValid() )
   {
     std::string error = 
@@ -93,21 +93,25 @@ ISpyGEMSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
     IgProperty BACK_3 = chambers.addProperty("back_3", IgV3d());
     IgProperty BACK_4 = chambers.addProperty("back_4", IgV3d());
 
-    GEMSegmentCollection::const_iterator it = collection->begin ();
-    GEMSegmentCollection::const_iterator end = collection->end ();
+    GEMSegmentCollection::const_iterator it = collection->begin();
+    GEMSegmentCollection::const_iterator end = collection->end();
     for (; it != end; ++it) 
     {
+	  std::cout<<"for in1"<<std::endl;
       IgCollectionItem isegment = segments.create ();
-      isegment[DET_ID] = static_cast<int> ((*it).geographicalId ().rawId ());
-
+      isegment[DET_ID] = static_cast<int> ((*it).geographicalId().rawId());
+	  std::cout<<"for in"<<std::endl;
       // Local pos & dir
       LocalPoint  pos = (*it).localPosition();
+	  //std::cout <<"pos"<<pos<<std::endl;
       LocalVector dir = (*it).localDirection();
+	  std::cout<<"for in"<<std::endl;
       
       GEMDetId id = (*it).gemDetId();
       const GeomDet *det = geom->idToDet(id);
 
       isegment[EC] = id.region();
+	  //std::cout <<"region "<< id.region()<<std::endl;
       //isegment[EC] = id.endcap();
       isegment[ST] = id.station();
       isegment[RG] = id.ring();
@@ -123,9 +127,9 @@ ISpyGEMSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
       // along y
       float halfLength = det->surface().bounds().length() / 2.0;
 
-      //std::cout<<"px, py, pz: "<< pos.x() <<" "<< pos.y() <<" "<< pos.z() <<std::endl;
-      //std::cout<<"dx, dy, dz: "<< dir.x() <<" "<< dir.y() <<" "<< dir.z() <<std::endl;
-      //std::cout<<"t, w, l: "<< thickness <<" "<< width <<" "<< length <<std::endl;
+      //Std::cout<<"px, py, pz: "<< pos.x() <<" "<< pos.y() <<" "<< pos.z() <<std::endl;
+      //Std::cout<<"dx, dy, dz: "<< dir.x() <<" "<< dir.y() <<" "<< dir.z() <<std::endl;
+      //Std::cout<<"t, w, l: "<< halfThickness <<" "<< halfWidth <<" "<< halfLength <<std::endl;
 
       float z1 = halfThickness;
       float x1 = pos.x() + dir.x()*z1/dir.z();

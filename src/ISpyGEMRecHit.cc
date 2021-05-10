@@ -21,6 +21,7 @@
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
 #include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "Geometry/GEMGeometry/interface/GEMGeometry.h"
+#include "Geometry/GEMGeometry/interface/GEMEtaPartition.h"
 
 using namespace edm::service;
 using namespace edm;
@@ -33,7 +34,7 @@ ISpyGEMRecHit::ISpyGEMRecHit(const edm::ParameterSet& iConfig)
 
 void ISpyGEMRecHit::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
-  if (event.id ().event () != 600317833) return;
+  
   edm::Service<ISpyService> config;
   
   if ( ! config.isAvailable() )
@@ -61,7 +62,6 @@ void ISpyGEMRecHit::analyze(const edm::Event& event, const edm::EventSetup& even
 
   edm::Handle<GEMRecHitCollection> collection;
   event.getByToken(rechitToken_, collection);
-  std::cout << collection->size() << std::endl;
    
   if ( collection.isValid() )
   {

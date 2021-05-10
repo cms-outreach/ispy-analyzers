@@ -97,21 +97,16 @@ ISpyGEMSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
     GEMSegmentCollection::const_iterator end = collection->end();
     for (; it != end; ++it) 
     {
-	  std::cout<<"for in1"<<std::endl;
       IgCollectionItem isegment = segments.create ();
       isegment[DET_ID] = static_cast<int> ((*it).geographicalId().rawId());
-	  std::cout<<"for in"<<std::endl;
       // Local pos & dir
       LocalPoint  pos = (*it).localPosition();
-	  //std::cout <<"pos"<<pos<<std::endl;
       LocalVector dir = (*it).localDirection();
-	  std::cout<<"for in"<<std::endl;
       
       GEMDetId id = (*it).gemDetId();
       const GeomDet *det = geom->idToDet(id);
 
       isegment[EC] = id.region();
-	  //std::cout <<"region "<< id.region()<<std::endl;
       //isegment[EC] = id.endcap();
       isegment[ST] = id.station();
       isegment[RG] = id.ring();

@@ -286,12 +286,10 @@ ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
     if ( dit->detector() == MuonSubdetId::GEM )
     {
       geomDet = gemGeometry_->idToDet((*dit).id);
-	  std:: cout << "ingme" <<std::endl;
     }
     else if ( dit->detector() == MuonSubdetId::CSC )
     {
       geomDet = cscGeometry_->idToDet((*dit).id);
-	  std:: cout << "icsc" <<std::endl;
     }
     
     else if ( dit->detector() == MuonSubdetId::DT )

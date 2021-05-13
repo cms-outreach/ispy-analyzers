@@ -28,8 +28,8 @@ import FWCore.Utilities.FileUtils as FileUtils
 process.source = cms.Source(
     'PoolSource',
     fileNames = cms.untracked.vstring(
-     '/store/data/Commissioning2021/Cosmics/RAW-RECO/CosmicTP-PromptReco-v1/000/341/343/00000/83bc114c-bd71-4ed7-beb1-fb6fac35e6e4.root'
-    )
+     'root://cmsxrootd.fnal.gov//store/data/Commissioning2021/Cosmics/RAW-RECO/CosmicTP-PromptReco-v1/000/341/343/00000/83bc114c-bd71-4ed7-beb1-fb6fac35e6e4.root'
+    )    
 
     )
 

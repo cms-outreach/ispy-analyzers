@@ -122,10 +122,6 @@ ISpyGEMSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
       // along y
       float halfLength = det->surface().bounds().length() / 2.0;
 
-      //Std::cout<<"px, py, pz: "<< pos.x() <<" "<< pos.y() <<" "<< pos.z() <<std::endl;
-      //Std::cout<<"dx, dy, dz: "<< dir.x() <<" "<< dir.y() <<" "<< dir.z() <<std::endl;
-      //Std::cout<<"t, w, l: "<< halfThickness <<" "<< halfWidth <<" "<< halfLength <<std::endl;
-
       float z1 = halfThickness;
       float x1 = pos.x() + dir.x()*z1/dir.z();
       float y1 = pos.y() + dir.y()*z1/dir.z();

@@ -28,11 +28,7 @@ import FWCore.Utilities.FileUtils as FileUtils
 process.source = cms.Source(
     'PoolSource',
     fileNames = cms.untracked.vstring(
-    #'root://cmsxrootd.fnal.gov//store/data/Run2018D/DoubleMuon/AOD/PromptReco-v2/000/324/998/00000/AF519538-7FE5-4A4B-BD66-6FE4900CB5C6.root'
-    # '/store/data/Commissioning2021/Cosmics/RAW-RECO/CosmicTP-PromptReco-v1/000/341/169/00000/095946f3-e67a-4b4f-a098-3432372b6d0e.root'
-   #  '/store/group/alca_muonalign/run3MC/step2_501.root'
-     'root://cms-xrdr.private.lo:2094//xrd/store/user/seungjun/ISPY/display_out_full.root'
-    # '/store/data/Commissioning2021/Cosmics/RAW-RECO/CosmicTP-PromptReco-v1/000/341/343/00000/83bc114c-bd71-4ed7-beb1-fb6fac35e6e4.root'#for341343
+     '/store/data/Commissioning2021/Cosmics/RAW-RECO/CosmicTP-PromptReco-v1/000/341/343/00000/83bc114c-bd71-4ed7-beb1-fb6fac35e6e4.root'
     )
 
     )

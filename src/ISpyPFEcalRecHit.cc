@@ -1,4 +1,4 @@
-#include "ISpy/Analyzers/interface/ISpyPFRecHit.h"
+#include "ISpy/Analyzers/interface/ISpyPFEcalRecHit.h"
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Services/interface/IgCollection.h"
 
@@ -23,18 +23,20 @@
 
 using namespace edm::service;
 
-ISpyPFRecHit::ISpyPFRecHit(const edm::ParameterSet& iConfig)
-    : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyPFRecHitTag"))
-{}
+ISpyPFEcalRecHit::ISpyPFEcalRecHit(const edm::ParameterSet& iConfig)
+    : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyPFEcalRecHitTag"))
+{
+  rechitToken_ = consumes<reco::PFRecHitCollection>(inputTag_);
+}
 
-void ISpyPFRecHit::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
+void ISpyPFEcalRecHit::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
   edm::Service<ISpyService> config;
     
   if ( ! config.isAvailable() ) 
   {
     throw cms::Exception("Configuration")
-      << "ISpyPFRecHit requires the ISpyService\n"
+      << "ISpyPFEcalRecHit requires the ISpyService\n"
       "which is not present in the configuration file.\n"
       "You must add the service in the configuration file\n"
       "or remove the module that requires it";
@@ -48,13 +50,13 @@ void ISpyPFRecHit::analyze(const edm::Event& event, const edm::EventSetup& event
   if ( ! caloGeometry.isValid() )
   {
     std::string error = 
-      "### Error: ISpyPFRecHit::analyze: Invalid CaloGeometryRecord ";
+      "### Error: ISpyPFEcalRecHit::analyze: Invalid CaloGeometryRecord ";
     config->error (error);
     return;
   }
 
   edm::Handle<reco::PFRecHitCollection> collection;
-  event.getByLabel(inputTag_, collection);
+  event.getByToken(rechitToken_, collection);
 
   if ( collection.isValid() )
   {   
@@ -70,14 +72,11 @@ void ISpyPFRecHit::analyze(const edm::Event& event, const edm::EventSetup& event
     item[PROD] = product;
 
     // EB
-
-    IgCollection& ebrechits = storage->getCollection("PFEBRecHits_V1");
+    IgCollection& ebrechits = storage->getCollection("PFEBRecHits_V2");
  
     IgProperty EB_E = ebrechits.addProperty("energy", 0.0); 
-    IgProperty EB_ETA = ebrechits.addProperty("eta", 0.0);
-    IgProperty EB_PHI = ebrechits.addProperty("phi", 0.0);
     IgProperty EB_DETID = ebrechits.addProperty("detid", int (0));	
-    
+
     IgProperty EB_F1 = ebrechits.addProperty("front_1", IgV3d());
     IgProperty EB_F2 = ebrechits.addProperty("front_2", IgV3d());
     IgProperty EB_F3 = ebrechits.addProperty("front_3", IgV3d());
@@ -87,16 +86,13 @@ void ISpyPFRecHit::analyze(const edm::Event& event, const edm::EventSetup& event
     IgProperty EB_B2 = ebrechits.addProperty("back_2", IgV3d());
     IgProperty EB_B3 = ebrechits.addProperty("back_3", IgV3d());
     IgProperty EB_B4 = ebrechits.addProperty("back_4", IgV3d());
-
+   
     // EE
-
-    IgCollection& eerechits = storage->getCollection("PFEERecHits_V1");
+    IgCollection& eerechits = storage->getCollection("PFEERecHits_V2");
  
     IgProperty EE_E = eerechits.addProperty("energy", 0.0); 
-    IgProperty EE_ETA = eerechits.addProperty("eta", 0.0);
-    IgProperty EE_PHI = eerechits.addProperty("phi", 0.0);
     IgProperty EE_DETID = eerechits.addProperty("detid", int (0));	
-    
+
     IgProperty EE_F1 = eerechits.addProperty("front_1", IgV3d());
     IgProperty EE_F2 = eerechits.addProperty("front_2", IgV3d());
     IgProperty EE_F3 = eerechits.addProperty("front_3", IgV3d());
@@ -106,7 +102,8 @@ void ISpyPFRecHit::analyze(const edm::Event& event, const edm::EventSetup& event
     IgProperty EE_B2 = eerechits.addProperty("back_2", IgV3d());
     IgProperty EE_B3 = eerechits.addProperty("back_3", IgV3d());
     IgProperty EE_B4 = eerechits.addProperty("back_4", IgV3d());
-
+   
+    
     for ( std::vector<reco::PFRecHit>::const_iterator rechit = collection->begin();
           rechit != collection->end(); ++rechit )
     {
@@ -114,11 +111,12 @@ void ISpyPFRecHit::analyze(const edm::Event& event, const edm::EventSetup& event
       {
         IgCollectionItem rh = ebrechits.create();
         
-        rh[EB_E] = (*rechit).energy();
-        rh[EB_ETA] = (*rechit).position().eta();
-        rh[EB_PHI] = (*rechit).position().phi();
+        std::cout<< (*rechit).layer() << std::endl;
+
+        rh[EB_E] = static_cast<double>((*rechit).energy());
         rh[EB_DETID] = (*rechit).detId();
 
+        
         const CaloCellGeometry::CornersVec& corners 
           = (*caloGeometry).getGeometry((*rechit).detId())->getCorners();
 		
@@ -132,16 +130,14 @@ void ISpyPFRecHit::analyze(const edm::Event& event, const edm::EventSetup& event
         rh[EB_B2] = IgV3d(corners[6].x()/100.0, corners[6].y()/100.0, corners[6].z()/100.0);
         rh[EB_B3] = IgV3d(corners[5].x()/100.0, corners[5].y()/100.0, corners[5].z()/100.0);
         rh[EB_B4] = IgV3d(corners[4].x()/100.0, corners[4].y()/100.0, corners[4].z()/100.0);
+        
       }
       
-      
-      else if ( (*rechit).layer() == PFLayer::ECAL_ENDCAP )
+      if ( (*rechit).layer() == PFLayer::ECAL_ENDCAP )
       {
         IgCollectionItem rh = eerechits.create();
         
-        rh[EE_E] = (*rechit).energy();
-        rh[EE_ETA] = (*rechit).position().eta();
-        rh[EE_PHI] = (*rechit).position().phi();
+        rh[EE_E] = static_cast<double>((*rechit).energy());
         rh[EE_DETID] = (*rechit).detId();
 
         const CaloCellGeometry::CornersVec& corners 
@@ -157,12 +153,13 @@ void ISpyPFRecHit::analyze(const edm::Event& event, const edm::EventSetup& event
         rh[EE_B2] = IgV3d(corners[6].x()/100.0, corners[6].y()/100.0, corners[6].z()/100.0);
         rh[EE_B3] = IgV3d(corners[5].x()/100.0, corners[5].y()/100.0, corners[5].z()/100.0);
         rh[EE_B4] = IgV3d(corners[4].x()/100.0, corners[4].y()/100.0, corners[4].z()/100.0);
+        
       }
-      
-       // NOTE: Add HCAL support. Is there still the detector ID problem in PF with HCAL?
-      else 
-        continue; // NOTE: need to handle all the other cases     
+     
     }
+    
+
+
   }  
   else 
   {	
@@ -175,4 +172,4 @@ void ISpyPFRecHit::analyze(const edm::Event& event, const edm::EventSetup& event
   }
 }
 
-DEFINE_FWK_MODULE(ISpyPFRecHit);
+DEFINE_FWK_MODULE(ISpyPFEcalRecHit);

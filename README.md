@@ -68,7 +68,7 @@ process.source = cms.Source(
     )
 ```
 
-**NOTE** You may need to init your GRID proxy wiht the command `voms-proxy-init --rfc --voms cms`
+**NOTE** You may need to init your GRID proxy with the command `voms-proxy-init --rfc --voms cms`
 
 Run the example configuration file:
 
@@ -257,7 +257,10 @@ process.schedule = cms.Schedule(process.iSpy)
 
 #### What data tier can I display?
 
-`RECO` is best. `AOD` is good. `miniAOD` will work but with the caveat that tracks will not be displayed. 
+`RECO` is best. `AOD` and `miniAOD` are good.
+
+For `AOD` there is an example cfg file [here](https://github.com/cms-outreach/ispy-analyzers/blob/master/python/ispy_AOD.py) and for `miniAOD` there is an
+example cfg file [here](https://github.com/cms-outreach/ispy-analyzers/blob/master/python/ispy_miniAOD.py).
 
 #### How do I know what is in the data file?
 

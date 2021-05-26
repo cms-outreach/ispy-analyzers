@@ -6,10 +6,13 @@ process.load('Configuration.StandardSequences.GeometryDB_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.GlobalTag.globaltag = '80X_dataRun2_Prompt_v8'
+from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
+process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 process.source = cms.Source('PoolSource',
-                            fileNames = cms.untracked.vstring('file://QCD_1_53384671.root'))
+                            fileNames = cms.untracked.vstring(
+    '/store/data/Run2018C/Charmonium/MINIAOD/17Sep2018-v1/00000/008E68B3-5B54-664C-8B0C-A3457A832E89.root'
+    ))
   
 from FWCore.MessageLogger.MessageLogger_cfi import *
 
@@ -23,13 +26,18 @@ process.add_(
 )
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(-1) # These are the number of events to cycle through in the input root file
+    input = cms.untracked.int32(25) # These are the number of events to cycle through in the input root file
 )
 
 process.load('ISpy.Analyzers.ISpyEvent_cfi')
 process.load('ISpy.Analyzers.ISpyEBRecHit_cfi')
 process.load('ISpy.Analyzers.ISpyEERecHit_cfi')
 process.load('ISpy.Analyzers.ISpyESRecHit_cfi')
+
+process.load('ISpy.Analyzers.ISpyHBRecHit_cfi')
+process.load('ISpy.Analyzers.ISpyHERecHit_cfi')
+
+process.load('ISpy.Analyzers.ISpyGenJet_cfi')
 
 process.load('ISpy.Analyzers.ISpyPATMuon_cfi')
 process.load('ISpy.Analyzers.ISpyPATElectron_cfi')
@@ -44,29 +52,36 @@ process.ISpyEBRecHit.iSpyEBRecHitTag = cms.InputTag('reducedEgamma:reducedEBRecH
 process.ISpyEERecHit.iSpyEERecHitTag = cms.InputTag('reducedEgamma:reducedEERecHits')
 process.ISpyESRecHit.iSpyESRecHitTag = cms.InputTag('reducedEgamma:reducedESRecHits')
 
+process.ISpyHBRecHit.iSpyHBRecHitTag = cms.InputTag('reducedEgamma:reducedHBHEHits')
+process.ISpyHERecHit.iSpyHERecHitTag = cms.InputTag('reducedEgamma:reducedHBHEHits')
+
 process.ISpyPATElectron.iSpyPATElectronTag = cms.InputTag('slimmedElectrons')
 process.ISpyPATElectron.isAOD = cms.untracked.bool(True)
 
-process.ISpyPATJet.iSpyPATJetTag = cms.InputTag('slimmedJetsAK8')
+process.ISpyPackedCandidate.iSpyPackedCandidateTag = cms.InputTag('packedPFCandidates')
+                                     
+process.ISpyGenJet.iSpyGenJetTag = cms.InputTag('slimmedGenJetsAK8SoftDropSubJets')   
+process.ISpyPATJet.iSpyPATJetTag = cms.InputTag('slimmedJets')
 process.ISpyPATMET.iSpyPATMETTag = cms.InputTag('slimmedMETs')
 
 process.ISpyPATMuon.iSpyPATMuonTag = cms.InputTag("slimmedMuons")
-process.ISpyPATMuon.isAOD = cms.untracked.bool(True)
 
 process.ISpyPATPhoton.iSpyPATPhotonTag = cms.InputTag('slimmedPhotons')
 
-process.ISpyVertex.iSpyVertexTag = cms.InputTag('offlineSlimmedPrimaryVertices')
+process.ISpyVertex.iSpyPriVertexTag = cms.InputTag('offlineSlimmedPrimaryVertices')
 
 process.iSpy = cms.Path(process.ISpyEvent*
                         process.ISpyEBRecHit*
                         process.ISpyEERecHit*
                         process.ISpyESRecHit*
+                        process.ISpyHBRecHit*
+                        process.ISpyHERecHit*
                         process.ISpyPATElectron*
                         process.ISpyPATJet*
                         process.ISpyPATMET*
-                        #process.ISpyPATMuon*
+                        process.ISpyPATMuon*
                         process.ISpyPATPhoton*
-                        #process.ISpyPackedCandidate*
+                        process.ISpyPackedCandidate*
                         process.ISpyVertex)
 
 process.schedule = cms.Schedule(process.iSpy)

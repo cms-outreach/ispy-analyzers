@@ -1,5 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 
-ISpyPATMuon_miniAOD = cms.EDAnalyzer('ISpyPATMuon_miniAOD',
-                                     iSpyPATMuonTag = cms.InputTag("allLayer1Muons"),
-                                     )
+ISpyPATMuon = cms.EDAnalyzer('ISpyPATMuon',
+                             iSpyPATMuonTag = cms.InputTag("allLayer1Muons"),
+                             isAOD = cms.untracked.bool(False)
+                             )

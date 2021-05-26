@@ -20,7 +20,8 @@ using namespace edm::service;
 using namespace edm;
 
 ISpyPATElectron::ISpyPATElectron(const edm::ParameterSet& iConfig)
-  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATElectronTag"))
+  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATElectronTag")),
+    isAOD_(iConfig.getUntrackedParameter<bool>("isAOD", false))
 {
   electronToken_ = consumes<std::vector<pat::Electron> >(inputTag_);
 }
@@ -100,8 +101,7 @@ void ISpyPATElectron::analyze(const edm::Event& event, const edm::EventSetup& ev
 
       reco::GsfTrackRef gsfTrack = t->gsfTrack();
 
-      if ( (*gsfTrack).innerTrack().extra().isAvailable() &&
-           (*gsfTrack).outerTrack().extra().isAvailable() ) 
+      if ( ! isAOD_ ) 
       {  
         if ( (*gsfTrack).innerOk() && (*gsfTrack).outerOk() )
         {

@@ -1,5 +1,5 @@
-#ifndef ANALYZER_ISPY_PATMUON_MINIAOD_H
-#define ANALYZER_ISPY_PATMUON_MINIAOD_H
+#ifndef ANALYZER_ISPY_PATMUON_H
+#define ANALYZER_ISPY_PATMUON_H
 
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
@@ -19,11 +19,11 @@ class IgProperty;
 
 // NOTE: TM See note in ISpyMuon.h
 
-class ISpyPATMuon_miniAOD : public edm::EDAnalyzer
+class ISpyPATMuon : public edm::EDAnalyzer
 {
 public:
-  explicit ISpyPATMuon_miniAOD(const edm::ParameterSet&);
-  virtual ~ISpyPATMuon_miniAOD(void) {}
+  explicit ISpyPATMuon(const edm::ParameterSet&);
+  virtual ~ISpyPATMuon(void) {}
   
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
 private:

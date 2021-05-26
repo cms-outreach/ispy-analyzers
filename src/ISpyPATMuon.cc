@@ -1,4 +1,4 @@
-#include "ISpy/Analyzers/interface/ISpyPATMuon_miniAOD.h"
+#include "ISpy/Analyzers/interface/ISpyPATMuon.h"
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Analyzers/interface/ISpyTrackRefitter.h"
 #include "ISpy/Analyzers/interface/ISpyVector.h"
@@ -35,7 +35,7 @@
 using namespace edm::service;
 using namespace edm;
 
-ISpyPATMuon_miniAOD::ISpyPATMuon_miniAOD(const edm::ParameterSet& iConfig)
+ISpyPATMuon::ISpyPATMuon(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATMuonTag"))
 {
   muonToken_ = consumes<std::vector<pat::Muon> >(inputTag_);
@@ -49,14 +49,14 @@ ISpyPATMuon_miniAOD::ISpyPATMuon_miniAOD(const edm::ParameterSet& iConfig)
   gemGeomValid_ = false;
 }
 
-void ISpyPATMuon_miniAOD::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
+void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
   edm::Service<ISpyService> config;
   
   if ( ! config.isAvailable() )
   {
     throw cms::Exception ("Configuration")
-      << "ISpyPATMuon_miniAOD requires the ISpyService\n"
+      << "ISpyPATMuon requires the ISpyService\n"
       "which is not present in the configuration file.\n"
       "You must add the service in the configuration file\n"
       "or remove the module that requires it";
@@ -69,7 +69,7 @@ void ISpyPATMuon_miniAOD::analyze(const edm::Event& event, const edm::EventSetup
   if ( ! field.isValid() )
   {
     std::string error = 
-            "### Error: ISpyPATMuon_miniAOD::analyze: Invalid Magnetic field ";
+            "### Error: ISpyPATMuon::analyze: Invalid Magnetic field ";
     config->error (error);
     return;
   }
@@ -122,7 +122,7 @@ void ISpyPATMuon_miniAOD::analyze(const edm::Event& event, const edm::EventSetup
   IgCollectionItem item = products.create();
   item[PROD] = product;
 
-  IgCollection& trackerMuonCollection = storage_->getCollection("PATTrackerMuons_V1");
+  IgCollection& trackerMuonCollection = storage_->getCollection("PATTrackerMuons_V2");
   IgProperty T_PT = trackerMuonCollection.addProperty ("pt", 0.0);
   IgProperty T_CHARGE = trackerMuonCollection.addProperty ("charge", int(0));
   IgProperty T_RP = trackerMuonCollection.addProperty ("rp", IgV3d ());
@@ -190,8 +190,7 @@ void ISpyPATMuon_miniAOD::analyze(const edm::Event& event, const edm::EventSetup
       }
                 
       if ( tsos.isValid() )
-      {
-        
+      {        
         eitem[IPOS] = IgV3d((*track).vx()/100.,
                             (*track).vy()/100.,
                             (*track).vz()/100.);
@@ -215,7 +214,6 @@ void ISpyPATMuon_miniAOD::analyze(const edm::Event& event, const edm::EventSetup
         
       trackExtras.associate(imuon, eitem);
       
-
     }  // Tracker 
       
     if (t->isGlobalMuon() && t->globalTrack().isAvailable() && t->isMatchesValid() ) // Global
@@ -387,7 +385,7 @@ void ISpyPATMuon_miniAOD::analyze(const edm::Event& event, const edm::EventSetup
       catch (cms::Exception& e)
       {
         std::string error = 
-          "### Error: ISpyPATMuon_miniAOD::refitTrack exception caught for GlobalMuon:";
+          "### Error: ISpyPATMuon::refitTrack exception caught for GlobalMuon:";
         error += e.explainSelf();
         config->error (error);
       }  
@@ -395,7 +393,7 @@ void ISpyPATMuon_miniAOD::analyze(const edm::Event& event, const edm::EventSetup
   } 
 }
 
-GlobalPoint& ISpyPATMuon_miniAOD::getOuterPoint(std::vector<pat::Muon>::const_iterator it) 
+GlobalPoint& ISpyPATMuon::getOuterPoint(std::vector<pat::Muon>::const_iterator it) 
 {  
   const std::vector<reco::MuonChamberMatch> &dets = it->matches();
   const GeomDet* geomDet;
@@ -430,7 +428,7 @@ GlobalPoint& ISpyPATMuon_miniAOD::getOuterPoint(std::vector<pat::Muon>::const_it
 
 }
 
-void ISpyPATMuon_miniAOD::addChambers(std::vector<pat::Muon>::const_iterator it)
+void ISpyPATMuon::addChambers(std::vector<pat::Muon>::const_iterator it)
 {      
   IgCollection& chambers = storage_->getCollection("MuonChambers_V1");
   IgProperty DETID = chambers.addProperty("detid", int(0));
@@ -525,4 +523,4 @@ void ISpyPATMuon_miniAOD::addChambers(std::vector<pat::Muon>::const_iterator it)
   }
 }
 
-DEFINE_FWK_MODULE(ISpyPATMuon_miniAOD);
+DEFINE_FWK_MODULE(ISpyPATMuon);

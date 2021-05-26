@@ -65,7 +65,6 @@ process.ISpyPATJet.iSpyPATJetTag = cms.InputTag('slimmedJets')
 process.ISpyPATMET.iSpyPATMETTag = cms.InputTag('slimmedMETs')
 
 process.ISpyPATMuon.iSpyPATMuonTag = cms.InputTag("slimmedMuons")
-process.ISpyPATMuon.isAOD = cms.untracked.bool(True)
 
 process.ISpyPATPhoton.iSpyPATPhotonTag = cms.InputTag('slimmedPhotons')
 
@@ -80,7 +79,7 @@ process.iSpy = cms.Path(process.ISpyEvent*
                         process.ISpyPATElectron*
                         process.ISpyPATJet*
                         process.ISpyPATMET*
-                        #process.ISpyPATMuon*
+                        process.ISpyPATMuon*
                         process.ISpyPATPhoton*
                         process.ISpyPackedCandidate*
                         process.ISpyVertex)

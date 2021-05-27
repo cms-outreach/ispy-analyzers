@@ -73,8 +73,10 @@ find_track_match(const reco::TrackRef& track,
 ISpyTrackExtrapolation::ISpyTrackExtrapolation(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyTrackExtrapolationTag")),
     gsfElectronInputTag_(iConfig.getParameter<edm::InputTag>("iSpyGsfElectronTrackExtrapolationTag")),
-    muonInputTag_(iConfig.getParameter<edm::InputTag>("iSpyMuonTrackExtrapolationTag"))
-
+    muonInputTag_(iConfig.getParameter<edm::InputTag>("iSpyMuonTrackExtrapolationTag")),
+    trackPtMin_(iConfig.getParameter<double>("trackPtMin")),
+    electronPtMin_(iConfig.getParameter<double>("electronPtMin")),
+    trackerMuonPtMin_(iConfig.getParameter<double>("trackerMuonPtMin"))
 {
   trackToken_ = consumes<std::vector<reco::TrackExtrapolation> >(inputTag_);
   electronToken_ = consumes<reco::GsfElectronCollection>(gsfElectronInputTag_);
@@ -145,6 +147,11 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
   {
     const reco::TrackRef& tr = it->track();
     
+    double pt = (*tr).pt();
+
+    if ( pt < trackPtMin_ )
+      continue;
+
     IgCollectionItem item = tracks.create();
       
     item[VTX] = IgV3d((*tr).referencePoint().x()/100.,
@@ -157,7 +164,7 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
     ISpyVector::normalize(dir);
     item[P] = dir;
 
-    item[PT]  = (*tr).pt();
+    item[PT]  = pt;
     item[PHI] = (*tr).phi();
     item[ETA] = (*tr).eta ();
     item[CHARGE] = (*tr).charge();
@@ -215,12 +222,16 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
     for ( reco::GsfElectronCollection::const_iterator ei = electron_collection->begin(), eie = electron_collection->end();
           ei != eie; ++ei )
     { 
+ 
+      double pt = ei->pt();
+   
+      if ( pt < electronPtMin_ )
+        continue;
+   
       const reco::SuperClusterRef& sc = ei->superCluster();
       
       double eta = (*sc).eta();
       double phi = (*sc).phi();
-      double pt = ei->pt();
-      
       double theta = 2*atan(exp(-eta));
         
       IgV3d out_dir = IgV3d(pt*cos(phi), pt*sin(phi), pt/tan(theta));
@@ -302,9 +313,14 @@ void ISpyTrackExtrapolation::analyze(const edm::Event& event, const edm::EventSe
         if ( ti == collection->end() )
           continue;
 
+        double pt = (*mit).track()->pt();
+
+        if ( pt < trackerMuonPtMin_ )
+          continue;
+
         IgCollectionItem imuon = trackerMuonCollection.create();
       
-        imuon[T_PT] = (*mit).track()->pt();
+        imuon[T_PT] = pt;
         imuon[T_CHARGE] = charge;
         imuon[T_RP] = IgV3d((*mit).track()->vx()/100.0,
                             (*mit).track()->vy()/100.0,

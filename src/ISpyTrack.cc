@@ -34,7 +34,8 @@
 using namespace edm::service;
 
 ISpyTrack::ISpyTrack( const edm::ParameterSet& iConfig )
-  : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyTrackTag"))
+  : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyTrackTag")),
+    ptMin_(iConfig.getParameter<double>("ptMin"))
 {
   trackToken_ = consumes<reco::TrackCollection>(inputTag_);
 }
@@ -128,6 +129,11 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
     for (reco::TrackCollection::const_iterator track = collection->begin (), trackEnd = collection->end ();
          track != trackEnd; ++track)
     {
+      double pt = (*track).pt();
+
+      if ( pt < ptMin_ )
+        continue;
+
       IgCollectionItem item = tracks.create ();
 
       item[VTX] = IgV3d((*track).referencePoint().x()/100.,
@@ -140,7 +146,7 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
       ISpyVector::normalize(dir);
       item[P] = dir;
 
-      item[PT]  = (*track).pt();
+      item[PT]  = pt;
       item[PHI] = (*track).phi();
       item[ETA] = (*track).eta ();
       item[CHARGE] = (*track).charge();

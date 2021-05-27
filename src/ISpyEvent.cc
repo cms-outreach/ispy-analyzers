@@ -43,6 +43,7 @@ ISpyEvent::analyze( const edm::Event& event, const edm::EventSetup& /* eventSetu
       "You must add the service in the configuration file\n"
       "or remove the module that requires it";
   }
+
   const edm::Timestamp time = event.time ();
 
   timeval eventTime;
@@ -57,7 +58,7 @@ ISpyEvent::analyze( const edm::Event& event, const edm::EventSetup& /* eventSetu
   oss << bt << " GMT";
 
   std::string datetime (oss.str ());
-
+ 
   IgDataStorage *storage = config->storage ();
   assert(storage);
   IgCollection &eventColl = storage->getCollection ("Event_V3");
@@ -78,6 +79,7 @@ ISpyEvent::analyze( const edm::Event& event, const edm::EventSetup& /* eventSetu
   eventId [BX]    = static_cast<int>(event.bunchCrossing ());
   eventId [TIME]  = static_cast<std::string>(datetime);
   eventId [LOCALTIME]  = static_cast<std::string>(getLocalTime(event));
+
 }
 
 DEFINE_FWK_MODULE(ISpyEvent);

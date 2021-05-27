@@ -26,6 +26,7 @@ using namespace edm::service;
 ISpyService::ISpyService (const ParameterSet& iPSet, ActivityRegistry& iRegistry)
   : outputFileName_(iPSet.getUntrackedParameter<std::string>( "outputFileName", std::string("default.ig"))),
     outputESFileName_(iPSet.getUntrackedParameter<std::string>( "outputESFileName", std::string("defaultES.ig"))),
+    outputFilePath_(iPSet.getUntrackedParameter<std::string>("outputFilePath", std::string(""))),
     fileExt_(std::string(".ig")),
     currentExt_(std::string("")),
     outputMaxEvents_(iPSet.getUntrackedParameter<int>( "outputMaxEvents", -1)),
@@ -39,6 +40,9 @@ ISpyService::ISpyService (const ParameterSet& iPSet, ActivityRegistry& iRegistry
 
   iRegistry.watchPreEvent(this,&ISpyService::preEvent);
   iRegistry.watchPostEvent(this,&ISpyService::postEvent);
+
+  outputFileName_ = outputFilePath_ + outputFileName_;
+  outputESFileName_ = outputFilePath_ + outputESFileName_;
 
   makeHeader();
 }
@@ -100,7 +104,7 @@ ISpyService::writeHeader(zipFile& zfile)
   zi.internal_fa = 0;
   zi.external_fa = 0;
 
-  ziperr_ = zipOpenNewFileInZip(zfile, hs.c_str(), &zi,
+  ziperr_ = zipOpenNewFileInZip(zfile, (outputFilePath_ + hs).c_str(), &zi,
 				0, 0, 0, 0, 0, // other stuff                                                                         
 				Z_DEFLATED, // method                                                                                 
 				9);
@@ -195,10 +199,10 @@ ISpyService::postEvent(const edm::StreamContext& sc)
     zi.internal_fa = 0;
     zi.external_fa = 0;
     
-    ziperr_ = zipOpenNewFileInZip(zipFile0_, eoss.str().c_str(), &zi,
-                                    0, 0, 0, 0, 0, // other stuff
-                                    Z_DEFLATED, // method
-                                    9);
+    ziperr_ = zipOpenNewFileInZip(zipFile0_, (outputFilePath_ + eoss.str()).c_str(), &zi,
+                                  0, 0, 0, 0, 0, // other stuff
+                                  Z_DEFLATED, // method
+                                  9);
     assert(ziperr_ == ZIP_OK);
 
     if ( outputMaxEvents_ != -1 )       
@@ -246,9 +250,9 @@ ISpyService::postEvent(const edm::StreamContext& sc)
     zi.internal_fa = 0;
     zi.external_fa = 0;
     
-    ziperr_ = zipOpenNewFileInZip(zipFile1_, goss.str().c_str(), &zi,
-                                    0, 0, 0, 0, 0, 
-                                    Z_DEFLATED, 9);
+    ziperr_ = zipOpenNewFileInZip(zipFile1_, (outputFilePath_ + goss.str()).c_str(), &zi,
+                                  0, 0, 0, 0, 0,      
+                                  Z_DEFLATED, 9);
     assert(ziperr_ == ZIP_OK);
 
     std::stringstream doss;

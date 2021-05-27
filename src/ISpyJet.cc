@@ -58,20 +58,28 @@ ISpyJet::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
     IgCollectionItem item = products.create();
     item[PROD] = product;
 
-    IgCollection &jets = storage->getCollection ("Jets_V1");
+    IgCollection &jets = storage->getCollection ("Jets_V2");
 
     IgProperty ET = jets.addProperty ("et", 0.0); 
     IgProperty ETA = jets.addProperty ("eta", 0.0);
     IgProperty THETA = jets.addProperty ("theta", 0.0);
     IgProperty PHI = jets.addProperty ("phi", 0.0);
+    
+    IgProperty VTX = jets.addProperty("vertex", IgV3d());
 
     for (reco::CaloJetCollection::const_iterator it = collection->begin (), itEnd = collection->end (); it != itEnd; ++it)
     {
       IgCollectionItem ijet = jets.create ();
+
       ijet[ET]    = static_cast<double>((*it).et ());
       ijet[ETA]   = static_cast<double>((*it).eta ());
       ijet[THETA] = static_cast<double>((*it).theta());
       ijet[PHI]   = static_cast<double>((*it).phi());
+      
+      ijet[VTX] = IgV3d((*it).vx()/100.0,
+                        (*it).vy()/100.0,
+                        (*it).vz()/100.0);
+
     }
   }    
   else 

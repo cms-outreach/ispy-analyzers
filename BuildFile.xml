@@ -19,6 +19,8 @@
 <use   name="HLTrigger/HLTcore"/>
 <use   name="PhysicsTools/PatUtils"/>
 <use   name="DataFormats/SiStripCluster"/>
+<use   name="TrackingTools/Records"/>
+<use   name="TrackingTools/TrackAssociator"/>
 <use   name="boost"/>
 <use   name="clhep"/>
 <use   name="SimDataFormats/TrackingAnalysis"/>

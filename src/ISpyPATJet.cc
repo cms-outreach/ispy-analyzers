@@ -57,16 +57,22 @@ void ISpyPATJet::analyze(const edm::Event& event, const edm::EventSetup& eventSe
     IgProperty ETA = jets.addProperty("eta", 0.0);
     IgProperty THETA = jets.addProperty("theta", 0.0);
     IgProperty PHI = jets.addProperty("phi", 0.0);
+    
+    IgProperty VTX = jets.addProperty("vertex", IgV3d());
 
-     for ( std::vector<pat::Jet>::const_iterator ij = collection->begin(), ije = collection->end(); 
-           ij != ije; ++ij )
-     {
+    for ( std::vector<pat::Jet>::const_iterator ij = collection->begin(), ije = collection->end(); 
+          ij != ije; ++ij )
+    {
        IgCollectionItem jet = jets.create();
 
        jet[ET]    = static_cast<double>(ij->et());
        jet[ETA]   = static_cast<double>(ij->eta());
        jet[THETA] = static_cast<double>(ij->theta());
        jet[PHI]   = static_cast<double>(ij->phi());
+       
+       jet[VTX] = IgV3d(ij->vx()/100.0,
+                        ij->vy()/100.0,
+                        ij->vz()/100.0);
 
      }
    }

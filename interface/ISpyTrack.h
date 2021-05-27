@@ -19,6 +19,8 @@ public:
 private:
   edm::InputTag	inputTag_;
   edm::EDGetTokenT<reco::TrackCollection> trackToken_;
+
+  double ptMin_;
 };
 
 #endif // ANALYZER_ISPY_TRACK_H

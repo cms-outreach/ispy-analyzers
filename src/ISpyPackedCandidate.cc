@@ -6,27 +6,38 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
-
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
-
 #include "FWCore/ServiceRegistry/interface/Service.h"
-
 #include "FWCore/Utilities/interface/Exception.h"
 
 #include "ISpy/Services/interface/IgCollection.h"
 
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+
+#include "TrackingTools/GeomPropagators/interface/Propagator.h"
+#include "TrackingTools/TrajectoryParametrization/interface/GlobalTrajectoryParameters.h"
+#include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
+#include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
+
+#include "TrackingTools/TrackAssociator/interface/DetIdAssociator.h"
+#include "TrackingTools/Records/interface/DetIdAssociatorRecord.h"
+
+#include "TrackPropagation/SteppingHelixPropagator/interface/SteppingHelixPropagator.h"
+
 using namespace edm::service;
 using namespace edm;
 
-ISpyPackedCandidate::ISpyPackedCandidate(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPackedCandidateTag"))
+#include <iostream>
+
+ISpyPackedCandidate::ISpyPackedCandidate(const ParameterSet& iConfig)
+: inputTag_(iConfig.getParameter<InputTag>("iSpyPackedCandidateTag"))
 {
   candidateToken_ = consumes<pat::PackedCandidateCollection>(inputTag_);
 }
 
-void ISpyPackedCandidate::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
+void ISpyPackedCandidate::analyze(const Event& event, const EventSetup& eventSetup)
 {
-  edm::Service<ISpyService> config;
+  Service<ISpyService> config;
 
   if ( ! config.isAvailable() )
   {
@@ -39,13 +50,27 @@ void ISpyPackedCandidate::analyze(const edm::Event& event, const edm::EventSetup
 
   IgDataStorage *storage = config->storage();
 
-  edm::Handle<pat::PackedCandidateCollection> collection;
+  Handle<pat::PackedCandidateCollection> collection;
   event.getByToken(candidateToken_, collection);
 
+  ESHandle<MagneticField> field;
+  eventSetup.get<IdealMagneticFieldRecord>().get(field);
+
+  if ( ! field.isValid() )
+  {
+    std::string error = 
+      "### Error: ISpyMuon::analyze: Invalid Magnetic field ";
+    
+    config->error (error);
+    return;
+  }
+  
+  SteppingHelixPropagator propagator(&(*field), alongMomentum);
+ 
   if ( collection.isValid() )
   {
     std::string product = "PackedCandidates "
-                          + edm::TypeID (typeid (pat::PackedCandidateCollection)).friendlyClassName() + ":"
+                          + TypeID (typeid (pat::PackedCandidateCollection)).friendlyClassName() + ":"
                           + inputTag_.label() + ":"
                           + inputTag_.instance() + ":"
                           + inputTag_.process();
@@ -71,10 +96,14 @@ void ISpyPackedCandidate::analyze(const edm::Event& event, const edm::EventSetup
     IgProperty OPOS = extras.addProperty("pos_2", IgV3d());
     IgProperty OP   = extras.addProperty("dir_2", IgV3d());
     IgAssociations &trackExtras = storage->getAssociations("TrackExtras_V1");
-    
+
     for ( pat::PackedCandidateCollection::const_iterator c = collection->begin(); 
           c != collection->end(); ++c )
     {
+
+      if ( ! (*c).hasTrackDetails() )
+        continue;
+
       IgCollectionItem track = tracks.create();
 
       track[VTX] = IgV3d((*c).vx()/100.,
@@ -84,6 +113,7 @@ void ISpyPackedCandidate::analyze(const edm::Event& event, const edm::EventSetup
       IgV3d dir = IgV3d((*c).px(),
                         (*c).py(),
                         (*c).pz());
+
       ISpyVector::normalize(dir);
       track[P] = dir;
 
@@ -96,25 +126,62 @@ void ISpyPackedCandidate::analyze(const edm::Event& event, const edm::EventSetup
 
       IgCollectionItem eitem = extras.create();
 
-      eitem[IPOS] = IgV3d((*c).vx()/100.,
-                          (*c).vy()/100.,
-                          (*c).vz()/100.);
+      GlobalPoint trackP((*c).vx(), (*c).vy(), (*c).vz());
+      GlobalVector trackM((*c).px(), (*c).py(), (*c).pz());  
 
-      eitem[IP] = dir;
+      GlobalTrajectoryParameters trackParams(trackP, trackM, (*c).charge(), &(*field));
+      FreeTrajectoryState trackState(trackParams);
 
-      eitem[OPOS] = IgV3d();
+      // NOTE: Ideally would get this from FiducicalVolume
+      // but required record isn't available for some reason.
+      // Investigate.
+      double minR = 1.24*100.; 
+      double minZ = 3.0*100.; 
+
+      TrajectoryStateOnSurface tsos = propagator.propagate(
+        trackState, *Cylinder::build(minR, Surface::PositionType(0,0,0), Surface::RotationType())
+        );
       
-      eitem[OP] = IgV3d();
+      // If out the endcaps then repropagate a la TrackExtrapolator
+      if ( tsos.isValid() && tsos.globalPosition().z() > minZ ) 
+      {
+        tsos = propagator.propagate(trackState, *Plane::build(Surface::PositionType(0, 0, minZ), Surface::RotationType()));
+      }   
+      else if ( tsos.isValid() && tsos.globalPosition().z() < -minZ ) 
+      {
+        tsos = propagator.propagate(trackState, *Plane::build(Surface::PositionType(0, 0, -minZ), Surface::RotationType()));
+      }
       
-      trackExtras.associate(item,eitem);
-       
+      if ( tsos.isValid() ) 
+      {         
+        eitem[IPOS] = IgV3d((*c).vx()/100.,
+                            (*c).vy()/100.,
+                            (*c).vz()/100.);
+        eitem[IP] = dir;
+      
+
+        eitem[OPOS] = IgV3d(tsos.globalPosition().x()/100., 
+                            tsos.globalPosition().y()/100., 
+                            tsos.globalPosition().z()/100.);
+
+        IgV3d odir = IgV3d(tsos.globalMomentum().x(),
+                           tsos.globalMomentum().y(),
+                           tsos.globalMomentum().z());
+
+        ISpyVector::normalize(odir);
+        eitem[OP] = odir;      
+
+      }          
+
+      trackExtras.associate(track, eitem);
+
     }
   }
 
   else
   {
     std::string error = "### Error: PackedCandidates "
-                        + edm::TypeID (typeid (pat::PackedCandidateCollection)).friendlyClassName() + ":"
+                        + TypeID (typeid (pat::PackedCandidateCollection)).friendlyClassName() + ":"
                         + inputTag_.label() + ":"
                         + inputTag_.instance() + " are not found";
     config->error(error);

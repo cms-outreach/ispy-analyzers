@@ -80,10 +80,13 @@ View the output in http://cern.ch/ispy-webgl-dev
 
 ## Running in a container
 
-### CMSSW Docker image
+### Stand-alone CMSSW docker image
 
 In addition to cloning the code to your local area and building and running it on lxplus you can 
-do it locally in a Docker container. CMSSW Docker images are
+do it locally in a docker container. For some CMSSW releases stand-alone (i.e. containing everything you may need)
+containers are available.
+
+CMSSW docker images are
 available from the [CMSSW Docker image building service](https://cmssw-docker.web.cern.ch/).
 
 If you don't have docker installed already, instructions are [here](https://docs.docker.com/install/).
@@ -110,9 +113,33 @@ Once you exit the container you may start it up again with the command:
 docker start -i ispy
 ```
 
-### ispy-analyzers image using cvmfs
+### Slim slc5, slc6, and cc7 containers
 
-**[COMING SOON]**
+"Slim" containers are available as well and are useful if either you want a version of CMSSW that isn't available as a stand-alone container or 
+if you already have `cvmfs` mounted on your machine and don't need or want a stand-alone version. 
+
+In this case you will first have to mount `cvmfs`. Instructions on how to do this are [here](https://cvmfs.readthedocs.io/en/stable/cpt-quickstart.html).
+
+Then you may proceed to as follows (in which we assume you want to install `CMSSW_10_2_22`):
+
+```
+$ docker run --rm -it -v /cvmfs:/cvmfs -v ~/.globus:/home/cmsusr/.globus gitlab-registry.cern.ch/cms-cloud/cmssw-docker/slc6-cms /bin/bash
+::: Setting up CMS environment (works only if /cvmfs is mounted on host) ...
+::: Setting up CMS environment... [done]
+```
+
+Note that we mount `cvmfs` and the directory containing GRID credentials.
+
+Now you should be in the container and can proceed similarly as above (where for below output is suppressed):
+
+```
+cmsusr@d4cc1c4531fe ~ $ scram project CMSSW_10_2_22
+cmsusr@d4cc1c4531fe ~ $ cd CMSSW_10_2_22/
+cmsusr@d4cc1c4531fe ~/CMSSW_10_2_22/src $ git clone https://github.com/cms-outreach/ispy-analyzers.git ISpy/Analyzers
+cmsusr@d4cc1c4531fe ~/CMSSW_10_2_22/src $ git clone https://github.com/cms-outreach/ispy-services.git ISpy/Services
+cmsusr@d4cc1c4531fe ~/CMSSW_10_2_22/src $ cmsenv
+cmsusr@d4cc1c4531fe ~/CMSSW_10_2_22/src $ scram b
+```
 
 ### ispy-analyzers image on lxplus with Singularity
 

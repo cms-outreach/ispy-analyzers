@@ -289,6 +289,10 @@ process.schedule = cms.Schedule(process.iSpy)
 For `AOD` there is an example cfg file [here](https://github.com/cms-outreach/ispy-analyzers/blob/master/python/ispy_AOD.py) and for `miniAOD` there is an
 example cfg file [here](https://github.com/cms-outreach/ispy-analyzers/blob/master/python/ispy_miniAOD.py).
 
+#### Are there more example configuration files?
+
+Yes. There are many configuration file examples to be found in [these repositories](https://gitlab.cern.ch/cms-comms/public-displays).
+
 #### How do I know what is in the data file?
 
 In a CMSSW environment you can run the command `edmDumpEventContent [input file name]` which will dump the information on what objects and collections

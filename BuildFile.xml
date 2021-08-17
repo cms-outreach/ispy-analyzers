@@ -24,6 +24,4 @@
 <use   name="boost"/>
 <use   name="clhep"/>
 <use   name="SimDataFormats/TrackingAnalysis"/>
-<flags   CPPFLAGS="$(patsubst %,-DCMSSW_2_2_X,$(findstring CMSSW_2_2,$(SCRAM_PROJECTVERSION)))"/>
-<flags   CPPFLAGS="$(patsubst %,-DCMSSW_5_X,$(findstring CMSSW_5_,$(SCRAM_PROJECTVERSION)))"/>
 <flags   EDM_PLUGIN="1"/>

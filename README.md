@@ -14,13 +14,13 @@ This example uses CMSSW_10_2_9. Substitute your own version.
 Create a CMSSW environment: 
 
 ```
-cmsrel CMSSW_10_2_9
+cmsrel CMSSW_11_2_3
 ```
 
 Change to the CMSSW_10_2_9/src/ directory:
 
 ```
-cd CMSSW_10_2_9/src/
+cd CMSSW_11_2_3/src/
 ```
 
 Initialize the CMSSW environment:
@@ -32,7 +32,7 @@ cmsenv
 Clone the necessary source code:
 
 ```
-git clone https://github.com/cms-outreach/ispy-analyzers.git ISpy/Analyzers 
+git clone -b cmssw11 --single-branch https://github.com/SeungJunLee0/ispy-analyzers.git ISpy/Analyzers 
 git clone https://github.com/cms-outreach/ispy-services.git ISpy/Services
 ```
 

@@ -33,15 +33,14 @@ process.options = cms.untracked.PSet(
 process.add_(
     cms.Service("ISpyService",
                 outputFileName = cms.untracked.string('HIDiMuon.ig'),
-                outputMaxEvents = cms.untracked.int32(50)
+                outputMaxEvents = cms.untracked.int32(10)
                )
 )
 
 # This number is the total number of events run over. "-1" indicates all.
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(10)
 )
-
 
 process.load('ISpy.Analyzers.ISpyEvent_cfi')
 

@@ -1,3 +1,5 @@
+# ISpy Analyzers for 2011 Heavy Ion data
+
 This package is for production of event display files for the CMS experiment
 at the LHC. This particular branch is for use with the CMS public data release
 of [2.76 TeV PbPb collision data from 2011](http://opendata.cern.ch/search?page=1&size=20&q=&subtype=Collision&type=Dataset&year=2011&experiment=CMS&keywords=heavy-ion%20physics&collision_type=PbPb).

@@ -1,0 +1,14 @@
+stages:
+  - build
+
+cmssw_4_compile:
+  stage: build
+  only:
+    - heavyion2011
+  tags:
+    - cvmfs
+  variables:
+    CMS_PATH: /cvmfs/cms.cern.ch
+    CMSSW_RELEASE: CMSSW_4_4_7
+  script:
+    - /bin/bash ./.gitlab/build.sh

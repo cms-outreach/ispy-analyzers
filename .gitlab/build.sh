@@ -3,6 +3,7 @@
 set -ex
 shopt -s expand_aliases
 export BUILD_DIR=${PWD}
+SCRAM_ARCH=${SCRAM_ARCH}; export SCRAM_ARCH
 set +u && source ${CMS_PATH}/cmsset_default.sh; set -u
 cmsrel ${CMSSW_RELEASE}
 cd ${CMSSW_RELEASE}/src

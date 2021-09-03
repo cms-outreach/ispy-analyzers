@@ -35,6 +35,7 @@ cmssw_12_compile:
   variables:
     CMS_PATH: /cvmfs/cms.cern.ch
     CMSSW_RELEASE: CMSSW_12_0_0
+    SCRAM_ARCH: slc7_amd64_gcc900
   script:
      - /bin/bash ./.gitlab/build.sh
   

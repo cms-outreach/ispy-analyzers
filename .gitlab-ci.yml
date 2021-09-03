@@ -30,7 +30,7 @@ cmssw_12_compile:
   stage: build
   only:
     - cmssw12
-tags:
+  tags:
     - cvmfs
   variables:
     CMS_PATH: /cvmfs/cms.cern.ch

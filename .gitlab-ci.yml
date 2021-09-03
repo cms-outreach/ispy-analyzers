@@ -26,6 +26,18 @@ cmssw_10_compile:
   script:
      - /bin/bash ./.gitlab/build.sh
 
+cmssw_11_compile:
+  stage: build
+  only:
+    - cmssw11
+  tags:
+    - cvmfs
+  variables:
+    CMS_PATH: /cvmfs/cms.cern.ch
+    CMSSW_RELEASE: CMSSW_11_2_3
+  script:
+     - /bin/bash ./.gitlab/build.sh
+
 docker_image:
   stage: deploy
   needs: ["cmssw_10_compile"]

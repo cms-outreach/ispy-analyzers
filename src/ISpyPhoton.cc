@@ -109,9 +109,9 @@ void ISpyPhoton::analyze(const edm::Event& event, const edm::EventSetup& eventSe
       p[POS] = IgV3d(pi->vx()/100.0, pi->vy()/100.0, pi->vz()/100.0);
 
       // NOTE: Need to cast float to double
-      p[HOE]  = static_cast<double>(pi->hadronicOverEm());
-      p[HD1]  = static_cast<double>(pi->hadronicDepth1OverEm());
-      p[HD2]  = static_cast<double>(pi->hadronicDepth2OverEm());
+      p[HOE]  = static_cast<double>(pi->hadronicOverEm(0));
+      p[HD1]  = static_cast<double>(pi->hadronicOverEm(1));
+      p[HD2]  = static_cast<double>(pi->hadronicOverEm(2));
       p[E1X5] = static_cast<double>(pi->e1x5()); 
       p[E2X5] = static_cast<double>(pi->e2x5());
       p[E3X3] = static_cast<double>(pi->e3x3()); 
@@ -124,18 +124,18 @@ void ISpyPhoton::analyze(const edm::Event& event, const edm::EventSetup& eventSe
       p[R9]   = static_cast<double>(pi->r9());
 
       p[ESDR4]  = static_cast<double>(pi->ecalRecHitSumEtConeDR04());     
-      p[HSDR4]  = static_cast<double>(pi->hcalTowerSumEtConeDR04());    
-      p[HD1DR4] = static_cast<double>(pi->hcalDepth1TowerSumEtConeDR04());     
-      p[HD2DR4] = static_cast<double>(pi->hcalDepth2TowerSumEtConeDR04());    
+      p[HSDR4]  = static_cast<double>(pi->hcalTowerSumEtConeDR04(0));    
+      p[HD1DR4] = static_cast<double>(pi->hcalTowerSumEtConeDR04(1));     
+      p[HD2DR4] = static_cast<double>(pi->hcalTowerSumEtConeDR04(2));    
       p[TSSDR4] = static_cast<double>(pi->trkSumPtSolidConeDR04());   
       p[TSHDR4] = static_cast<double>(pi->trkSumPtHollowConeDR04());   
       p[NTSDR4] = pi->nTrkSolidConeDR04();             
       p[NTHDR4] = pi->nTrkHollowConeDR04();           
 
       p[ESDR3]  = static_cast<double>(pi->ecalRecHitSumEtConeDR03());     
-      p[HSDR3]  = static_cast<double>(pi->hcalTowerSumEtConeDR03());    
-      p[HD1DR3] = static_cast<double>(pi->hcalDepth1TowerSumEtConeDR03());     
-      p[HD2DR3] = static_cast<double>(pi->hcalDepth2TowerSumEtConeDR03());    
+      p[HSDR3]  = static_cast<double>(pi->hcalTowerSumEtConeDR03(0));    
+      p[HD1DR3] = static_cast<double>(pi->hcalTowerSumEtConeDR03(1));     
+      p[HD2DR3] = static_cast<double>(pi->hcalTowerSumEtConeDR03(2));    
       p[TSSDR3] = static_cast<double>(pi->trkSumPtSolidConeDR03());   
       p[TSHDR3] = static_cast<double>(pi->trkSumPtHollowConeDR03());   
       p[NTSDR3] = pi->nTrkSolidConeDR03();             

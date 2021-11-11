@@ -20,7 +20,7 @@ import FWCore.Utilities.FileUtils as FileUtils
 process.source = cms.Source(
     'PoolSource',
     fileNames = cms.untracked.vstring(
-    'root://cmsxrootd.fnal.gov//store/data/Commissioning2021/ZeroBias9/AOD/PromptReco-v1/000/346/452/00000/a2db0280-63e0-427d-bf5a-43897a3f25a3.root'
+    'root://cmsxrootd.fnal.gov//store/data/Commissioning2021/MinimumBias9/AOD/PromptReco-v1/000/346/452/00000/2157fb35-4392-4677-ac7f-50605d228ad8.root'
     ))
 
 from FWCore.MessageLogger.MessageLogger_cfi import *
@@ -44,10 +44,24 @@ process.load('ISpy.Analyzers.ISpyCSCRecHit2D_cfi')
 process.load('ISpy.Analyzers.ISpyCSCSegment_cfi')
 process.load('ISpy.Analyzers.ISpyGEMSegment_cfi')
 process.load('ISpy.Analyzers.ISpyGEMDigi_cfi')
+process.load('ISpy.Analyzers.ISpyDTRecHit_cfi')
 process.load('ISpy.Analyzers.ISpyGEMRecHit_cfi')
+process.load('ISpy.Analyzers.ISpyDTRecSegment4D_cfi')
+process.load('ISpy.Analyzers.ISpyEBRecHit_cfi')
+process.load('ISpy.Analyzers.ISpyEERecHit_cfi')
+process.load('ISpy.Analyzers.ISpyESRecHit_cfi')
+process.load('ISpy.Analyzers.ISpyHBRecHit_cfi')
+process.load('ISpy.Analyzers.ISpyHERecHit_cfi')
+process.load('ISpy.Analyzers.ISpyHFRecHit_cfi')
+process.load('ISpy.Analyzers.ISpyHORecHit_cfi')
+process.load('ISpy.Analyzers.ISpyMET_cfi')
+process.load('ISpy.Analyzers.ISpyPFMET_cfi')
 process.load('ISpy.Analyzers.ISpyMuon_cfi')
 process.load('ISpy.Analyzers.ISpyJet_cfi')
 process.load('ISpy.Analyzers.ISpyPFJet_cfi')
+process.load('ISpy.Analyzers.ISpyPhoton_cfi')
+process.load('ISpy.Analyzers.ISpyRPCRecHit_cfi')
+process.load('ISpy.Analyzers.ISpySuperCluster_cfi')
 process.load('ISpy.Analyzers.ISpyTrackExtrapolation_cfi')
 process.load('ISpy.Analyzers.ISpyTriggerEvent_cfi')
 process.load('ISpy.Analyzers.ISpyVertex_cfi')
@@ -56,10 +70,22 @@ process.ISpyCSCSegment.iSpyCSCSegmentTag = cms.InputTag("cscSegments")
 process.ISpyGEMRecHit.iSpyGEMRecHitTag = cms.InputTag("gemRecHits")
 process.ISpyGEMSegment.iSpyGEMSegmentTag = cms.InputTag("gemSegments")
 process.ISpyGEMDigi.iSpyGEMDigiTag = cms.InputTag("muonGEMDigis")
+process.ISpyDTRecHit.iSpyDTRecHitTag = cms.InputTag('dt1DRecHits')
+process.ISpyDTRecSegment4D.iSpyDTRecSegment4DTag = cms.InputTag('dt4DSegments')
+process.ISpyEBRecHit.iSpyEBRecHitTag = cms.InputTag('reducedEcalRecHitsEB')
+process.ISpyEERecHit.iSpyEERecHitTag = cms.InputTag('reducedEcalRecHitsEE')
+process.ISpyESRecHit.iSpyESRecHitTag = cms.InputTag('reducedEcalRecHitsES')
+process.ISpyHBRecHit.iSpyHBRecHitTag = cms.InputTag("reducedHcalRecHits:hbhereco")
+process.ISpyHERecHit.iSpyHERecHitTag = cms.InputTag("reducedHcalRecHits:hbhereco")
+process.ISpyHFRecHit.iSpyHFRecHitTag = cms.InputTag("reducedHcalRecHits:hfreco")
+process.ISpyHORecHit.iSpyHORecHitTag = cms.InputTag("reducedHcalRecHits:horeco")
+process.ISpyMET.iSpyMETTag = cms.InputTag("htMetIC5")
 process.ISpyMuon.iSpyMuonTag = cms.InputTag("muons")
 process.ISpyPFJet.iSpyPFJetTag = cms.InputTag('ak4PFJets')
 process.ISpyPFJet.etMin = cms.double(30.0)
 process.ISpyPFJet.etaMax = cms.double(2.5)
+process.ISpyPhoton.iSpyPhotonTag = cms.InputTag('photons')
+process.ISpyRPCRecHit.iSpyRPCRecHitTag = cms.InputTag("rpcRecHits")
 process.ISpyVertex.iSpyVertexTag = cms.InputTag('offlinePrimaryVertices')
 process.ISpyTrackExtrapolation.iSpyTrackExtrapolationTag = cms.InputTag("trackExtrapolator")
 process.ISpyTrackExtrapolation.trackPtMin = cms.double(2.0)
@@ -69,8 +95,20 @@ process.iSpy = cms.Path(process.ISpyEvent*
                         process.ISpyGEMDigi*
                         process.ISpyCSCSegment*
                         process.ISpyGEMSegment*
+                        process.ISpyDTRecHit*
+                        process.ISpyDTRecSegment4D*
+                        process.ISpyEBRecHit*
+                        process.ISpyEERecHit*
+                        process.ISpyESRecHit*
+                        process.ISpyHBRecHit*
+                        process.ISpyHERecHit*
+                        process.ISpyHFRecHit*
+                        process.ISpyHORecHit*
                         process.ISpyMuon*
                         process.ISpyPFJet*
+                        process.ISpyPFMET*
+                        process.ISpyPhoton*
+                        process.ISpyRPCRecHit*
                         process.ISpyTrackExtrapolation*
                         process.ISpyVertex)
 process.schedule = cms.Schedule(process.iSpy)

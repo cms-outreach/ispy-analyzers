@@ -21,6 +21,7 @@
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
 #include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "Geometry/GEMGeometry/interface/GEMGeometry.h"
+#include "Geometry/GEMGeometry/interface/GEMEtaPartition.h"
 
 using namespace edm::service;
 using namespace edm;

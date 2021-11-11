@@ -93,12 +93,12 @@ ISpyGEMSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
     IgProperty BACK_3 = chambers.addProperty("back_3", IgV3d());
     IgProperty BACK_4 = chambers.addProperty("back_4", IgV3d());
 
-    GEMSegmentCollection::const_iterator it = collection->begin ();
-    GEMSegmentCollection::const_iterator end = collection->end ();
+    GEMSegmentCollection::const_iterator it = collection->begin();
+    GEMSegmentCollection::const_iterator end = collection->end();
     for (; it != end; ++it) 
     {
       IgCollectionItem isegment = segments.create ();
-      isegment[DET_ID] = static_cast<int> ((*it).geographicalId ().rawId ());
+      isegment[DET_ID] = static_cast<int> ((*it).geographicalId().rawId());	  
 
       // Local pos & dir
       LocalPoint  pos = (*it).localPosition();

@@ -33,7 +33,7 @@ ISpyMuon::ISpyMuon(const edm::ParameterSet& iConfig)
     in_(iConfig.getUntrackedParameter<double>("propagatorIn", 0.0)),
     out_(iConfig.getUntrackedParameter<double>("propagatorOut", 0.0)),
     step_(iConfig.getUntrackedParameter<double>("propagatorStep", 0.05)),
-    dtGeomValid_(false), cscGeomValid_(false)
+    dtGeomValid_(false), cscGeomValid_(false), gemGeomValid_(false) 
 {
   muonToken_ = consumes<reco::MuonCollection>(inputTag_);
 }      
@@ -68,21 +68,33 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   eventSetup.get<MuonGeometryRecord>().get(dtGeometry_);
   eventSetup.get<MuonGeometryRecord>().get(cscGeometry_);
 
-  if ( gemGeometry_.isValid() )
+  if ( gemGeometry_.isValid() ) 
+  {
     gemGeomValid_ = true;
+  }
   else
+  {
     config->error("### Error: Muons  GEM Geometry not valid");
-
+  }
+  
   if ( dtGeometry_.isValid() )
+  {
     dtGeomValid_ = true;
-  else 
-    config->error("### Error: Muons  DT Geometry not valid");    
-           
-  if ( cscGeometry_.isValid() )
-    cscGeomValid_ = true;
+  }
   else
+  {
+    config->error("### Error: Muons  DT Geometry not valid");    
+  }
+        
+  if ( cscGeometry_.isValid() ) 
+  {
+    cscGeomValid_ = true;
+  }
+  else
+  {
     config->error("### Error: Muons  CSC Geometry not valid");
-
+  }
+  
   edm::Handle<reco::MuonCollection> collection;
   event.getByToken(muonToken_, collection);
 
@@ -223,7 +235,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     {
       IgCollectionItem imuon = globalMuonCollection.create();
 
-      if ((*it).isMatchesValid () && (dtGeomValid_ || cscGeomValid_)) 
+      if ((*it).isMatchesValid () && (gemGeomValid_ || dtGeomValid_ || cscGeomValid_)) 
         addChambers(it);
 
       imuon[G_PT] = (*it).combinedMuon()->pt();
@@ -283,16 +295,16 @@ ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
                                                          ditEnd = dets.end(); 
         dit != ditEnd; ++dit )
   {
-    if ( dit->detector() == MuonSubdetId::GEM )
+    if ( dit->detector() == MuonSubdetId::GEM && gemGeomValid_ )
     {
       geomDet = gemGeometry_->idToDet((*dit).id);
     }
-    else if ( dit->detector() == MuonSubdetId::CSC )
+    else if ( dit->detector() == MuonSubdetId::CSC && cscGeomValid_ )
     {
       geomDet = cscGeometry_->idToDet((*dit).id);
     }
     
-    else if ( dit->detector() == MuonSubdetId::DT )
+    else if ( dit->detector() == MuonSubdetId::DT && dtGeomValid_ )
     {
       geomDet = dtGeometry_->idToDet((*dit).id);
     }

@@ -1,3 +1,4 @@
+#! /usr/bin/env cmsRun
 import os
 
 # Stuff for singularity on lxplus
@@ -9,6 +10,16 @@ else:
   outPath += '/'
 
 import FWCore.ParameterSet.Config as cms
+from FWCore.ParameterSet.VarParsing import VarParsing
+
+options = VarParsing('analysis')
+options.register('inFile',
+  #'root://cmsxrootd.fnal.gov//store/data/Run2018D/DoubleMuon/AOD/PromptReco-v2/000/324/998/00000/AF519538-7FE5-4A4B-BD66-6FE4900CB5C6.root',
+  'root://cmsxrootd.fnal.gov//store/data/Run2018B/Charmonium/AOD/17Sep2018-v1/120000/3ADC2E5A-4F1B-4546-8CB6-58DDBBC921D3.root',
+  mytype=VarParsing.varType.string)
+options.register('outFile', 'igOutput.ig', mytype=VarParsing.varType.string)
+options.register('maxEvts', 10, mytype=VarParsing.varType.int)
+options.parseArguments()
 
 process = cms.Process("ISPY")
 
@@ -23,22 +34,18 @@ import FWCore.Utilities.FileUtils as FileUtils
 
 process.source = cms.Source(
     'PoolSource',
-    fileNames = cms.untracked.vstring(
-    #'root://cmsxrootd.fnal.gov//store/data/Run2018D/DoubleMuon/AOD/PromptReco-v2/000/324/998/00000/AF519538-7FE5-4A4B-BD66-6FE4900CB5C6.root'
-    'root://cmsxrootd.fnal.gov//store/data/Run2018B/Charmonium/AOD/17Sep2018-v1/120000/3ADC2E5A-4F1B-4546-8CB6-58DDBBC921D3.root'
-    )
-
+    fileNames = cms.untracked.vstring(options.inFile)
     )
 
 from FWCore.MessageLogger.MessageLogger_cfi import *
 
 process.add_(
         cms.Service("ISpyService",
-                        outputFileName = cms.untracked.string('igOutput.ig'),
+                        outputFileName = cms.untracked.string(options.outFile),
                         outputESFilename = cms.untracked.string('ES.ig'),
                         outputFilePath = cms.untracked.string(outPath),
                         outputIg = cms.untracked.bool(True),
-                        outputMaxEvents = cms.untracked.int32(10),
+                        outputMaxEvents = cms.untracked.int32(options.maxEvts),
                         )
         )
 
@@ -47,7 +54,7 @@ process.options = cms.untracked.PSet(
             )
 
 process.maxEvents = cms.untracked.PSet(
-        input = cms.untracked.int32(10)
+        input = cms.untracked.int32(options.maxEvts)
         )
 
 process.load("ISpy.Analyzers.ISpyEvent_cfi")

@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_CSCWIREDIGI_H
 #define ANALYZER_ISPY_CSCWIREDIGI_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/CSCDigi/interface/CSCWireDigiCollection.h"
 
-class ISpyCSCWireDigi : public edm::EDAnalyzer
+class ISpyCSCWireDigi : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyCSCWireDigi(const edm::ParameterSet&);

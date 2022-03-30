@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_VERTEX_H
 #define ANALYZER_ISPY_VERTEX_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 
-class ISpyVertex : public edm::EDAnalyzer
+class ISpyVertex : public edm::one::EDAnalyzer<>
 {
 public:
     explicit ISpyVertex(const edm::ParameterSet&);

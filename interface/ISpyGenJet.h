@@ -1,12 +1,12 @@
 #ifndef ANALYZER_ISPY_GENJET_H
 # define ANALYZER_ISPY_GENJET_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/JetReco/interface/GenJetCollection.h"
 
-class ISpyGenJet : public edm::EDAnalyzer
+class ISpyGenJet : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyGenJet(const edm::ParameterSet&);

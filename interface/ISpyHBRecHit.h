@@ -1,12 +1,12 @@
 #ifndef ANALYZER_ISPY_HBREC_HIT_H
 #define ANALYZER_ISPY_HBREC_HIT_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
 
-class ISpyHBRecHit : public edm::EDAnalyzer
+class ISpyHBRecHit : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyHBRecHit(const edm::ParameterSet&);

@@ -1,13 +1,13 @@
 #ifndef ANALYZER_ISPY_SI_PIXEL_CLUSTER_H
 #define ANALYZER_ISPY_SI_PIXEL_CLUSTER_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/Common/interface/DetSetVector.h"
 #include "DataFormats/SiPixelCluster/interface/SiPixelCluster.h"
 
-class ISpySiPixelCluster : public edm::EDAnalyzer
+class ISpySiPixelCluster : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpySiPixelCluster(const edm::ParameterSet& iPSet);

@@ -1,10 +1,10 @@
 #ifndef ANALYZER_ISPY_L1_GLOBAL_TRIGGER_READOUT_RECORD_H
 #define ANALYZER_ISPY_L1_GLOBAL_TRIGGER_READOUT_RECORD_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-class ISpyL1GlobalTriggerReadoutRecord : public edm::EDAnalyzer
+class ISpyL1GlobalTriggerReadoutRecord : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyL1GlobalTriggerReadoutRecord(const edm::ParameterSet&);

@@ -1,12 +1,12 @@
 #ifndef ANALYZER_ISPY_PFECALRECHIT_H
 #define ANALYZER_ISPY_PFECALRECHIT_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/ParticleFlowReco/interface/PFRecHitFwd.h"
 
-class ISpyPFEcalRecHit : public edm::EDAnalyzer
+class ISpyPFEcalRecHit : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyPFEcalRecHit(const edm::ParameterSet&);

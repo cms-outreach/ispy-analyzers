@@ -1,7 +1,7 @@
 #ifndef ANALYZER_ISPY_CALO_GEOMETRY_H
 #define ANALYZER_ISPY_CALO_GEOMETRY_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/ESWatcher.h"
 #include "DataFormats/DetId/interface/DetId.h"
@@ -15,7 +15,7 @@ class IgDataStorage;
 class IgCollectionItem;
 class CaloGeometryRecord;
 
-class ISpyCaloGeometry : public edm::EDAnalyzer
+class ISpyCaloGeometry : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyCaloGeometry(const edm::ParameterSet&);

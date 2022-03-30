@@ -1,10 +1,10 @@
 #ifndef ANALYZER_ISPY_PFTAU_H
 #define ANALYZER_ISPY_PFTAU_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-class ISpyPFTau : public edm::EDAnalyzer
+class ISpyPFTau : public edm::one::EDAnalyzer<>
 {
 public:
     explicit ISpyPFTau(const edm::ParameterSet&);

@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_PATJET_H
 #define ANALYZER_ISPY_PATJET_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 
-class ISpyPATJet : public edm::EDAnalyzer
+class ISpyPATJet : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyPATJet(const edm::ParameterSet&);

@@ -1,12 +1,12 @@
 #ifndef ANALYZER_ISPY_JET_H
 # define ANALYZER_ISPY_JET_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/JetReco/interface/CaloJetCollection.h"
 
-class ISpyJet : public edm::EDAnalyzer
+class ISpyJet : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyJet(const edm::ParameterSet&);

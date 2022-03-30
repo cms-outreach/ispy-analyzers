@@ -1,7 +1,7 @@
 #ifndef ANALYZER_ISPY_TRIGGER_EVENT_H
 #define ANALYZER_ISPY_TRIGGER_EVENT_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 
@@ -9,7 +9,7 @@
   Dump TriggerEvent a la HLTEventAnalyzerAOD, TriggerSummaryAnalyzerAOD
 */
 
-class ISpyTriggerEvent : public edm::EDAnalyzer
+class ISpyTriggerEvent : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyTriggerEvent(const edm::ParameterSet&);

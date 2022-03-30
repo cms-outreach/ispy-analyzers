@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_MET_H
 # define ANALYZER_ISPY_MET_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/METReco/interface/METFwd.h"
 
-class ISpyMET : public edm::EDAnalyzer
+class ISpyMET : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyMET(const edm::ParameterSet&);

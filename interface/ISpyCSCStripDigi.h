@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_CSCSTRIPDIGI_H
 #define ANALYZER_ISPY_CSCSTRIPDIGI_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/CSCDigi/interface/CSCStripDigiCollection.h"
 
-class ISpyCSCStripDigi : public edm::EDAnalyzer
+class ISpyCSCStripDigi : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyCSCStripDigi(const edm::ParameterSet&);

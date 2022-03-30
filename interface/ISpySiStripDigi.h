@@ -1,10 +1,10 @@
 #ifndef ANALYZER_ISPY_SI_STRIP_DIGI_H
 #define ANALYZER_ISPY_SI_STRIP_DIGI_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-class ISpySiStripDigi : public edm::EDAnalyzer
+class ISpySiStripDigi : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpySiStripDigi(const edm::ParameterSet&);

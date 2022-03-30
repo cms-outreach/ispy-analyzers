@@ -17,9 +17,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
-#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
-
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "DataFormats/GeometrySurface/interface/RectangularPlaneBounds.h"
 #include "DataFormats/GeometrySurface/interface/TrapezoidalPlaneBounds.h"
 
@@ -36,6 +33,13 @@ ISpyMuon::ISpyMuon(const edm::ParameterSet& iConfig)
     dtGeomValid_(false), cscGeomValid_(false), gemGeomValid_(false) 
 {
   muonToken_ = consumes<reco::MuonCollection>(inputTag_);
+
+  magneticFieldToken_ = esConsumes<MagneticField, IdealMagneticFieldRecord>();
+
+  dtGeometryToken_  = esConsumes<DTGeometry, MuonGeometryRecord>();  
+  cscGeometryToken_ = esConsumes<CSCGeometry, MuonGeometryRecord>();
+  gemGeometryToken_ = esConsumes<GEMGeometry, MuonGeometryRecord>();
+
 }      
 
 void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -52,10 +56,10 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   }
 
   storage_ = config->storage();
-  edm::ESHandle<MagneticField> field; 
-  eventSetup.get<IdealMagneticFieldRecord>().get(field);
   
-  if ( ! field.isValid() )
+  magneticField_ = &eventSetup.getData(magneticFieldToken_);
+  
+  if ( ! magneticField_ )
   {
     std::string error = 
             "### Error: ISpyMuon::analyze: Invalid Magnetic field ";
@@ -64,11 +68,11 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     return;
   }
   
-  eventSetup.get<MuonGeometryRecord>().get(gemGeometry_);
-  eventSetup.get<MuonGeometryRecord>().get(dtGeometry_);
-  eventSetup.get<MuonGeometryRecord>().get(cscGeometry_);
+  //gemGeometry_  = &eventSetup.getData(gemGeometryToken_);
+  dtGeometry_   = &eventSetup.getData(dtGeometryToken_);
+  cscGeometry_ =  &eventSetup.getData(cscGeometryToken_);
 
-  if ( gemGeometry_.isValid() ) 
+  if ( gemGeometry_ ) 
   {
     gemGeomValid_ = true;
   }
@@ -77,7 +81,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     config->error("### Error: Muons  GEM Geometry not valid");
   }
   
-  if ( dtGeometry_.isValid() )
+  if ( dtGeometry_ )
   {
     dtGeomValid_ = true;
   }
@@ -86,7 +90,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     config->error("### Error: Muons  DT Geometry not valid");    
   }
         
-  if ( cscGeometry_.isValid() ) 
+  if ( cscGeometry_ ) 
   {
     cscGeomValid_ = true;
   }
@@ -179,7 +183,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       try
       {
         ISpyTrackRefitter::refitTrack(imuon, muonTrackerPoints, storage_,
-                                     (*it).track (), &*field, 
+                                     (*it).track (), magneticField_, 
                                      in_, out_, step_);
       }       
             
@@ -254,7 +258,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       try
       {
         ISpyTrackRefitter::refitTrack(imuon, muonGlobalPoints, storage_,
-                                     (*it).combinedMuon(), &*field, 
+                                     (*it).combinedMuon(), magneticField_, 
                                      in_, out_, step_);
       }
             

@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_VERTEXCOMPOSITECANDIDATE_H
 #define ANALYZER_ISPY_VERTEXCOMPOSITECANDIDATE_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/Candidate/interface/VertexCompositeCandidateFwd.h"
 
-class ISpyVertexCompositeCandidate : public edm::EDAnalyzer
+class ISpyVertexCompositeCandidate : public edm::one::EDAnalyzer<>
 {
 public:
     explicit ISpyVertexCompositeCandidate(const edm::ParameterSet&);

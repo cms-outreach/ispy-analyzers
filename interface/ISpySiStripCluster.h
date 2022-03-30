@@ -1,13 +1,13 @@
 #ifndef ANALYZER_ISPY_SI_STRIP_CLUSTER_H
 #define ANALYZER_ISPY_SI_STRIP_CLUSTER_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/Common/interface/DetSetVector.h"
 #include "DataFormats/SiStripCluster/interface/SiStripCluster.h"
 
-class ISpySiStripCluster : public edm::EDAnalyzer
+class ISpySiStripCluster : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpySiStripCluster(const edm::ParameterSet& iPSet);

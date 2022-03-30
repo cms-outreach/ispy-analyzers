@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_CALO_TOWER_H
 #define ANALYZER_ISPY_CALO_TOWER_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/CaloTowers/interface/CaloTowerCollection.h"
 
-class ISpyCaloTower : public edm::EDAnalyzer
+class ISpyCaloTower : public edm::one::EDAnalyzer<>
 {
 
 public:

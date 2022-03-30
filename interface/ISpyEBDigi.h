@@ -1,13 +1,13 @@
 #ifndef ANALYZER_ISPY_EBDIGI_H
 #define ANALYZER_ISPY_EBDIGI_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 
-class ISpyEBDigi : public edm::EDAnalyzer
+class ISpyEBDigi : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyEBDigi(const edm::ParameterSet&);

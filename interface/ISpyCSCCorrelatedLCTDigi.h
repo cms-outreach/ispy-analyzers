@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_CSCCORRELATEDCLCTDIGI_H
 #define ANALYZER_ISPY_CSCCORRELATEDLCTDIGI_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/CSCDigi/interface/CSCCorrelatedLCTDigiCollection.h"
 
-class ISpyCSCCorrelatedLCTDigi : public edm::EDAnalyzer
+class ISpyCSCCorrelatedLCTDigi : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyCSCCorrelatedLCTDigi(const edm::ParameterSet&);

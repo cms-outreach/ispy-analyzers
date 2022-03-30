@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_RPCREC_HIT_H
 #define ANALYZER_ISPY_RPCREC_HIT_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/RPCRecHit/interface/RPCRecHitCollection.h"
 
-class ISpyRPCRecHit : public edm::EDAnalyzer
+class ISpyRPCRecHit : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyRPCRecHit(const edm::ParameterSet&);

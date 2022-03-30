@@ -1,7 +1,7 @@
 #ifndef ANALYZER_ISPY_PATMUON_H
 #define ANALYZER_ISPY_PATMUON_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 
@@ -19,7 +19,7 @@ class IgProperty;
 
 // NOTE: TM See note in ISpyMuon.h
 
-class ISpyPATMuon : public edm::EDAnalyzer
+class ISpyPATMuon : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyPATMuon(const edm::ParameterSet&);

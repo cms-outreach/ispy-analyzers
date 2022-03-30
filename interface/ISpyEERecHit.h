@@ -1,12 +1,12 @@
 #ifndef ANALYZER_ISPY_EE_REC_HIT_H
 #define ANALYZER_ISPY_EE_REC_HIT_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 
-class ISpyEERecHit : public edm::EDAnalyzer
+class ISpyEERecHit : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyEERecHit(const edm::ParameterSet&);

@@ -1,12 +1,12 @@
 #ifndef ANALYZER_ISPY_CALOHIT_H
 #define ANALYZER_ISPY_CALOHIT_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 typedef std::vector<edm::InputTag> VInputTag;
 
-class ISpyCaloHit : public edm::EDAnalyzer
+class ISpyCaloHit : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyCaloHit(const edm::ParameterSet&);

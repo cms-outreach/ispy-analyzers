@@ -1,7 +1,7 @@
 #ifndef ANALYZER_ISPY_MUON_GEOMETRY_H
 #define ANALYZER_ISPY_MUON_GEOMETRY_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/ESWatcher.h"
 #include "DataFormats/DetId/interface/DetId.h"
@@ -18,7 +18,7 @@ class IgDataStorage;
 class IgCollectionItem;
 class MuonGeometryRecord;
 
-class ISpyMuonGeometry : public edm::EDAnalyzer
+class ISpyMuonGeometry : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyMuonGeometry(const edm::ParameterSet&);

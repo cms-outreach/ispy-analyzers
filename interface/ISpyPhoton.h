@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_PHOTON_H
 #define ANALYZER_ISPY_PHOTON_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/EgammaCandidates/interface/PhotonFwd.h"
 
-class ISpyPhoton : public edm::EDAnalyzer
+class ISpyPhoton : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyPhoton(const edm::ParameterSet&);

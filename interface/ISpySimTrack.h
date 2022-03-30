@@ -1,7 +1,7 @@
 #ifndef ANALYZER_ISPY_SIM_TRACK_H
 #define ANALYZER_ISPY_SIM_TRACK_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include <map>
 
@@ -10,7 +10,7 @@ class PSimHit;
 typedef std::vector<edm::InputTag> VInputTag;
 typedef std::map<int, std::vector<PSimHit> > SimHits;
 
-class ISpySimTrack : public edm::EDAnalyzer
+class ISpySimTrack : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpySimTrack(const edm::ParameterSet&); 

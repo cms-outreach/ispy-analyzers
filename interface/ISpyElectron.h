@@ -1,10 +1,10 @@
 #ifndef ANALYZER_ISPY_ELECTRON_H
 #define ANALYZER_ISPY_ELECTRON_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-class ISpyElectron : public edm::EDAnalyzer
+class ISpyElectron : public edm::one::EDAnalyzer<>
 {
 public:
     explicit ISpyElectron(const edm::ParameterSet&);

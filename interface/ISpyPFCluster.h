@@ -1,10 +1,10 @@
 #ifndef ANALYZER_ISPY_PFCLUSTER_H
 #define ANALYZER_ISPY_PFCLUSTER_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
-class ISpyPFCluster : public edm::EDAnalyzer
+class ISpyPFCluster : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyPFCluster(const edm::ParameterSet&);

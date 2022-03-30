@@ -2,14 +2,14 @@
 #ifndef ANALYZER_ISPY_TRACK_H
 #define ANALYZER_ISPY_TRACK_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/TrackReco/interface/TrackFwd.h"
 #include <vector>
 
 //typedef std::vector<edm::InputTag> VInputTag;
 
-class ISpyTrack : public edm::EDAnalyzer
+class ISpyTrack : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyTrack(const edm::ParameterSet&);

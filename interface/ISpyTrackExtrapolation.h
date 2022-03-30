@@ -1,14 +1,14 @@
 #ifndef ANALYZER_ISPY_TRACKEXTRAPOLATION_H
 #define ANALYZER_ISPY_TRACKEXTRAPOLATION_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/JetReco/interface/TrackExtrapolation.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectronFwd.h"
 #include "DataFormats/MuonReco/interface/MuonFwd.h"
 
-class ISpyTrackExtrapolation : public edm::EDAnalyzer
+class ISpyTrackExtrapolation : public edm::one::EDAnalyzer<>
 {
 public:
     explicit ISpyTrackExtrapolation(const edm::ParameterSet&);

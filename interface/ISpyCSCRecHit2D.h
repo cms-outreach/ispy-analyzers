@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_CSCRECHIT2D_H
 #define ANALYZER_ISPY_CSCRECHIT2D_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/CSCRecHit/interface/CSCRecHit2DCollection.h"
 
-class ISpyCSCRecHit2D : public edm::EDAnalyzer
+class ISpyCSCRecHit2D : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyCSCRecHit2D(const edm::ParameterSet&);

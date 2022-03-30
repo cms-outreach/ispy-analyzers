@@ -1,11 +1,11 @@
 #ifndef ANALYZER_ISPY_DTDIGI_H
 #define ANALYZER_ISPY_DTDIGI_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/DTDigi/interface/DTDigiCollection.h"
 
-class ISpyDTDigi : public edm::EDAnalyzer
+class ISpyDTDigi : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyDTDigi(const edm::ParameterSet&);

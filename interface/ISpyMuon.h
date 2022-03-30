@@ -1,7 +1,7 @@
 #ifndef ANALYZER_ISPY_MUON_H
 #define ANALYZER_ISPY_MUON_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 
@@ -10,6 +10,10 @@
 #include "Geometry/DTGeometry/interface/DTGeometry.h"
 #include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 #include "Geometry/GEMGeometry/interface/GEMGeometry.h"
+
+#include "MagneticField/Engine/interface/MagneticField.h"
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+#include "Geometry/Records/interface/MuonGeometryRecord.h"
 
 class IgCollection;
 class IgDataStorage;
@@ -20,7 +24,7 @@ class IgProperty;
 // NOTE: TM Should this eventually be made a class from which 
 // Reco, PAT, etc. muons should inherit?
 
-class ISpyMuon : public edm::EDAnalyzer
+class ISpyMuon : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyMuon(const edm::ParameterSet&);
@@ -36,13 +40,6 @@ private:
    
   IgDataStorage* storage_;
 
-  edm::ESHandle<DTGeometry>  dtGeometry_;
-  bool dtGeomValid_;
-  edm::ESHandle<CSCGeometry> cscGeometry_;
-  bool cscGeomValid_;
-  edm::ESHandle<GEMGeometry> gemGeometry_;
-  bool gemGeomValid_;
-
   void addChambers(reco::MuonCollection::const_iterator it);
 
   void addCaloEnergy(reco::MuonCollection::const_iterator it, 
@@ -51,6 +48,23 @@ private:
 
 
   edm::EDGetTokenT<reco::MuonCollection> muonToken_;
+
+  edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> magneticFieldToken_;
+  const MagneticField* magneticField_;
+
+  edm::ESGetToken<DTGeometry, MuonGeometryRecord>  dtGeometryToken_;
+  const DTGeometry* dtGeometry_;
+  bool dtGeomValid_;
+
+  edm::ESGetToken<CSCGeometry, MuonGeometryRecord> cscGeometryToken_;
+  const CSCGeometry* cscGeometry_;
+  bool cscGeomValid_;
+
+  edm::ESGetToken<GEMGeometry, MuonGeometryRecord> gemGeometryToken_;
+  const GEMGeometry* gemGeometry_;
+  bool gemGeomValid_;
+
+
 };
 
 #endif

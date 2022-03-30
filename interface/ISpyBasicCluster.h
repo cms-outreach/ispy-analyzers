@@ -1,7 +1,7 @@
 #ifndef ANALYZER_ISPY_BASIC_CLUSTER_H
 #define ANALYZER_ISPY_BASIC_CLUSTER_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #ifdef CMSSW_2_2_X
@@ -10,7 +10,7 @@
 #include "DataFormats/CaloRecHit/interface/CaloCluster.h"
 #endif
 
-class ISpyBasicCluster : public edm::EDAnalyzer
+class ISpyBasicCluster : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyBasicCluster(const edm::ParameterSet&);

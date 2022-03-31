@@ -10,8 +10,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
-#include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 #include "Geometry/CSCGeometry/interface/CSCLayer.h"
 #include "Geometry/CSCGeometry/interface/CSCLayerGeometry.h"
 
@@ -25,6 +23,7 @@ ISpyCSCWireDigi::ISpyCSCWireDigi(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCSCWireDigiTag"))
 {
   digiToken_ = consumes<CSCWireDigiCollection>(inputTag_);
+  cscGeometryToken_ = esConsumes<CSCGeometry, MuonGeometryRecord>();
 }
 
 void ISpyCSCWireDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -42,10 +41,9 @@ void ISpyCSCWireDigi::analyze(const edm::Event& event, const edm::EventSetup& ev
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<CSCGeometry> geom;
-  eventSetup.get<MuonGeometryRecord>().get(geom);
+  cscGeometry_ = &eventSetup.getData(cscGeometryToken_);
 
-  if ( ! geom.isValid() )
+  if ( ! cscGeometry_ )
   {
     std::string error = 
       "### Error: ISpyCSCWireDigi::analyze: Invalid MuonGeometryRecord ";
@@ -91,7 +89,7 @@ void ISpyCSCWireDigi::analyze(const edm::Event& event, const edm::EventSetup& ev
 	IgCollectionItem digi = digis.create();
 	CSCDetId id = cscDetId;
 	int wireGroup = (*dit).getWireGroup();
-	const CSCLayer* layer = geom->layer(id);
+	const CSCLayer* layer = cscGeometry_->layer(id);
 	const CSCLayerGeometry* layerGeom = layer->geometry();
 
         float midW = layerGeom->middleWireOfGroup(wireGroup);

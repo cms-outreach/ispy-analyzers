@@ -9,7 +9,7 @@ class TrackingGeometry;
 class ISpyLocalPosition
 {
 public:
-  static LocalPoint 	localPosition(const TrackingRecHit * rechit, const TrackingGeometry * geometry);
+  static LocalPoint localPosition(const TrackingRecHit* rechit, const TrackingGeometry* geometry);
 
 private:    
 

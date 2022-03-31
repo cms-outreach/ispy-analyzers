@@ -13,8 +13,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
-#include "Geometry/CommonDetUnit/interface/GlobalTrackingGeometry.h"
-#include "Geometry/Records/interface/GlobalTrackingGeometryRecord.h"
 
 using namespace edm::service;
 
@@ -22,6 +20,7 @@ ISpyTrackingRecHit::ISpyTrackingRecHit (const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyTrackingRecHitTag"))
 {
   rechitToken_ = consumes<TrackingRecHitCollection>(inputTag_);
+  trackingGeometryToken_ = esConsumes<GlobalTrackingGeometry, GlobalTrackingGeometryRecord>();
 }
 
 void
@@ -39,11 +38,10 @@ ISpyTrackingRecHit::analyze( const edm::Event& event, const edm::EventSetup& eve
   }
 
   IgDataStorage *storage = config->storage();
+
+  trackingGeometry_ = &eventSetup.getData(trackingGeometryToken_);
   
-  edm::ESHandle<GlobalTrackingGeometry> geom;
-  eventSetup.get<GlobalTrackingGeometryRecord> ().get (geom);
-      
-  if ( ! geom.isValid() )
+  if ( ! trackingGeometry_ )
   {
     std::string error = 
       "### Error: ISpyTrackingRecHit::analyze: Invalid GlobalTrackingGeometryRecord ";
@@ -74,11 +72,11 @@ ISpyTrackingRecHit::analyze( const edm::Event& event, const edm::EventSetup& eve
     {
       if ((*it).isValid () && !(*it).geographicalId ().null ())
       {
-        LocalPoint point = ISpyLocalPosition::localPosition(&(*it), geom.product ());
+        LocalPoint point = ISpyLocalPosition::localPosition(&(*it), trackingGeometry_);
         
-        float x = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).x () / 100.0;
-        float y = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).y () / 100.0;
-        float z = geom->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).z () / 100.0;
+        float x = trackingGeometry_->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).x () / 100.0;
+        float y = trackingGeometry_->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).y () / 100.0;
+        float z = trackingGeometry_->idToDet ((*it).geographicalId ())->surface ().toGlobal (point).z () / 100.0;
 
         IgCollectionItem irechit = recHits.create();
         irechit[POS] = IgV3d (static_cast<double>(x), static_cast<double>(y), static_cast<double>(z));

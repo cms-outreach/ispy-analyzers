@@ -39,10 +39,16 @@ ISpyPATMuon::ISpyPATMuon(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPATMuonTag"))
 {
   muonToken_ = consumes<std::vector<pat::Muon> >(inputTag_);
+  
+  magneticFieldToken_ = esConsumes<MagneticField, IdealMagneticFieldRecord>();
 
   in_ = 0.0;
   out_ = 0.0;
   step_ = 0.05;
+  
+  dtGeometryToken_  = esConsumes<DTGeometry, MuonGeometryRecord>();  
+  cscGeometryToken_ = esConsumes<CSCGeometry, MuonGeometryRecord>();
+  gemGeometryToken_ = esConsumes<GEMGeometry, MuonGeometryRecord>();
 
   dtGeomValid_ = false;
   cscGeomValid_ = false;
@@ -63,10 +69,10 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
   }
 
   storage_ = config->storage();
-  edm::ESHandle<MagneticField> field; 
-  eventSetup.get<IdealMagneticFieldRecord>().get(field);
   
-  if ( ! field.isValid() )
+  magneticField_ = &eventSetup.getData(magneticFieldToken_);
+
+  if ( ! magneticField_ )
   {
     std::string error = 
             "### Error: ISpyPATMuon::analyze: Invalid Magnetic field ";
@@ -74,27 +80,27 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
     return;
   }
 
-  eventSetup.get<MuonGeometryRecord>().get(gemGeometry_);
-  eventSetup.get<MuonGeometryRecord>().get(dtGeometry_);
-  eventSetup.get<MuonGeometryRecord>().get(cscGeometry_);
+  gemGeometry_ = &eventSetup.getData(gemGeometryToken_);
+  dtGeometry_ = &eventSetup.getData(dtGeometryToken_);
+  cscGeometry_ = &eventSetup.getData(cscGeometryToken_);
 
-  if ( gemGeometry_.isValid() )
+  if ( gemGeometry_ )
     gemGeomValid_ = true;
   else
     config->error("### Error: Muons  GEM Geometry not valid");
 
-  if ( dtGeometry_.isValid() )
+  if ( dtGeometry_ )
     dtGeomValid_ = true;
   else 
     config->error("### Error: Muons  DT Geometry not valid");    
            
-  if ( cscGeometry_.isValid() )
+  if ( cscGeometry_ )
     cscGeomValid_ = true;
   else
     config->error("### Error: Muons  CSC Geometry not valid");
 
-  SteppingHelixPropagator propagator(&(*field), alongMomentum);
-  SteppingHelixPropagator reversePropagator(&(*field), oppositeToMomentum);
+  SteppingHelixPropagator propagator(magneticField_, alongMomentum);
+  SteppingHelixPropagator reversePropagator(magneticField_, oppositeToMomentum);
 
   edm::Handle<std::vector<pat::Muon> > collection;
   event.getByToken(muonToken_, collection);
@@ -167,7 +173,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
       GlobalPoint trackP((*track).vx(), (*track).vy(), (*track).vz());
       GlobalVector trackM((*track).px(), (*track).py(), (*track).pz());
       
-      GlobalTrajectoryParameters trackParams(trackP, trackM, (*track).charge(), &(*field));
+      GlobalTrajectoryParameters trackParams(trackP, trackM, (*track).charge(), magneticField_);
       FreeTrajectoryState trackState(trackParams);
 
       // Normally would get this from FiducialVolume but not working for some reason.
@@ -264,7 +270,7 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
         GlobalPoint trackP((*gMuon).vx(), (*gMuon).vy(), (*gMuon).vz());
         GlobalVector trackM((*gMuon).px(), (*gMuon).py(), (*gMuon).pz());
         
-        GlobalTrajectoryParameters trackParams(trackP, trackM, (*gMuon).charge(), &(*field));
+        GlobalTrajectoryParameters trackParams(trackP, trackM, (*gMuon).charge(), magneticField_);
         FreeTrajectoryState trackState(trackParams);
       
         TrajectoryStateOnSurface tsos = propagator.propagate(
@@ -337,10 +343,10 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
                           (*gMuon).py(),
                           (*gMuon).pz());
           
-        GlobalTrajectoryParameters GTPin(mPin, mVin, (*gMuon).charge(), &(*field));
+        GlobalTrajectoryParameters GTPin(mPin, mVin, (*gMuon).charge(), magneticField_);
         FreeTrajectoryState FTSin(GTPin);
 
-        GlobalTrajectoryParameters GTPout(mPout, mVout, (*gMuon).charge(), &(*field));
+        GlobalTrajectoryParameters GTPout(mPout, mVout, (*gMuon).charge(), magneticField_);
         FreeTrajectoryState FTSout(GTPout);
         
         GlobalPoint GP = mPin - StepVector;

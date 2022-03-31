@@ -12,8 +12,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
-#include "Geometry/CSCGeometry/interface/CSCGeometry.h"
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "DataFormats/GeometrySurface/interface/TrapezoidalPlaneBounds.h"
 
 #include <iostream>
@@ -25,6 +23,7 @@ ISpyCSCSegment::ISpyCSCSegment (const edm::ParameterSet& iConfig)
   :  inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyCSCSegmentTag"))
 {
   segmentToken_ = consumes<CSCSegmentCollection>(inputTag_); 
+  cscGeometryToken_ = esConsumes<CSCGeometry, MuonGeometryRecord>();
 }
 
 void 
@@ -42,11 +41,10 @@ ISpyCSCSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
   }
 
   IgDataStorage *storage = config->storage();
-   
-  edm::ESHandle<CSCGeometry> geom;
-  eventSetup.get<MuonGeometryRecord> ().get (geom);
   
-  if ( ! geom.isValid() )
+  cscGeometry_ = &eventSetup.getData(cscGeometryToken_);
+  
+  if ( ! cscGeometry_ )
   {
     std::string error = 
       "### Error: ISpyCSCSegment::analyze: Invalid MuonGeometryRecord ";
@@ -104,7 +102,7 @@ ISpyCSCSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
       LocalVector dir = (*it).localDirection();
       
       CSCDetId id = (*it).cscDetId();
-      const GeomDet *det = geom->idToDet(id);
+      const GeomDet *det = cscGeometry_->idToDet(id);
 
       isegment[EC] = id.endcap();
       isegment[ST] = id.station();

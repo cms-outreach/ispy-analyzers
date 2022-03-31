@@ -10,8 +10,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
-#include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 #include "Geometry/CSCGeometry/interface/CSCLayer.h"
 #include "Geometry/CSCGeometry/interface/CSCLayerGeometry.h"
 
@@ -26,6 +24,7 @@ ISpyCSCStripDigi::ISpyCSCStripDigi(const edm::ParameterSet& iConfig)
     thresholdOffset_(iConfig.getParameter<int>("thresholdOffset"))
 {
   digiToken_ = consumes<CSCStripDigiCollection>(inputTag_);
+  cscGeometryToken_ = esConsumes<CSCGeometry, MuonGeometryRecord>();
 }
 
 void ISpyCSCStripDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -43,10 +42,9 @@ void ISpyCSCStripDigi::analyze(const edm::Event& event, const edm::EventSetup& e
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<CSCGeometry> geom;
-  eventSetup.get<MuonGeometryRecord>().get(geom);
+  cscGeometry_ = &eventSetup.getData(cscGeometryToken_);
 
-  if ( ! geom.isValid() )
+  if ( ! cscGeometry_ )
   {
     std::string error = 
       "### Error: ISpyCSCStripDigi::analyze: Invalid MuonGeometryRecord ";
@@ -100,7 +98,7 @@ void ISpyCSCStripDigi::analyze(const edm::Event& event, const edm::EventSetup& e
 
 	  int stripId = (*dit).getStrip();
 
-	  const CSCLayer* layer = geom->layer(id);
+	  const CSCLayer* layer = cscGeometry_->layer(id);
       	  const CSCLayerGeometry* layerGeom = layer->geometry();
 
 	  std::pair<float, float> yLIM = layerGeom->yLimitsOfStripPlane();

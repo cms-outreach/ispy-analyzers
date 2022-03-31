@@ -19,10 +19,8 @@
 
 #include "Geometry/CommonDetUnit/interface/GeomDetType.h"
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "Geometry/CSCGeometry/interface/CSCLayer.h"
 #include "Geometry/CSCGeometry/interface/CSCLayerGeometry.h"
-#include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 
 using namespace edm::service;
 using namespace edm;
@@ -31,6 +29,7 @@ ISpyCSCRecHit2D::ISpyCSCRecHit2D(const edm::ParameterSet& iConfig)
 : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCSCRecHit2DTag"))
 {
   rechitToken_ = consumes<CSCRecHit2DCollection>(inputTag_); 
+  cscGeometryToken_ = esConsumes<CSCGeometry, MuonGeometryRecord>();
 }
 
 void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -47,11 +46,10 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
   }
 
   IgDataStorage *storage = config->storage();
-
-  edm::ESHandle<CSCGeometry> geom;
-  eventSetup.get<MuonGeometryRecord> ().get (geom);
  
-  if ( ! geom.isValid() )
+  cscGeometry_ = &eventSetup.getData(cscGeometryToken_);
+
+  if ( ! cscGeometry_ )
   {
     std::string error = 
       "### Error: ISpyCSCRecHit2D::analyze: Invalid MuonGeometryRecord ";
@@ -100,7 +98,7 @@ void ISpyCSCRecHit2D::analyze(const edm::Event& event, const edm::EventSetup& ev
     for ( CSCRecHit2DCollection::const_iterator it = collection->begin(), itEnd = collection->end(); 
           it != itEnd; ++it )
     {
-      const GeomDetUnit *det = geom->idToDetUnit((*it).cscDetId());
+      const GeomDetUnit *det = cscGeometry_->idToDetUnit((*it).cscDetId());
 
       LocalPoint xyzLocal = it->localPosition();
       float x = xyzLocal.x();

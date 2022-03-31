@@ -14,6 +14,7 @@ class CSCGeometry;
 class DTGeometry;
 class RPCGeometry;
 class GEMGeometry;
+
 class IgDataStorage;
 class IgCollectionItem;
 class MuonGeometryRecord;

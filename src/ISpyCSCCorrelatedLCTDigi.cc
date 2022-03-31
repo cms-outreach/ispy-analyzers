@@ -10,8 +10,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
-#include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 #include "Geometry/CSCGeometry/interface/CSCLayer.h"
 #include "Geometry/CSCGeometry/interface/CSCLayerGeometry.h"
 
@@ -26,6 +24,7 @@ ISpyCSCCorrelatedLCTDigi::ISpyCSCCorrelatedLCTDigi(const edm::ParameterSet& iCon
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyCSCCorrelatedLCTDigiTag"))
 {
   digiToken_ = consumes<CSCCorrelatedLCTDigiCollection>(inputTag_);
+  cscGeometryToken_ = esConsumes<CSCGeometry, MuonGeometryRecord>();
 }
 
 void ISpyCSCCorrelatedLCTDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -43,10 +42,9 @@ void ISpyCSCCorrelatedLCTDigi::analyze(const edm::Event& event, const edm::Event
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<CSCGeometry> geom;
-  eventSetup.get<MuonGeometryRecord>().get(geom);
+  cscGeometry_ = &eventSetup.getData(cscGeometryToken_);
 
-  if ( ! geom.isValid() )
+  if ( ! cscGeometry_ )
   {
     std::string error = 
       "### Error: ISpyCSCCorrelatedLCTDigi::analyze: Invalid MuonGeometryRecord ";
@@ -112,7 +110,7 @@ void ISpyCSCCorrelatedLCTDigi::analyze(const edm::Event& event, const edm::Event
           if ( me11a ) {
             iring = 4;
             const CSCDetId id1 = CSCDetId( cscDetId.endcap(), cscDetId.station(), iring, cscDetId.chamber(), 3 ); // layer 3 id
-            const CSCLayer* layer1 = geom->layer( id1 );
+            const CSCLayer* layer1 = cscGeometry_->layer( id1 );
             const CSCLayerGeometry* layerGeom1 = layer1->geometry();
 
             int hs1 = halfstrip - 128; // reset halfstrip from 128... to 0...
@@ -130,7 +128,7 @@ void ISpyCSCCorrelatedLCTDigi::analyze(const edm::Event& event, const edm::Event
           }
         }
         if ( ! me11a ) {
-          const CSCLayer* layer = geom->chamber( cscDetId )->layer( 3 );
+          const CSCLayer* layer = cscGeometry_->chamber( cscDetId )->layer( 3 );
           const CSCLayerGeometry* layerGeom = layer->geometry();
 
           float fstrip = float( halfstrip + 0.5 )/2.; // 0->0.25, 1->0.75, 2->1.25, ... 159->79.75

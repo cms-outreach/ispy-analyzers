@@ -13,9 +13,7 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "Geometry/RPCGeometry/interface/RPCRoll.h"
-#include "Geometry/RPCGeometry/interface/RPCGeometry.h"
 
 #include <iostream>
 #include <sstream>
@@ -26,6 +24,7 @@ ISpyRPCRecHit::ISpyRPCRecHit (const edm::ParameterSet& iConfig)
     : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyRPCRecHitTag"))
 {
   rechitToken_ = consumes<RPCRecHitCollection>(inputTag_);
+  rpcGeometryToken_ = esConsumes<RPCGeometry, MuonGeometryRecord>();
 }
 
 void
@@ -44,10 +43,9 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<RPCGeometry> geom;
-  eventSetup.get<MuonGeometryRecord>().get(geom);
+  rpcGeometry_ = &eventSetup.getData(rpcGeometryToken_);
 
-  if ( ! geom.isValid() )
+  if ( ! rpcGeometry_ )
   {
     std::string error = 
       "### Error: ISpyRPCRecHit::analyze: Invalid MuonGeometryRecord ";
@@ -58,7 +56,7 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
   edm::Handle<RPCRecHitCollection> collection;
   event.getByToken(rechitToken_, collection);
 
-  if ( collection.isValid() && geom.isValid() )
+  if ( collection.isValid() && rpcGeometry_ )
   {	    
     std::string product = "RPCRecHits "
                           + edm::TypeID (typeid (RPCRecHitCollection)).friendlyClassName() + ":" 
@@ -92,7 +90,7 @@ ISpyRPCRecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSet
     for (RPCRecHitCollection::const_iterator it=collection->begin(), itEnd=collection->end(); 
          it!=itEnd; ++it)
     {       
-      const GeomDet *det = geom->idToDet((*it).rpcId());
+      const GeomDet *det = rpcGeometry_->idToDet((*it).rpcId());
 
       if ( ! det ) 
       {

@@ -11,6 +11,10 @@
 #include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 #include "Geometry/GEMGeometry/interface/GEMGeometry.h"
 
+#include "MagneticField/Engine/interface/MagneticField.h"
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+#include "Geometry/Records/interface/MuonGeometryRecord.h"
+
 class IgCollection;
 class IgDataStorage;
 class IgCollectionItem;
@@ -39,12 +43,20 @@ private:
 
   GlobalPoint& getOuterPoint(std::vector<pat::Muon>::const_iterator it); 
   void addChambers(std::vector<pat::Muon>::const_iterator it);
+  
+  edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> magneticFieldToken_;
+  const MagneticField* magneticField_;
 
-  edm::ESHandle<DTGeometry>  dtGeometry_;
+  edm::ESGetToken<DTGeometry, MuonGeometryRecord>  dtGeometryToken_;
+  const DTGeometry* dtGeometry_;
   bool dtGeomValid_;
-  edm::ESHandle<CSCGeometry> cscGeometry_;
+
+  edm::ESGetToken<CSCGeometry, MuonGeometryRecord> cscGeometryToken_;
+  const CSCGeometry* cscGeometry_;
   bool cscGeomValid_;
-  edm::ESHandle<GEMGeometry> gemGeometry_;
+
+  edm::ESGetToken<GEMGeometry, MuonGeometryRecord> gemGeometryToken_;
+  const GEMGeometry* gemGeometry_;
   bool gemGeomValid_;
 
 };

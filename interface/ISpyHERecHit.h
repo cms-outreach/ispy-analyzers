@@ -5,6 +5,8 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/HcalRecHit/interface/HcalRecHitCollections.h"
+#include "Geometry/CaloGeometry/interface/CaloGeometry.h"
+#include "Geometry/Records/interface/CaloGeometryRecord.h"
 
 class ISpyHERecHit : public edm::one::EDAnalyzer<>
 {
@@ -16,6 +18,9 @@ public:
 private:
   edm::InputTag	inputTag_;
   edm::EDGetTokenT<HBHERecHitCollection> rechitToken_;
+  edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeometryToken_;
+  const CaloGeometry* caloGeometry_;
+
 };
 
 #endif // ANALYZER_ISPY_HEREC_HIT_H

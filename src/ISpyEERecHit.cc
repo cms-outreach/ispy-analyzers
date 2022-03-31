@@ -14,8 +14,6 @@
 #include "FWCore/Utilities/interface/Exception.h"
 
 #include "Geometry/CaloGeometry/interface/CaloCellGeometry.h"
-#include "Geometry/CaloGeometry/interface/CaloGeometry.h"
-#include "Geometry/Records/interface/CaloGeometryRecord.h"
 
 #include <iostream>
 #include <sstream>
@@ -26,6 +24,7 @@ ISpyEERecHit::ISpyEERecHit (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyEERecHitTag"))
 {
   rechitToken_ = consumes<EcalRecHitCollection>(inputTag_);
+  caloGeometryToken_ = esConsumes<CaloGeometry, CaloGeometryRecord>();
 }
 
 void
@@ -44,10 +43,9 @@ ISpyEERecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
     
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<CaloGeometry> geom;
-  eventSetup.get<CaloGeometryRecord> ().get (geom);
+  caloGeometry_ = &eventSetup.getData(caloGeometryToken_);
 
-  if ( ! geom.isValid() )
+  if ( ! caloGeometry_ )
   {
     std::string error = 
       "### Error: ISpyEERecHit::analyze: Invalid CaloGeometryRecord ";
@@ -88,7 +86,7 @@ ISpyEERecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
 
     for (std::vector<EcalRecHit>::const_iterator it=collection->begin(), itEnd=collection->end(); it!=itEnd; ++it)
     {
-      auto cell = (*geom).getGeometry ((*it).detid ());
+      auto cell = caloGeometry_->getGeometry ((*it).detid ());
       const CaloCellGeometry::CornersVec& corners = cell->getCorners ();
       const GlobalPoint& pos = cell->getPosition ();
       float energy = (*it).energy ();

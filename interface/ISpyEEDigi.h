@@ -7,6 +7,10 @@
 #include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
 #include "DataFormats/EcalRecHit/interface/EcalRecHitCollections.h"
 
+#include "Geometry/Records/interface/CaloGeometryRecord.h"
+
+class CaloGeometry;
+
 class ISpyEEDigi : public edm::one::EDAnalyzer<>
 {
 public:
@@ -19,5 +23,9 @@ private:
 
   edm::EDGetTokenT<EEDigiCollection> digiToken_;
   edm::EDGetTokenT<EcalRecHitCollection> rechitToken_;
+
+  edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeometryToken_;
+  const CaloGeometry* caloGeometry_;
+
 };
 #endif // ANALYZER_ISPY_EEDIGI_H

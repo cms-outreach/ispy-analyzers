@@ -12,15 +12,13 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
-#include "Geometry/DTGeometry/interface/DTGeometry.h"
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
-
 using namespace edm::service;
 
 ISpyDTRecSegment4D::ISpyDTRecSegment4D (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyDTRecSegment4DTag"))
 {
   segmentToken_ = consumes<DTRecSegment4DCollection>(inputTag_);
+  dtGeometryToken_ = esConsumes<DTGeometry, MuonGeometryRecord>();    
 }
 
 void 
@@ -39,10 +37,9 @@ ISpyDTRecSegment4D::analyze (const edm::Event& event, const edm::EventSetup& eve
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<DTGeometry> geom;
-  eventSetup.get<MuonGeometryRecord> ().get (geom);
+  dtGeometry_ = &eventSetup.getData(dtGeometryToken_);
     
-  if(! geom.isValid())
+  if ( ! dtGeometry_ )
   {
     std::string error = 
       "### Error: ISpyDTRecHitSegment4D::analyze: Invalid MuonGeometryRecord ";
@@ -80,7 +77,7 @@ ISpyDTRecSegment4D::analyze (const edm::Event& event, const edm::EventSetup& eve
     for (; it != end; ++it) 
     {
       DTChamberId chId ((*it).geographicalId ().rawId ());
-      const DTChamber *chamber = geom->chamber (chId);
+      const DTChamber *chamber = dtGeometry_->chamber (chId);
 
       float halfHeight = chamber->surface ().bounds ().thickness () / 2.0;
       // float halfWidth = chamber->surface ().bounds ().width () / 2.0;

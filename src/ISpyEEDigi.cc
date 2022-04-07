@@ -17,7 +17,6 @@
 #include "Geometry/EcalMapping/interface/EcalElectronicsMapping.h"
 #include "Geometry/CaloGeometry/interface/CaloCellGeometry.h"
 #include "Geometry/CaloGeometry/interface/CaloGeometry.h"
-#include "Geometry/Records/interface/CaloGeometryRecord.h"
 
 using namespace edm::service;
 using namespace edm;
@@ -28,6 +27,7 @@ ISpyEEDigi::ISpyEEDigi(const edm::ParameterSet& iConfig)
 {
   digiToken_ = consumes<EEDigiCollection>(inputDigiTag_);
   rechitToken_ = consumes<EcalRecHitCollection>(inputRecHitTag_);
+  caloGeometryToken_ = esConsumes<CaloGeometry, CaloGeometryRecord>();
 }
 
 void ISpyEEDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -45,10 +45,9 @@ void ISpyEEDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSe
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<CaloGeometry> geom;
-  eventSetup.get<CaloGeometryRecord> ().get(geom);
+  caloGeometry_ = &eventSetup.getData(caloGeometryToken_);
 
-  if ( ! geom.isValid() )
+  if ( ! caloGeometry_ )
   {
     std::string error = 
       "### Error: ISpyEEDigi::analyze: Invalid CaloGeometryRecord ";
@@ -129,7 +128,7 @@ void ISpyEEDigi::analyze(const edm::Event& event, const edm::EventSetup& eventSe
     {
       IgCollectionItem d = digis.create();  
 
-      auto cell = (*geom).getGeometry((*di).id());
+      auto cell = caloGeometry_->getGeometry((*di).id());
       const CaloCellGeometry::CornersVec& corners = cell->getCorners();
       const GlobalPoint& pos = cell->getPosition();
  

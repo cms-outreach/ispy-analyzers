@@ -11,10 +11,7 @@
 #include "FWCore/Utilities/interface/Exception.h"
 
 #include "DataFormats/DTDigi/interface/DTDigi.h"
-
 #include "Geometry/DTGeometry/interface/DTLayer.h"
-#include "Geometry/DTGeometry/interface/DTGeometry.h"
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
 
 using namespace edm::service;
 
@@ -22,6 +19,7 @@ ISpyDTDigi::ISpyDTDigi(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyDTDigiTag"))
 {
   digiToken_ = consumes<DTDigiCollection>(inputTag_);
+  dtGeometryToken_ = esConsumes<DTGeometry, MuonGeometryRecord>();
 }
 
 void ISpyDTDigi::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -38,11 +36,10 @@ void ISpyDTDigi::analyze (const edm::Event& event, const edm::EventSetup& eventS
   }
 
   IgDataStorage *storage = config->storage();
+  
+  dtGeometry_ = &eventSetup.getData(dtGeometryToken_);
 
-  edm::ESHandle<DTGeometry> geom;
-  eventSetup.get<MuonGeometryRecord>().get(geom);
-
-  if ( ! geom.isValid() )
+  if ( ! dtGeometry_ )
   {
     std::string error = 
       "### Error: ISpyDTDigi::analyze: Invalid MuonGeometryRecord ";
@@ -98,12 +95,12 @@ void ISpyDTDigi::analyze (const edm::Event& event, const edm::EventSetup& eventS
 
 	Surface::GlobalPoint pos(0.0, 0.0, 0.0);
 
-	const DTLayer* layer = geom->layer(dtlayerId);
+	const DTLayer* layer = dtGeometry_->layer(dtlayerId);
 
 	//const DTChamber* chamber = layer->chamber();
 	//const DTChamberId chamberId = chamber->id();
 
-	const GeomDetUnit* det = geom->idToDetUnit(dtlayerId);
+	const GeomDetUnit* det = dtGeometry_->idToDetUnit(dtlayerId);
 
 	int layerId = dtlayerId.layer();
 	int superLayerId = dtlayerId.superlayerId().superLayer();

@@ -15,8 +15,6 @@
 #include "DataFormats/DTRecHit/interface/DTRecHit1DPair.h"
 
 #include "Geometry/DTGeometry/interface/DTLayer.h"
-#include "Geometry/DTGeometry/interface/DTGeometry.h"
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
 
 using namespace edm::service;
 using namespace DTEnums;
@@ -25,6 +23,7 @@ ISpyDTRecHit::ISpyDTRecHit(const edm::ParameterSet& iConfig)
   : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyDTRecHitTag"))
 {
   rechitToken_ = consumes<DTRecHitCollection>(inputTag_);
+  dtGeometryToken_ = esConsumes<DTGeometry, MuonGeometryRecord>();
 }
 
 void ISpyDTRecHit::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -42,10 +41,9 @@ void ISpyDTRecHit::analyze (const edm::Event& event, const edm::EventSetup& even
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<DTGeometry> geom;
-  eventSetup.get<MuonGeometryRecord>().get(geom);
+  dtGeometry_ = &eventSetup.getData(dtGeometryToken_);
 
-  if ( ! geom.isValid() )
+  if ( ! dtGeometry_ )
   {
     std::string error = 
       "### Error: ISpyDTRecHit::analyze: Invalid MuonGeometryRecord ";
@@ -123,10 +121,10 @@ void ISpyDTRecHit::analyze (const edm::Event& event, const edm::EventSetup& even
       double digitime = (*dit).digiTime();
       recHit[DIGITIME] = static_cast<double>(digitime);
 
-      const DTLayer* layer = geom->layer((*dit).wireId());  
+      const DTLayer* layer = dtGeometry_->layer((*dit).wireId());  
       const DTTopology& topo = layer->specificTopology();
 
-      const GeomDetUnit* det = geom->idToDetUnit((*dit).wireId().layerId());
+      const GeomDetUnit* det = dtGeometry_->idToDetUnit((*dit).wireId().layerId());
       float localXPos = layer->specificTopology().wirePosition(wireId);
       LocalPoint localPos(localXPos, 0.0, 0.0);
       Surface::GlobalPoint cpos(0.0, 0.0, 0.0);

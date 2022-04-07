@@ -5,6 +5,9 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/DTDigi/interface/DTDigiCollection.h"
 
+#include "Geometry/DTGeometry/interface/DTGeometry.h"
+#include "Geometry/Records/interface/MuonGeometryRecord.h"
+
 class ISpyDTDigi : public edm::one::EDAnalyzer<>
 {
 public:
@@ -15,6 +18,10 @@ public:
 private:
   edm::InputTag inputTag_;
   edm::EDGetTokenT<DTDigiCollection> digiToken_;
+  
+  edm::ESGetToken<DTGeometry, MuonGeometryRecord> dtGeometryToken_;
+  const DTGeometry* dtGeometry_;
+
 };
 
 #endif //ANALYZER_ISPY_DTDIGI_H

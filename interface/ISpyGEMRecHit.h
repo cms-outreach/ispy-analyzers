@@ -5,6 +5,10 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/GEMRecHit/interface/GEMRecHitCollection.h"
 
+#include "Geometry/Records/interface/MuonGeometryRecord.h"
+
+class GEMGeometry;
+
 class ISpyGEMRecHit : public edm::one::EDAnalyzer<>
 {
 public:
@@ -15,6 +19,10 @@ public:
 private:
   edm::InputTag inputTag_;
   edm::EDGetTokenT<GEMRecHitCollection> rechitToken_;
+  
+  edm::ESGetToken<GEMGeometry, MuonGeometryRecord> gemGeometryToken_;
+  const GEMGeometry* gemGeometry_;
+  
 };
 
 #endif // ANALYZER_ISPY_GEMRECHIT_H

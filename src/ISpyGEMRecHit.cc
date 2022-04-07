@@ -19,7 +19,6 @@
 
 #include "Geometry/CommonDetUnit/interface/GeomDetType.h"
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "Geometry/GEMGeometry/interface/GEMGeometry.h"
 
 using namespace edm::service;
@@ -29,11 +28,11 @@ ISpyGEMRecHit::ISpyGEMRecHit(const edm::ParameterSet& iConfig)
 : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyGEMRecHitTag"))
 {
   rechitToken_ = consumes<GEMRecHitCollection>(inputTag_); 
+  gemGeometryToken_ = esConsumes<GEMGeometry, MuonGeometryRecord>();
 }
 
 void ISpyGEMRecHit::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
-  if (event.id ().event () != 600317833) return;
   edm::Service<ISpyService> config;
   
   if ( ! config.isAvailable() )
@@ -47,10 +46,9 @@ void ISpyGEMRecHit::analyze(const edm::Event& event, const edm::EventSetup& even
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<GEMGeometry> geom;
-  eventSetup.get<MuonGeometryRecord> ().get (geom);
+  gemGeometry_ = &eventSetup.getData(gemGeometryToken_);  
  
-  if ( ! geom.isValid() )
+  if ( ! gemGeometry_ )
   {
     std::string error = 
       "### Error: ISpyGEMRecHit::analyze: Invalid MuonGeometryRecord ";
@@ -100,7 +98,7 @@ void ISpyGEMRecHit::analyze(const edm::Event& event, const edm::EventSetup& even
           it != itEnd; ++it )
     {
       //const GeomDet *det = geom->idToDetUnit((*it).gemId());
-      const GeomDetUnit *det = geom->idToDetUnit((*it).gemId());
+      const GeomDetUnit *det = gemGeometry_->idToDetUnit((*it).gemId());
 
       LocalPoint xyzLocal = it->localPosition();
       float x = xyzLocal.x();

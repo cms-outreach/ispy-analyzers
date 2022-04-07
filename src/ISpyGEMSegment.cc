@@ -13,7 +13,6 @@
 #include "FWCore/Utilities/interface/Exception.h"
 
 #include "Geometry/GEMGeometry/interface/GEMGeometry.h"
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "DataFormats/GeometrySurface/interface/TrapezoidalPlaneBounds.h"
 
 #include <iostream>
@@ -25,12 +24,12 @@ ISpyGEMSegment::ISpyGEMSegment (const edm::ParameterSet& iConfig)
   :  inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyGEMSegmentTag"))
 {
   segmentToken_ = consumes<GEMSegmentCollection>(inputTag_); 
+  gemGeometryToken_ = esConsumes<GEMGeometry, MuonGeometryRecord>();
 }
 
 void 
 ISpyGEMSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
 {
-  if (event.id ().event () != 600317833) return;
   edm::Service<ISpyService> config;
 
   if (! config.isAvailable ()) 
@@ -43,11 +42,10 @@ ISpyGEMSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
   }
 
   IgDataStorage *storage = config->storage();
-   
-  edm::ESHandle<GEMGeometry> geom;
-  eventSetup.get<MuonGeometryRecord> ().get (geom);
+ 
+  gemGeometry_ = &eventSetup.getData(gemGeometryToken_);
   
-  if ( ! geom.isValid() )
+  if ( ! gemGeometry_ )
   {
     std::string error = 
       "### Error: ISpyGEMSegment::analyze: Invalid MuonGeometryRecord ";
@@ -105,7 +103,7 @@ ISpyGEMSegment::analyze (const edm::Event& event, const edm::EventSetup& eventSe
       LocalVector dir = (*it).localDirection();
       
       GEMDetId id = (*it).gemDetId();
-      const GeomDet *det = geom->idToDet(id);
+      const GeomDet *det = gemGeometry_->idToDet(id);
 
       isegment[EC] = id.region();
       //isegment[EC] = id.endcap();

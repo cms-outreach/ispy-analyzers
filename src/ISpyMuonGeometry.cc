@@ -17,6 +17,7 @@
 #include "Geometry/DTGeometry/interface/DTGeometry.h"
 #include "Geometry/RPCGeometry/interface/RPCGeometry.h"
 #include "Geometry/GEMGeometry/interface/GEMGeometry.h"
+
 #include "Geometry/Records/interface/MuonGeometryRecord.h"
 
 #include <map>
@@ -24,7 +25,12 @@
 using namespace edm::service;
 
 ISpyMuonGeometry::ISpyMuonGeometry(const edm::ParameterSet& iPSet)
-{}
+{
+  cscGeometryToken_ = esConsumes<CSCGeometry, MuonGeometryRecord>();
+  dtGeometryToken_ = esConsumes<DTGeometry, MuonGeometryRecord>();
+  rpcGeometryToken_ = esConsumes<RPCGeometry, MuonGeometryRecord>();
+  gemGeometryToken_ = esConsumes<GEMGeometry, MuonGeometryRecord>();
+}
 
 void
 ISpyMuonGeometry::analyze(const edm::Event& event, const edm::EventSetup& eventSetup) 
@@ -40,28 +46,28 @@ ISpyMuonGeometry::analyze(const edm::Event& event, const edm::EventSetup& eventS
       "or remove the module that requires it";
   }
 
-  eventSetup.get<MuonGeometryRecord>().get(cscGeom_);
-  eventSetup.get<MuonGeometryRecord>().get(dtGeom_);
-  eventSetup.get<MuonGeometryRecord>().get(rpcGeom_);
-  eventSetup.get<MuonGeometryRecord>().get(gemGeom_);
-
+  cscGeom_ = &eventSetup.getData(cscGeometryToken_);
+  dtGeom_ = &eventSetup.getData(dtGeometryToken_);
+  rpcGeom_ = &eventSetup.getData(rpcGeometryToken_);
+  gemGeom_ = &eventSetup.getData(gemGeometryToken_);
+  
   IgDataStorage *storage  = config->esStorage();
     
   if ( watch_muonGeom_.check(eventSetup) ) {
     
-    if ( dtGeom_.isValid() ) {
+    if ( dtGeom_ ) {
       buildDriftTubes3D(storage);
       buildDriftTubesRPhi(storage);
       buildDriftTubesRZ(storage);
     }
 	
-    if ( cscGeom_.isValid() ) {
+    if ( cscGeom_ ) {
       buildCSC3D(storage, "CSCMinus3D_V1", 2);
       buildCSC3D(storage, "CSCPlus3D_V1", 1);
       buildCSCRZ(storage);
     }
 	
-    if ( rpcGeom_.isValid() ) {
+    if ( rpcGeom_ ) {
       buildRPCBarrel3D(storage);
       buildRPCPlusEndcap3D(storage);
       buildRPCMinusEndcap3D(storage);
@@ -69,7 +75,7 @@ ISpyMuonGeometry::analyze(const edm::Event& event, const edm::EventSetup& eventS
       buildRPCRZ(storage);
     }
 
-    if ( gemGeom_.isValid() ) {
+    if ( gemGeom_ ) {
       buildGEM3D(storage, "GEMMinus3D_V1", -1);
       buildGEM3D(storage, "GEMPlus3D_V1", 1);
       buildGEMRZ(storage);

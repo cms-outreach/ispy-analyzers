@@ -47,11 +47,17 @@ private:
   void	addCorners(IgCollectionItem&, const GeomDet *);
 
   bool muonGeomChanged_;
+  
+  edm::ESGetToken<CSCGeometry, MuonGeometryRecord> cscGeometryToken_;
+  edm::ESGetToken<DTGeometry, MuonGeometryRecord>  dtGeometryToken_;
+  edm::ESGetToken<GEMGeometry, MuonGeometryRecord> gemGeometryToken_;
+  edm::ESGetToken<RPCGeometry, MuonGeometryRecord> rpcGeometryToken_;
 
-  edm::ESHandle<CSCGeometry> cscGeom_;
-  edm::ESHandle<DTGeometry> dtGeom_;
-  edm::ESHandle<RPCGeometry> rpcGeom_;
-  edm::ESHandle<GEMGeometry> gemGeom_;
+  const CSCGeometry* cscGeom_;
+  const DTGeometry*  dtGeom_;
+  const RPCGeometry* rpcGeom_;
+  const GEMGeometry* gemGeom_;
+  
   edm::ESWatcher<MuonGeometryRecord> watch_muonGeom_;
 
 };

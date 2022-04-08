@@ -27,12 +27,15 @@
 using namespace edm::service;
 
 ISpyCaloGeometry::ISpyCaloGeometry(const edm::ParameterSet& iPSet)
-{}
+{
+  caloGeometryToken_ = esConsumes<CaloGeometry, CaloGeometryRecord>();
+}
 
 void
 ISpyCaloGeometry::analyze( const edm::Event& event, const edm::EventSetup& eventSetup) 
 {    
   edm::Service<ISpyService> config;
+
   if (! config.isAvailable ()) 
   {
     throw cms::Exception ("Configuration")
@@ -41,12 +44,12 @@ ISpyCaloGeometry::analyze( const edm::Event& event, const edm::EventSetup& event
       "You must add the service in the configuration file\n"
       "or remove the module that requires it";
   }
- 
-  eventSetup.get<CaloGeometryRecord> ().get (caloGeom_);
+
+  caloGeom_ = &eventSetup.getData(caloGeometryToken_);
  
   IgDataStorage *storage  = config->esStorage ();
      
-  if (caloGeom_.isValid () && watch_caloGeom_.check (eventSetup))
+  if (caloGeom_ && watch_caloGeom_.check (eventSetup))
   {
     buildCalo3D (storage);
     buildCaloRPhi (storage);
@@ -109,7 +112,7 @@ ISpyCaloGeometry::build3D (IgDataStorage *storage, const std::string &name, DetI
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
 
-  const CaloSubdetectorGeometry *geom = (*caloGeom_).getSubdetectorGeometry (det, subdetn);
+  const CaloSubdetectorGeometry *geom = caloGeom_->getSubdetectorGeometry (det, subdetn);
   const std::vector<DetId>& ids (geom->getValidDetIds (det, subdetn));
 
   for (std::vector<DetId>::const_iterator it = ids.begin (), iEnd = ids.end (); it != iEnd; ++it) 
@@ -165,7 +168,7 @@ ISpyCaloGeometry::buildEndcap3D (IgDataStorage *storage, const std::string &name
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
 
-  const CaloSubdetectorGeometry *geom = (*caloGeom_).getSubdetectorGeometry (det, subdetn);
+  const CaloSubdetectorGeometry *geom = caloGeom_->getSubdetectorGeometry (det, subdetn);
   const std::vector<DetId>& ids (geom->getValidDetIds (det, subdetn));
 
   int zside = 0; 
@@ -233,7 +236,7 @@ ISpyCaloGeometry::buildRPhi (IgDataStorage *storage, const std::string &name, De
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
 
-  const CaloSubdetectorGeometry *geom = (*caloGeom_).getSubdetectorGeometry (det, subdetn);
+  const CaloSubdetectorGeometry *geom = caloGeom_->getSubdetectorGeometry (det, subdetn);
   const std::vector<DetId>& ids (geom->getValidDetIds (det, subdetn));
   for (std::vector<DetId>::const_iterator it = ids.begin (), iEnd = ids.end (); it != iEnd; ++it) 
   {
@@ -290,7 +293,7 @@ ISpyCaloGeometry::buildRZ (IgDataStorage *storage, const std::string &name, DetI
   IgProperty BACK_3  = geometry.addProperty("back_3",  IgV3d());
   IgProperty BACK_4  = geometry.addProperty("back_4",  IgV3d());
 
-  const CaloSubdetectorGeometry *geom = (*caloGeom_).getSubdetectorGeometry (det, subdetn);
+  const CaloSubdetectorGeometry *geom = caloGeom_->getSubdetectorGeometry (det, subdetn);
   const std::vector<DetId>& ids (geom->getValidDetIds (det, subdetn));
 	
   double pMin = p0 - pD;

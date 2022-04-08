@@ -25,22 +25,23 @@ public:
 
 private:
 
-  void	buildCalo3D (IgDataStorage *);
-  void	buildCaloRPhi (IgDataStorage *);
-  void	buildCaloRZ (IgDataStorage *);
+  void buildCalo3D(IgDataStorage*);
+  void buildCaloRPhi(IgDataStorage*);
+  void buildCaloRZ(IgDataStorage*);
 
-  void	build3D (IgDataStorage *, const std::string&, DetId::Detector, int);
-  void buildEndcap3D(IgDataStorage *, const std::string&, DetId::Detector, int, int); 
+  void build3D(IgDataStorage*, const std::string&, DetId::Detector, int);
+  void buildEndcap3D(IgDataStorage*, const std::string&, DetId::Detector, int, int); 
   
-  void	buildRPhi (IgDataStorage *, const std::string&, DetId::Detector, int, double);
-  void	buildRZ (IgDataStorage *, const std::string&, DetId::Detector, int, double, double);
+  void buildRPhi(IgDataStorage*, const std::string&, DetId::Detector, int, double);
+  void buildRZ(IgDataStorage*, const std::string&, DetId::Detector, int, double, double);
 
-  const std::string subDetName (HcalSubdetector key);
-  const std::string otherSubDetName (HcalOtherSubdetector key);
+  const std::string subDetName(HcalSubdetector key);
+  const std::string otherSubDetName(HcalOtherSubdetector key);
 
   bool caloGeomChanged_;
 
-  edm::ESHandle<CaloGeometry> caloGeom_;
+  edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeometryToken_;
+  const CaloGeometry* caloGeom_;
   edm::ESWatcher<CaloGeometryRecord> watch_caloGeom_;
 
 };

@@ -26,6 +26,8 @@
 #include "TrackPropagation/SteppingHelixPropagator/interface/SteppingHelixPropagator.h"
 #include "TrackingTools/TransientTrack/interface/TransientTrack.h"
 
+#include "MagneticField/Engine/interface/MagneticField.h"
+
 using namespace edm::service;
 
 ISpyTrack::ISpyTrack( const edm::ParameterSet& iConfig )
@@ -62,9 +64,6 @@ ISpyTrack::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
     config->error (error);
     return;
   }
-
-  //edm::ESHandle<MagneticField> field;    
-  //eventSetup.get<IdealMagneticFieldRecord>().get(field);
 
   magneticField_ = &eventSetup.getData(magneticFieldToken_);
 

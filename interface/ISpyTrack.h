@@ -8,8 +8,9 @@
 #include "Geometry/CommonDetUnit/interface/GlobalTrackingGeometry.h"
 #include "Geometry/Records/interface/GlobalTrackingGeometryRecord.h"
 
-#include "MagneticField/Engine/interface/MagneticField.h"
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+
+class MagneticField;
 
 class ISpyTrack : public edm::one::EDAnalyzer<>
 {

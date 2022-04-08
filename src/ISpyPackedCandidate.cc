@@ -12,7 +12,7 @@
 
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+#include "MagneticField/Engine/interface/MagneticField.h"
 
 #include "TrackingTools/GeomPropagators/interface/Propagator.h"
 #include "TrackingTools/TrajectoryParametrization/interface/GlobalTrajectoryParameters.h"
@@ -33,6 +33,7 @@ ISpyPackedCandidate::ISpyPackedCandidate(const ParameterSet& iConfig)
 : inputTag_(iConfig.getParameter<InputTag>("iSpyPackedCandidateTag"))
 {
   candidateToken_ = consumes<pat::PackedCandidateCollection>(inputTag_);
+  magneticFieldToken_ = esConsumes<MagneticField, IdealMagneticFieldRecord>();
 }
 
 void ISpyPackedCandidate::analyze(const Event& event, const EventSetup& eventSetup)
@@ -53,10 +54,9 @@ void ISpyPackedCandidate::analyze(const Event& event, const EventSetup& eventSet
   Handle<pat::PackedCandidateCollection> collection;
   event.getByToken(candidateToken_, collection);
 
-  ESHandle<MagneticField> field;
-  eventSetup.get<IdealMagneticFieldRecord>().get(field);
+  magneticField_ = &eventSetup.getData(magneticFieldToken_);
 
-  if ( ! field.isValid() )
+  if ( ! magneticField_ )
   {
     std::string error = 
       "### Error: ISpyMuon::analyze: Invalid Magnetic field ";
@@ -65,7 +65,7 @@ void ISpyPackedCandidate::analyze(const Event& event, const EventSetup& eventSet
     return;
   }
   
-  SteppingHelixPropagator propagator(&(*field), alongMomentum);
+  SteppingHelixPropagator propagator(magneticField_, alongMomentum);
  
   if ( collection.isValid() )
   {
@@ -129,7 +129,7 @@ void ISpyPackedCandidate::analyze(const Event& event, const EventSetup& eventSet
       GlobalPoint trackP((*c).vx(), (*c).vy(), (*c).vz());
       GlobalVector trackM((*c).px(), (*c).py(), (*c).pz());  
 
-      GlobalTrajectoryParameters trackParams(trackP, trackM, (*c).charge(), &(*field));
+      GlobalTrajectoryParameters trackParams(trackP, trackM, (*c).charge(), magneticField_);
       FreeTrajectoryState trackState(trackParams);
 
       // NOTE: Ideally would get this from FiducicalVolume

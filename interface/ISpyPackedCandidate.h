@@ -5,6 +5,10 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+
+class MagneticField;
+
 class ISpyPackedCandidate : public edm::one::EDAnalyzer<>
 {
 public:
@@ -17,6 +21,9 @@ private:
 
   edm::InputTag inputTag_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> candidateToken_;
+  
+  edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> magneticFieldToken_;    
+  const MagneticField* magneticField_;
 
 };
 #endif // ANALYZER_ISPY_PACKEDCANDIDATE_H

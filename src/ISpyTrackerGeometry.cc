@@ -20,13 +20,18 @@
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
 #include "Geometry/Records/interface/GlobalTrackingGeometryRecord.h"       
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
+#include "Geometry/Records/interface/TrackerTopologyRcd.h"
 
 #include <map>
 
 using namespace edm::service;
 
 ISpyTrackerGeometry::ISpyTrackerGeometry(const edm::ParameterSet& iPSet)
-{}
+{
+  globalTrackingGeometryToken_ = esConsumes<GlobalTrackingGeometry, GlobalTrackingGeometryRecord>();
+  trackerGeometryToken_ = esConsumes<TrackerGeometry, TrackerDigiGeometryRecord>();
+  trackerTopologyToken_ = esConsumes<TrackerTopology, TrackerTopologyRcd>();
+}
 
 void
 ISpyTrackerGeometry::analyze(const edm::Event& event, const edm::EventSetup& eventSetup) 
@@ -42,13 +47,13 @@ ISpyTrackerGeometry::analyze(const edm::Event& event, const edm::EventSetup& eve
       "or remove the module that requires it";
   }
 
-  eventSetup.get<GlobalTrackingGeometryRecord>().get(globalTrackingGeom_);
-  eventSetup.get<TrackerDigiGeometryRecord>().get(trackerGeom_);
-  eventSetup.get<TrackerTopologyRcd>().get(trackerTopology_);
+  globalTrackingGeom_ = &eventSetup.getData(globalTrackingGeometryToken_);
+  trackerGeom_ = &eventSetup.getData(trackerGeometryToken_);
+  trackerTopology_ = &eventSetup.getData(trackerTopologyToken_);
 
   IgDataStorage *storage  = config->esStorage ();
 
-  if ( trackerGeom_.isValid() &&  watch_trackerGeom_.check(eventSetup))
+  if ( trackerGeom_ &&  watch_trackerGeom_.check(eventSetup))
   {
     // FIXME: Only if we want full tracker in 3D:
     // buildTracker3D(storage);

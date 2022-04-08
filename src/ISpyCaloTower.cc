@@ -25,10 +25,11 @@ ISpyCaloTower::ISpyCaloTower (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyCaloTowerTag"))
 {
   caloTowerToken_ = consumes<CaloTowerCollection>(inputTag_);
+  caloGeometryToken_ = esConsumes<CaloGeometry, CaloGeometryRecord>();
 }
 
 void
-ISpyCaloTower::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
+ISpyCaloTower::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
   edm::Service<ISpyService> config;
   
@@ -44,10 +45,9 @@ ISpyCaloTower::analyze( const edm::Event& event, const edm::EventSetup& eventSet
   edm::Handle<CaloTowerCollection> collection;
   event.getByToken(caloTowerToken_, collection);
 
-  edm::ESHandle<CaloGeometry> geom;
-  eventSetup.get<CaloGeometryRecord> ().get (geom);
+  caloGeometry_ = &eventSetup.getData(caloGeometryToken_);
 
-  if (collection.isValid () && geom.isValid ())
+  if ( collection.isValid () && caloGeometry_ )
   {	    
     IgDataStorage *storage = config->storage ();
 
@@ -88,7 +88,7 @@ ISpyCaloTower::analyze( const edm::Event& event, const edm::EventSetup& eventSet
 
     for (CaloTowerCollection::const_iterator it=collection->begin(), itEnd=collection->end(); it!=itEnd; ++it)
     {
-      auto cell = (*geom).getGeometry((*it).id());
+      auto cell = caloGeometry_->getGeometry((*it).id());
 
       const CaloCellGeometry::CornersVec& corners = cell->getCorners();
       assert(corners.size()==8);

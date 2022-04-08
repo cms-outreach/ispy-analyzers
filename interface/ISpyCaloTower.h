@@ -5,6 +5,9 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "DataFormats/CaloTowers/interface/CaloTowerCollection.h"
 
+class CaloGeometry;
+class CaloGeometryRecord;
+
 class ISpyCaloTower : public edm::one::EDAnalyzer<>
 {
 
@@ -18,6 +21,8 @@ private:
   edm::InputTag	inputTag_;
   edm::EDGetTokenT<CaloTowerCollection> caloTowerToken_;
 
+  edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeometryToken_;
+  const CaloGeometry* caloGeometry_;
 };
 
 #endif // ANALYZER_ISPY_CALO_TOWER_H

@@ -16,13 +16,13 @@
 #include "Geometry/TrackerGeometryBuilder/interface/RectangularPixelTopology.h"
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 
-
 using namespace edm::service;
 
 ISpySiPixelCluster::ISpySiPixelCluster (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpySiPixelClusterTag"))
 {
   clusterToken_ = consumes<edm::DetSetVector<SiPixelCluster> >(inputTag_);
+  trackingGeometryToken_ = esConsumes<TrackingGeometry, TrackerDigiGeometryRecord>();  
 }
 
 void 
@@ -41,10 +41,9 @@ ISpySiPixelCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<TrackerGeometry> geom;
-  eventSetup.get<TrackerDigiGeometryRecord> ().get (geom);
+  trackingGeometry_ = &eventSetup.getData(trackingGeometryToken_);
 
-  if ( ! geom.isValid() )
+  if ( ! trackingGeometry_ )
   {
     std::string error = 
       "### Error: ISpySiPixelCluster::analyze: Invalid TrackerDigiGeometryRecord ";
@@ -81,7 +80,7 @@ ISpySiPixelCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
       const uint32_t detID = it->detId ();
       DetId detid (detID);
 
-      const PixelGeomDetUnit* theDet = dynamic_cast<const PixelGeomDetUnit *>(geom->idToDet (detid));
+      const PixelGeomDetUnit* theDet = dynamic_cast<const PixelGeomDetUnit *>(trackingGeometry_->idToDet (detid));
       const PixelTopology *theTopol =  &(theDet->specificTopology ());
 	    
       edm::DetSet<SiPixelCluster>::const_iterator icluster = it->begin ();
@@ -92,7 +91,7 @@ ISpySiPixelCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
 	int row = (*icluster).minPixelRow ();
 	int column = (*icluster).minPixelCol ();
 
-	GlobalPoint pos = (geom->idToDet (detid))->surface().toGlobal (theTopol->localPosition (MeasurementPoint (row, column)));		
+	GlobalPoint pos = (trackingGeometry_->idToDet (detid))->surface().toGlobal (theTopol->localPosition (MeasurementPoint (row, column)));		
 	IgCollectionItem item = clusters.create ();
 	item[DET_ID] = static_cast<int> (detID);
 	item[POS] = IgV3d(static_cast<double>(pos.x()/100.0), static_cast<double>(pos.y()/100.0), static_cast<double>(pos.z()/100.0));

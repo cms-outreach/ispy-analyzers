@@ -3,8 +3,6 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
-#include "DataFormats/TrackerRecHit2D/interface/SiPixelRecHit.h"
-#include "DataFormats/TrackerRecHit2D/interface/SiPixelRecHitCollection.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -22,7 +20,10 @@ using namespace edm::service;
 
 ISpySiPixelRecHit::ISpySiPixelRecHit (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpySiPixelRecHitTag"))
-{}
+{
+  rechitToken_ = consumes<SiPixelRecHitCollection>(inputTag_);
+  trackingGeometryToken_ = esConsumes<TrackingGeometry, TrackerDigiGeometryRecord>();  
+}
 
 void 
 ISpySiPixelRecHit::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -40,10 +41,9 @@ ISpySiPixelRecHit::analyze (const edm::Event& event, const edm::EventSetup& even
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<TrackerGeometry> geom;
-  eventSetup.get<TrackerDigiGeometryRecord> ().get (geom);
+  trackingGeometry_ = &eventSetup.getData(trackingGeometryToken_);
 
-  if ( ! geom.isValid() )
+  if ( ! trackingGeometry_ )
   {
     std::string error = 
       "### Error: ISpySiPixelRecHit::analyze: Invalid TrackerDigiGeometryRecord ";
@@ -52,7 +52,7 @@ ISpySiPixelRecHit::analyze (const edm::Event& event, const edm::EventSetup& even
   }
     
   edm::Handle<SiPixelRecHitCollection> collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(rechitToken_, collection);
 
   if (collection.isValid ())
   {	    
@@ -88,7 +88,7 @@ ISpySiPixelRecHit::analyze (const edm::Event& event, const edm::EventSetup& even
 	{		    
 	  LocalPoint position = (*ipixel).localPosition ();
  
-	  GlobalPoint pos = geom->idToDet (detid)->surface ().toGlobal (position);
+	  GlobalPoint pos = trackingGeometry_->idToDet (detid)->surface ().toGlobal (position);
  
 	  IgCollectionItem item = rechits.create ();
 	  item[DET_ID] = static_cast<int> (id);
@@ -110,7 +110,7 @@ ISpySiPixelRecHit::analyze (const edm::Event& event, const edm::EventSetup& even
       {		    
 	LocalPoint position = (*ipixel).localPosition ();
  
-	GlobalPoint pos = geom->idToDet (detid)->surface ().toGlobal (position);
+	GlobalPoint pos = trackingGeometry_->idToDet (detid)->surface ().toGlobal (position);
  
 	IgCollectionItem item = rechits.create ();
 	item[DET_ID] = static_cast<int> (id);

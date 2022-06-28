@@ -3,8 +3,6 @@
 #include "ISpy/Services/interface/IgCollection.h"
 
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
-#include "DataFormats/SiPixelDigi/interface/PixelDigi.h"
-#include "DataFormats/Common/interface/DetSetVector.h"
 
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/ESHandle.h"
@@ -22,7 +20,10 @@ using namespace edm::service;
 
 ISpyPixelDigi::ISpyPixelDigi (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyPixelDigiTag"))
-{}
+{
+  pixelDigiToken_ = consumes<edm::DetSetVector<PixelDigi> >(inputTag_);
+  trackingGeometryToken_ = esConsumes<TrackingGeometry, TrackerDigiGeometryRecord>();
+}
 
 void 
 ISpyPixelDigi::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -40,10 +41,9 @@ ISpyPixelDigi::analyze (const edm::Event& event, const edm::EventSetup& eventSet
 
   IgDataStorage *storage = config->storage();
     
-  edm::ESHandle<TrackerGeometry> geom;
-  eventSetup.get<TrackerDigiGeometryRecord> ().get (geom);
+  trackingGeometry_ = &eventSetup.getData(trackingGeometryToken_);
     
-  if ( ! geom.isValid() )
+  if ( ! trackingGeometry_ )
   {
     std::string error = 
       "### Error: ISpyPixelDigi::analyze: Invalid TrackerDigiGeometryRecord ";
@@ -52,7 +52,7 @@ ISpyPixelDigi::analyze (const edm::Event& event, const edm::EventSetup& eventSet
   }
 
   edm::Handle<edm::DetSetVector<PixelDigi> > collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(pixelDigiToken_, collection);
 
   if (collection.isValid ())
   {	    
@@ -93,7 +93,7 @@ ISpyPixelDigi::analyze (const edm::Event& event, const edm::EventSetup& eventSet
 	
 	for(; idigi != idigiEnd; ++idigi)
 	{ 
-	  GlobalPoint pos = (geom->idToDet (detid))->surface ().position ();
+	  GlobalPoint pos = (trackingGeometry_->idToDet (detid))->surface ().position ();
 		    
 	  IgCollectionItem item = digis.create ();
 		    

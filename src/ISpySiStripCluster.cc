@@ -2,7 +2,7 @@
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/Common/interface/DetSetVectorNew.h"
+//#include "DataFormats/Common/interface/DetSetVectorNew.h"
 #include "DataFormats/SiStripCluster/interface/SiStripCluster.h"
 
 #include "FWCore/Framework/interface/Event.h"
@@ -25,6 +25,7 @@ ISpySiStripCluster::ISpySiStripCluster (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpySiStripClusterTag"))
 {
   clusterToken_ = consumes<edm::DetSetVector<SiStripCluster> >(inputTag_);
+  trackingGeometryToken_ = esConsumes<TrackingGeometry, TrackerDigiGeometryRecord>();
 }
 
 void 
@@ -43,10 +44,9 @@ ISpySiStripCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<TrackerGeometry> geom;
-  eventSetup.get<TrackerDigiGeometryRecord> ().get (geom);
+  trackingGeometry_ = &eventSetup.getData(trackingGeometryToken_);
     
-  if ( ! geom.isValid() )
+  if ( ! trackingGeometry_ )
   {
     std::string error = 
       "### Error: ISpySiStripCluster::analyze: Invalid TrackerDigiGeometryRecord ";
@@ -83,7 +83,7 @@ ISpySiStripCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
       const uint32_t detID = it->detId ();
       DetId detid (detID);
 
-      const StripGeomDetUnit* theDet = dynamic_cast<const StripGeomDetUnit *>(geom->idToDet (detid));
+      const StripGeomDetUnit* theDet = dynamic_cast<const StripGeomDetUnit *>(trackingGeometry_->idToDet (detid));
       const StripTopology* theTopol = dynamic_cast<const StripTopology *>( &(theDet->specificTopology ()));
 
       edm::DetSet<SiStripCluster>::const_iterator icluster = it->begin ();
@@ -92,7 +92,7 @@ ISpySiStripCluster::analyze (const edm::Event& event, const edm::EventSetup& eve
       for(; icluster != iclusterEnd; ++icluster)
       { 
 	short firststrip = (*icluster).firstStrip ();
-	GlobalPoint pos =  (geom->idToDet (detid))->surface().toGlobal (theTopol->localPosition (firststrip));
+	GlobalPoint pos =  (trackingGeometry_->idToDet (detid))->surface().toGlobal (theTopol->localPosition (firststrip));
 	IgCollectionItem item = clusters.create ();
 	item[DET_ID] = static_cast<int> (detID);
 	item[POS] = IgV3d(static_cast<double>(pos.x()/100.0), static_cast<double>(pos.y()/100.0), static_cast<double>(pos.z()/100.0));

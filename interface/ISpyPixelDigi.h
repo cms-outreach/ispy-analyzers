@@ -4,6 +4,12 @@
 #include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 
+#include "DataFormats/SiPixelDigi/interface/PixelDigi.h"
+#include "DataFormats/Common/interface/DetSetVector.h"
+
+class TrackingGeometry;
+class TrackerDigiGeometryRecord;
+
 class ISpyPixelDigi : public edm::one::EDAnalyzer<>
 {
 public:
@@ -13,6 +19,11 @@ public:
   virtual void analyze( const edm::Event&, const edm::EventSetup& );
 private:
   edm::InputTag	inputTag_;
+
+  edm::EDGetTokenT<edm::DetSetVector<PixelDigi> > pixelDigiToken_;
+
+  edm::ESGetToken<TrackingGeometry, TrackerDigiGeometryRecord> trackingGeometryToken_;
+  const TrackingGeometry* trackingGeometry_;
 };
 
 #endif // ANALYZER_ISPY_PIXEL_DIGI_H

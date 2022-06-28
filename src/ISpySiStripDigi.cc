@@ -2,9 +2,6 @@
 #include "ISpy/Analyzers/interface/ISpyService.h"
 #include "ISpy/Services/interface/IgCollection.h"
 
-#include "DataFormats/Common/interface/DetSetVector.h"
-#include "DataFormats/SiStripDigi/interface/SiStripDigi.h"
-
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/EventSetup.h"
@@ -22,7 +19,10 @@ using namespace edm::service;
 
 ISpySiStripDigi::ISpySiStripDigi (const edm::ParameterSet& iConfig)
   : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpySiStripDigiTag"))
-{}
+{
+  siStripDigiToken_ = consumes<edm::DetSetVector<SiStripDigi> >(inputTag_);
+  trackingGeometryToken_ = esConsumes<TrackingGeometry, TrackerDigiGeometryRecord>();
+}
 
 void 
 ISpySiStripDigi::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -39,11 +39,10 @@ ISpySiStripDigi::analyze( const edm::Event& event, const edm::EventSetup& eventS
   }
 
   IgDataStorage *storage = config->storage();
-    
-  edm::ESHandle<TrackerGeometry> geom;
-  eventSetup.get<TrackerDigiGeometryRecord> ().get (geom);
-
-  if ( ! geom.isValid() )
+  
+  trackingGeometry_ = &eventSetup.getData(trackingGeometryToken_);
+  
+  if ( ! trackingGeometry_ )
   {
     std::string error = 
       "### Error: ISpySiStripDigi::analyze: Invalid TrackerDigiGeometryRecord ";
@@ -52,7 +51,7 @@ ISpySiStripDigi::analyze( const edm::Event& event, const edm::EventSetup& eventS
   }
 
   edm::Handle<edm::DetSetVector<SiStripDigi> > collection;
-  event.getByLabel (inputTag_, collection);
+  event.getByToken(siStripDigiToken_, collection);
 
   if (collection.isValid ())                
   {	    
@@ -70,7 +69,7 @@ ISpySiStripDigi::analyze( const edm::Event& event, const edm::EventSetup& eventS
     IgCollection &digis = storage->getCollection ("SiStripDigis_V1");
 	
     IgProperty DET_ID   = digis.addProperty ("detid", int (0)); 
-    IgProperty POS 	    = digis.addProperty ("pos", IgV3d());
+    IgProperty POS 	= digis.addProperty ("pos", IgV3d());
     IgProperty STRIP    = digis.addProperty("strip", int(0));
     IgProperty ADC      = digis.addProperty("adc", int(0));
 	
@@ -90,12 +89,12 @@ ISpySiStripDigi::analyze( const edm::Event& event, const edm::EventSetup& eventS
 	for(; idigi != idigiEnd; ++idigi)
 	{ 
 	  const StripGeomDetUnit* stripDet = 
-	    dynamic_cast<const StripGeomDetUnit *>(geom->idToDet (detid));
+	    dynamic_cast<const StripGeomDetUnit *>(trackingGeometry_->idToDet (detid));
 	  const StripTopology* stripTopol = 
 	    dynamic_cast<const StripTopology *>( &(stripDet->specificTopology ()));
 
 	  GlobalPoint pos = 
-	    (geom->idToDet (detid))->surface().toGlobal(stripTopol->localPosition((*idigi).strip()));
+	    (trackingGeometry_->idToDet (detid))->surface().toGlobal(stripTopol->localPosition((*idigi).strip()));
 		  
 	  IgCollectionItem item = digis.create ();
 		    

@@ -7,6 +7,9 @@
 #include "DataFormats/Common/interface/DetSetVector.h"
 #include "DataFormats/SiStripCluster/interface/SiStripCluster.h"
 
+class TrackingGeometry;
+class TrackerDigiGeometryRecord;
+
 class ISpySiStripCluster : public edm::one::EDAnalyzer<>
 {
 public:
@@ -17,6 +20,9 @@ public:
 private:
   edm::InputTag	inputTag_;
   edm::EDGetTokenT<edm::DetSetVector<SiStripCluster> > clusterToken_;
+  
+  edm::ESGetToken<TrackingGeometry, TrackerDigiGeometryRecord> trackingGeometryToken_;
+  const TrackingGeometry* trackingGeometry_;
 };
 
 #endif // ANALYZER_ISPY_SI_STRIP_CLUSTER_H

@@ -14,14 +14,15 @@
 #include "DataFormats/EgammaReco/interface/PreshowerClusterFwd.h"
 
 #include "Geometry/CaloGeometry/interface/CaloCellGeometry.h"
-#include "Geometry/CaloGeometry/interface/CaloGeometry.h"
-#include "Geometry/Records/interface/CaloGeometryRecord.h"
 
 using namespace edm::service;
 using namespace edm;
 
 ISpyPreshowerCluster::ISpyPreshowerCluster(const edm::ParameterSet& iConfig)
-: inputTags_(iConfig.getParameter<std::vector<edm::InputTag> >("iSpyPreshowerClusterTags")){}
+: inputTags_(iConfig.getParameter<std::vector<edm::InputTag> >("iSpyPreshowerClusterTags"))
+{
+  caloGeometryToken_ = esConsumes<CaloGeometry, CaloGeometryRecord>();
+}
 
 void ISpyPreshowerCluster::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -38,10 +39,9 @@ void ISpyPreshowerCluster::analyze(const edm::Event& event, const edm::EventSetu
 
   IgDataStorage* storage = config->storage();
 
-  edm::ESHandle<CaloGeometry> geom;
-  eventSetup.get<CaloGeometryRecord> ().get (geom);
-
-  if ( ! geom.isValid() )
+  caloGeometry_ = &eventSetup.getData(caloGeometryToken_);
+  
+  if ( ! caloGeometry_ )
   {
     std::string error = 
       "### Error: ISpyPreshowerCluster::analyze: Invalid CaloGeometryRecord ";
@@ -115,7 +115,7 @@ void ISpyPreshowerCluster::analyze(const edm::Event& event, const edm::EventSetu
           rhf[DETID] = (*hi).first;
           rhf[FRACT] = static_cast<double>((*hi).second);
 
-          auto cell = (*geom).getGeometry((*hi).first);
+          auto cell = caloGeometry_->getGeometry((*hi).first);
           const CaloCellGeometry::CornersVec& corners = cell->getCorners();
         
           assert(corners.size() == 8);

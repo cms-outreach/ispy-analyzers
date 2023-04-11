@@ -20,8 +20,6 @@
 #include "DataFormats/GeometryVector/interface/GlobalPoint.h"
 
 #include "Geometry/CommonDetUnit/interface/GeomDet.h"
-#include "Geometry/CommonDetUnit/interface/GlobalTrackingGeometry.h"
-#include "Geometry/Records/interface/GlobalTrackingGeometryRecord.h"
 #include "Geometry/TrackerGeometryBuilder/interface/TrackerGeometry.h"
 #include "Geometry/Records/interface/TrackerDigiGeometryRecord.h"
 
@@ -40,7 +38,11 @@ ISpySimTrack::ISpySimTrack(const edm::ParameterSet& iConfig)
   : trackTags_(iConfig.getParameter<VInputTag>("iSpySimTrackTags")),
     vertexTags_(iConfig.getParameter<VInputTag>("iSpySimVertexTags")),
     hitTags_(iConfig.getParameter<VInputTag>("iSpySimHitTags"))
-{}
+{
+
+  trackingGeometryToken_ = esConsumes<GlobalTrackingGeometry, GlobalTrackingGeometryRecord>();
+
+}
 
 void ISpySimTrack::analyze (const edm::Event& event, const edm::EventSetup& eventSetup)
 {
@@ -55,9 +57,16 @@ void ISpySimTrack::analyze (const edm::Event& event, const edm::EventSetup& even
       "or remove the module that requires it";
   }
 
-  edm::ESHandle<GlobalTrackingGeometry> geometry;
-  eventSetup.get<GlobalTrackingGeometryRecord>().get(geometry);
+  trackingGeometry_ = &eventSetup.getData(trackingGeometryToken_);
 
+  if ( ! trackingGeometry_ )
+  {
+    std::string error = 
+      "### Error: ISpySimTrack::analyze: Invalid GlobalTrackingGeometryRecord ";
+    config->error (error);
+    return;
+  }
+  
   IgDataStorage *storage = config->storage();
 
   for ( VInputTag::const_iterator i = vertexTags_.begin();
@@ -165,7 +174,7 @@ void ISpySimTrack::analyze (const edm::Event& event, const edm::EventSetup& even
 
   // Now go through SimHits by track ID and sort by time of flight
 
-  if ( ! simHits_.empty() && geometry.isValid() )
+  if ( ! simHits_.empty() )
   {
     IgCollection& hits = storage->getCollection("SimHits_V1");
     
@@ -207,7 +216,7 @@ void ISpySimTrack::analyze (const edm::Event& event, const edm::EventSetup& even
 	if ( detId.det() > 5 )
 	  continue;
 			
-	const GeomDet* geomDet = (*geometry).idToDet(detId);
+	const GeomDet* geomDet = trackingGeometry_->idToDet(detId);
 			
 	if ( geomDet == 0 )
 	  continue;

@@ -5,6 +5,8 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 
 #include "DataFormats/ParticleFlowReco/interface/PFRecHitFwd.h"
+#include "Geometry/CaloGeometry/interface/CaloGeometry.h"
+#include "Geometry/Records/interface/CaloGeometryRecord.h"
 
 class ISpyPFEcalRecHit : public edm::one::EDAnalyzer<>
 {
@@ -17,6 +19,8 @@ private:
 
   edm::InputTag inputTag_;
   edm::EDGetTokenT<reco::PFRecHitCollection> rechitToken_;
+  edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeometryToken_;
+  const CaloGeometry* caloGeometry_;
 
 };
 

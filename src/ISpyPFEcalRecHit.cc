@@ -27,6 +27,7 @@ ISpyPFEcalRecHit::ISpyPFEcalRecHit(const edm::ParameterSet& iConfig)
     : inputTag_ (iConfig.getParameter<edm::InputTag>("iSpyPFEcalRecHitTag"))
 {
   rechitToken_ = consumes<reco::PFRecHitCollection>(inputTag_);
+  caloGeometryToken_ = esConsumes<CaloGeometry, CaloGeometryRecord>();
 }
 
 void ISpyPFEcalRecHit::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -44,10 +45,9 @@ void ISpyPFEcalRecHit::analyze(const edm::Event& event, const edm::EventSetup& e
 
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<CaloGeometry> caloGeometry;
-  eventSetup.get<CaloGeometryRecord>().get(caloGeometry);
-     
-  if ( ! caloGeometry.isValid() )
+  caloGeometry_ = &eventSetup.getData(caloGeometryToken_);
+  
+  if ( ! caloGeometry_ )
   {
     std::string error = 
       "### Error: ISpyPFEcalRecHit::analyze: Invalid CaloGeometryRecord ";
@@ -118,7 +118,7 @@ void ISpyPFEcalRecHit::analyze(const edm::Event& event, const edm::EventSetup& e
 
         
         const CaloCellGeometry::CornersVec& corners 
-          = (*caloGeometry).getGeometry((*rechit).detId())->getCorners();
+          = caloGeometry_->getGeometry((*rechit).detId())->getCorners();
 		
         assert(corners.size() == 8);
 
@@ -141,7 +141,7 @@ void ISpyPFEcalRecHit::analyze(const edm::Event& event, const edm::EventSetup& e
         rh[EE_DETID] = (*rechit).detId();
 
         const CaloCellGeometry::CornersVec& corners 
-          = (*caloGeometry).getGeometry((*rechit).detId())->getCorners();
+          = caloGeometry_->getGeometry((*rechit).detId())->getCorners();
 		
         assert(corners.size() == 8);
 

@@ -5,6 +5,9 @@
 #include "FWCore/Utilities/interface/InputTag.h"
 #include <map>
 
+#include "Geometry/CommonDetUnit/interface/GlobalTrackingGeometry.h"
+#include "Geometry/Records/interface/GlobalTrackingGeometryRecord.h"
+
 class PSimHit;
 
 typedef std::vector<edm::InputTag> VInputTag;
@@ -24,6 +27,10 @@ private:
 
   // first: track ID, second: PSimHit
   SimHits simHits_;
+
+  edm::ESGetToken<GlobalTrackingGeometry, GlobalTrackingGeometryRecord> trackingGeometryToken_;
+  const GlobalTrackingGeometry* trackingGeometry_;
+
 };
 
 #endif // ANALYZER_ISPY_SIM_TRACK_H

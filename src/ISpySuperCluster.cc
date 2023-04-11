@@ -24,6 +24,8 @@ ISpySuperCluster::ISpySuperCluster(const edm::ParameterSet& iConfig)
 : inputTag_(iConfig.getParameter<edm::InputTag>("iSpySuperClusterTag"))
 {
   clusterToken_ = consumes<reco::SuperClusterCollection>(inputTag_);
+
+  caloGeometryToken_ = esConsumes<CaloGeometry, CaloGeometryRecord>();
 }
 
 void ISpySuperCluster::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -40,10 +42,10 @@ void ISpySuperCluster::analyze(const edm::Event& event, const edm::EventSetup& e
   }
   IgDataStorage *storage = config->storage();
 
-  edm::ESHandle<CaloGeometry> geom;
-  eventSetup.get<CaloGeometryRecord>().get(geom);
 
-  if ( ! geom.isValid() )
+  caloGeometry_ = &eventSetup.getData(caloGeometryToken_);
+
+  if ( ! caloGeometry_ )
   {
     std::string error = 
       "### Error: ISpySuperCluster::analyze: Invalid CaloGeometryRecord ";
@@ -118,7 +120,7 @@ void ISpySuperCluster::analyze(const edm::Event& event, const edm::EventSetup& e
         rhf[DETID] = (*hi).first;
         rhf[FRACT] = static_cast<double>((*hi).second);
 
-        auto cell = (*geom).getGeometry((*hi).first);
+        auto cell = caloGeometry_->getGeometry((*hi).first);
         const CaloCellGeometry::CornersVec& corners = cell->getCorners();
         
         assert(corners.size() == 8);

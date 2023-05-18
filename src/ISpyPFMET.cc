@@ -18,7 +18,13 @@ using namespace edm;
 using namespace reco;
 
 ISpyPFMET::ISpyPFMET(const edm::ParameterSet& iConfig)
-: inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPFMETTag"))
+  : inputTag_(iConfig.getParameter<edm::InputTag>("iSpyPFMETTag")),
+    useCustomVector_(iConfig.getParameter<bool>("useCustomVector")),
+    met_phi_(iConfig.getParameter<double>("MET_phi")),
+    met_pt_(iConfig.getParameter<double>("MET_pt")),
+    met_px_(iConfig.getParameter<double>("MET_px")),
+    met_py_(iConfig.getParameter<double>("MET_py")),
+    met_pz_(iConfig.getParameter<double>("MET_pz"))
 {
   metToken_ = consumes<PFMETCollection>(inputTag_);
 }
@@ -66,12 +72,20 @@ void ISpyPFMET::analyze(const edm::Event& event, const edm::EventSetup& eventSet
     {   
       IgCollectionItem m = mets.create();
       
-      m[PHI] = (*it).phi();
-      m[PT]  = (*it).pt();
-      m[PX]  = (*it).px();
-      m[PY]  = (*it).py();
-      m[PZ]  = (*it).pz();
-     
+      if (!useCustomVector_) {
+	m[PHI] = (*it).phi();
+	m[PT]  = (*it).pt();
+	m[PX]  = (*it).px();
+	m[PY]  = (*it).py();
+	m[PZ]  = (*it).pz();
+      }
+      else {
+	m[PHI] = met_phi_;
+	m[PT]  = met_pt_;
+	m[PX]  = met_px_;
+	m[PY]  = met_py_;
+	m[PZ]  = met_pz_;
+      }
     }
    }
 

@@ -21,7 +21,6 @@ ISpyJet::ISpyJet (const edm::ParameterSet& iConfig)
       energyCut_(iConfig.getUntrackedParameter<double>("energyCut", 0.1))
 {
   jetToken_ = consumes<reco::CaloJetCollection>(inputTag_);
-  consumesMany<CaloTowerCollection>();
 }
 
 void
@@ -40,9 +39,6 @@ ISpyJet::analyze( const edm::Event& event, const edm::EventSetup& eventSetup)
   edm::Handle<reco::CaloJetCollection> collection;
   event.getByToken(jetToken_, collection);
     
-  std::vector<edm::Handle<CaloTowerCollection> > towerCollections;
-  event.getManyByType(towerCollections);
-
   if (collection.isValid ())
   {	
     IgDataStorage *storage = config->storage ();

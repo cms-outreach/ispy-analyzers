@@ -101,7 +101,7 @@ void ISpyPATElectron::analyze(const edm::Event& event, const edm::EventSetup& ev
 
       reco::GsfTrackRef gsfTrack = t->gsfTrack();
 
-      if ( ! isAOD_ ) 
+      if ( isAOD_ ) 
       {  
         if ( (*gsfTrack).innerOk() && (*gsfTrack).outerOk() )
         {

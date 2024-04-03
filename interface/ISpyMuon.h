@@ -36,6 +36,8 @@ private:
    
   IgDataStorage* storage_;
 
+  bool isAOD_;
+
   edm::ESHandle<DTGeometry>  dtGeometry_;
   bool dtGeomValid_;
   edm::ESHandle<CSCGeometry> cscGeometry_;

@@ -33,6 +33,7 @@ ISpyMuon::ISpyMuon(const edm::ParameterSet& iConfig)
     in_(iConfig.getUntrackedParameter<double>("propagatorIn", 0.0)),
     out_(iConfig.getUntrackedParameter<double>("propagatorOut", 0.0)),
     step_(iConfig.getUntrackedParameter<double>("propagatorStep", 0.05)),
+    isAOD_(iConfig.getUntrackedParameter<bool>("isAOD")),
     dtGeomValid_(false), cscGeomValid_(false)
 {
   muonToken_ = consumes<reco::MuonCollection>(inputTag_);
@@ -147,7 +148,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     int charge = (*it).charge();
 
 
-    if ( (*it).track().isNonnull() ) // Tracker
+    if ( (*it).track().isNonnull() && ! isAOD_ ) // Tracker
     {
       IgCollectionItem imuon = trackerMuonCollection.create();
 

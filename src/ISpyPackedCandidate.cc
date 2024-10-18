@@ -101,6 +101,19 @@ void ISpyPackedCandidate::analyze(const Event& event, const EventSetup& eventSet
           c != collection->end(); ++c )
     {
 
+      /*
+      std::cout<<"PackedCandidate: "
+               <<"pt, energy, eta, phi, pdg, calo, hcal: "
+               << (*c).pt() <<", "
+               << (*c).energy() <<", "
+               << (*c).eta() <<", "
+               << (*c).phi() <<", "
+               << (*c).pdgId() <<", "
+               << (*c).caloFraction() <<", "
+               << (*c).hcalFraction() <<std::endl;
+      */
+
+
       if ( ! (*c).hasTrackDetails() )
         continue;
 

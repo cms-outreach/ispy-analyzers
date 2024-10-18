@@ -147,6 +147,8 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   {
     int charge = (*it).charge();
 
+    if ( (*it).track()->pt() < 45 )
+      continue;
 
     if ( (*it).track().isNonnull() && ! isAOD_ ) // Tracker
     {

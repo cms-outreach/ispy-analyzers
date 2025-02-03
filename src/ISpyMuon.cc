@@ -17,9 +17,6 @@
 #include "FWCore/ServiceRegistry/interface/Service.h"
 #include "FWCore/Utilities/interface/Exception.h"
 
-#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
-
-#include "Geometry/Records/interface/MuonGeometryRecord.h"
 #include "DataFormats/GeometrySurface/interface/RectangularPlaneBounds.h"
 #include "DataFormats/GeometrySurface/interface/TrapezoidalPlaneBounds.h"
 
@@ -33,10 +30,17 @@ ISpyMuon::ISpyMuon(const edm::ParameterSet& iConfig)
     in_(iConfig.getUntrackedParameter<double>("propagatorIn", 0.0)),
     out_(iConfig.getUntrackedParameter<double>("propagatorOut", 0.0)),
     step_(iConfig.getUntrackedParameter<double>("propagatorStep", 0.05)),
-    isAOD_(iConfig.getUntrackedParameter<bool>("isAOD")),
-    dtGeomValid_(false), cscGeomValid_(false)
+    ptMin_(iConfig.getParameter<double>("ptMin")),
+    dtGeomValid_(false), cscGeomValid_(false), gemGeomValid_(false) 
 {
   muonToken_ = consumes<reco::MuonCollection>(inputTag_);
+
+  magneticFieldToken_ = esConsumes<MagneticField, IdealMagneticFieldRecord>();
+
+  dtGeometryToken_  = esConsumes<DTGeometry, MuonGeometryRecord>();  
+  cscGeometryToken_ = esConsumes<CSCGeometry, MuonGeometryRecord>();
+  gemGeometryToken_ = esConsumes<GEMGeometry, MuonGeometryRecord>();
+
 }      
 
 void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetup)
@@ -53,10 +57,10 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   }
 
   storage_ = config->storage();
-  edm::ESHandle<MagneticField> field; 
-  eventSetup.get<IdealMagneticFieldRecord>().get(field);
   
-  if ( ! field.isValid() )
+  magneticField_ = &eventSetup.getData(magneticFieldToken_);
+  
+  if ( ! magneticField_ )
   {
     std::string error = 
             "### Error: ISpyMuon::analyze: Invalid Magnetic field ";
@@ -65,25 +69,37 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
     return;
   }
   
-  eventSetup.get<MuonGeometryRecord>().get(gemGeometry_);
-  eventSetup.get<MuonGeometryRecord>().get(dtGeometry_);
-  eventSetup.get<MuonGeometryRecord>().get(cscGeometry_);
+  gemGeometry_  = &eventSetup.getData(gemGeometryToken_);
+  dtGeometry_   = &eventSetup.getData(dtGeometryToken_);
+  cscGeometry_ =  &eventSetup.getData(cscGeometryToken_);
 
-  if ( gemGeometry_.isValid() )
+  if ( gemGeometry_ ) 
+  {
     gemGeomValid_ = true;
+  }
   else
+  {
     config->error("### Error: Muons  GEM Geometry not valid");
-
-  if ( dtGeometry_.isValid() )
+  }
+  
+  if ( dtGeometry_ )
+  {
     dtGeomValid_ = true;
-  else 
-    config->error("### Error: Muons  DT Geometry not valid");    
-           
-  if ( cscGeometry_.isValid() )
-    cscGeomValid_ = true;
+  }
   else
+  {
+    config->error("### Error: Muons  DT Geometry not valid");    
+  }
+        
+  if ( cscGeometry_ ) 
+  {
+    cscGeomValid_ = true;
+  }
+  else
+  {
     config->error("### Error: Muons  CSC Geometry not valid");
-
+  }
+  
   edm::Handle<reco::MuonCollection> collection;
   event.getByToken(muonToken_, collection);
 
@@ -147,12 +163,13 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   {
     int charge = (*it).charge();
 
-    if ( (*it).track()->pt() < 45 )
-      continue;
 
-    if ( (*it).track().isNonnull() && ! isAOD_ ) // Tracker
+    if ( (*it).track().isNonnull() ) // Tracker
     {
       IgCollectionItem imuon = trackerMuonCollection.create();
+                  
+      //if ((*it).isMatchesValid () && (gemGeomValid_ || dtGeomValid_ || cscGeomValid_)) 
+      //  addChambers(it);
 
       imuon[T_PT] = (*it).track()->pt();
       imuon[T_CHARGE] = charge;
@@ -170,7 +187,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       try
       {
         ISpyTrackRefitter::refitTrack(imuon, muonTrackerPoints, storage_,
-                                     (*it).track (), &*field, 
+                                     (*it).track (), magneticField_, 
                                      in_, out_, step_);
       }       
             
@@ -199,6 +216,9 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       {
         IgCollectionItem eitem = extras.create();
         
+        if ((*it).isMatchesValid () && (gemGeomValid_ || dtGeomValid_ || cscGeomValid_)) 
+          addChambers(it);
+
         eitem[IPOS] = IgV3d((*it).standAloneMuon()->innerPosition().x()/100.0,      
                             (*it).standAloneMuon()->innerPosition().y()/100.0,      
                             (*it).standAloneMuon()->innerPosition().z()/100.0);
@@ -224,9 +244,12 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
    
     if ( (*it).combinedMuon().isNonnull() ) // Global
     {
+      if ( (*it).combinedMuon()->pt() < ptMin_ )
+        continue;
+
       IgCollectionItem imuon = globalMuonCollection.create();
 
-      if ((*it).isMatchesValid () && (dtGeomValid_ || cscGeomValid_)) 
+      if ((*it).isMatchesValid () && (gemGeomValid_ || dtGeomValid_ || cscGeomValid_)) 
         addChambers(it);
 
       imuon[G_PT] = (*it).combinedMuon()->pt();
@@ -245,7 +268,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       try
       {
         ISpyTrackRefitter::refitTrack(imuon, muonGlobalPoints, storage_,
-                                     (*it).combinedMuon(), &*field, 
+                                     (*it).combinedMuon(), magneticField_, 
                                      in_, out_, step_);
       }
             
@@ -264,8 +287,8 @@ void
 ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
 { 
   // Do not add if not a global muon
-  if ( ! (*it).combinedMuon().isNonnull() )
-     return;
+  //if ( ! (*it).combinedMuon().isNonnull() )
+  //   return;
 		    
   IgCollection& chambers = storage_->getCollection("MuonChambers_V1");
   IgProperty DETID = chambers.addProperty("detid", int(0));
@@ -286,16 +309,16 @@ ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
                                                          ditEnd = dets.end(); 
         dit != ditEnd; ++dit )
   {
-    if ( dit->detector() == MuonSubdetId::GEM )
+    if ( dit->detector() == MuonSubdetId::GEM && gemGeomValid_ )
     {
       geomDet = gemGeometry_->idToDet((*dit).id);
     }
-    else if ( dit->detector() == MuonSubdetId::CSC )
+    else if ( dit->detector() == MuonSubdetId::CSC && cscGeomValid_ )
     {
       geomDet = cscGeometry_->idToDet((*dit).id);
     }
     
-    else if ( dit->detector() == MuonSubdetId::DT )
+    else if ( dit->detector() == MuonSubdetId::DT && dtGeomValid_ )
     {
       geomDet = dtGeometry_->idToDet((*dit).id);
     }

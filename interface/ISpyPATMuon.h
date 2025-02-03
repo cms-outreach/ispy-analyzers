@@ -1,7 +1,7 @@
 #ifndef ANALYZER_ISPY_PATMUON_H
 #define ANALYZER_ISPY_PATMUON_H
 
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Utilities/interface/InputTag.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 
@@ -11,6 +11,10 @@
 #include "Geometry/CSCGeometry/interface/CSCGeometry.h"
 #include "Geometry/GEMGeometry/interface/GEMGeometry.h"
 
+#include "MagneticField/Engine/interface/MagneticField.h"
+#include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
+#include "Geometry/Records/interface/MuonGeometryRecord.h"
+
 class IgCollection;
 class IgDataStorage;
 class IgCollectionItem;
@@ -19,7 +23,7 @@ class IgProperty;
 
 // NOTE: TM See note in ISpyMuon.h
 
-class ISpyPATMuon : public edm::EDAnalyzer
+class ISpyPATMuon : public edm::one::EDAnalyzer<>
 {
 public:
   explicit ISpyPATMuon(const edm::ParameterSet&);
@@ -35,16 +39,26 @@ private:
   double out_;
   double step_;
 
+  double ptMin_;
+  
   IgDataStorage* storage_;
 
   GlobalPoint& getOuterPoint(std::vector<pat::Muon>::const_iterator it); 
   void addChambers(std::vector<pat::Muon>::const_iterator it);
+  
+  edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> magneticFieldToken_;
+  const MagneticField* magneticField_;
 
-  edm::ESHandle<DTGeometry>  dtGeometry_;
+  edm::ESGetToken<DTGeometry, MuonGeometryRecord>  dtGeometryToken_;
+  const DTGeometry* dtGeometry_;
   bool dtGeomValid_;
-  edm::ESHandle<CSCGeometry> cscGeometry_;
+
+  edm::ESGetToken<CSCGeometry, MuonGeometryRecord> cscGeometryToken_;
+  const CSCGeometry* cscGeometry_;
   bool cscGeomValid_;
-  edm::ESHandle<GEMGeometry> gemGeometry_;
+
+  edm::ESGetToken<GEMGeometry, MuonGeometryRecord> gemGeometryToken_;
+  const GEMGeometry* gemGeometry_;
   bool gemGeomValid_;
 
 };

@@ -163,13 +163,9 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   {
     int charge = (*it).charge();
 
-
     if ( (*it).track().isNonnull() ) // Tracker
     {
       IgCollectionItem imuon = trackerMuonCollection.create();
-                  
-      //if ((*it).isMatchesValid () && (gemGeomValid_ || dtGeomValid_ || cscGeomValid_)) 
-      //  addChambers(it);
 
       imuon[T_PT] = (*it).track()->pt();
       imuon[T_CHARGE] = charge;
@@ -198,6 +194,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
         //error += e.explainSelf();
 	config->error (error);
       }
+
     }
   
     if ( (*it).standAloneMuon().isNonnull() ) // Standalone
@@ -285,11 +282,7 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
 
 void
 ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
-{ 
-  // Do not add if not a global muon
-  //if ( ! (*it).combinedMuon().isNonnull() )
-  //   return;
-		    
+{		    
   IgCollection& chambers = storage_->getCollection("MuonChambers_V1");
   IgProperty DETID = chambers.addProperty("detid", int(0));
   IgProperty FRONT_1 = chambers.addProperty("front_1", IgV3d());
@@ -316,13 +309,11 @@ ISpyMuon::addChambers(reco::MuonCollection::const_iterator it)
     else if ( dit->detector() == MuonSubdetId::CSC && cscGeomValid_ )
     {
       geomDet = cscGeometry_->idToDet((*dit).id);
-    }
-    
+    }    
     else if ( dit->detector() == MuonSubdetId::DT && dtGeomValid_ )
     {
       geomDet = dtGeometry_->idToDet((*dit).id);
     }
-    
     else
       continue;
 

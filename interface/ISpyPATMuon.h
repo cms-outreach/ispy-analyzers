@@ -39,6 +39,8 @@ private:
   double out_;
   double step_;
 
+  double ptMin_;
+  
   IgDataStorage* storage_;
 
   GlobalPoint& getOuterPoint(std::vector<pat::Muon>::const_iterator it); 

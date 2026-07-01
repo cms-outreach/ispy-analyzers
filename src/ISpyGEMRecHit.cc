@@ -59,7 +59,6 @@ void ISpyGEMRecHit::analyze(const edm::Event& event, const edm::EventSetup& even
 
   edm::Handle<GEMRecHitCollection> collection;
   event.getByToken(rechitToken_, collection);
-  std::cout << collection->size() << std::endl;
    
   if ( collection.isValid() )
   {

@@ -22,13 +22,12 @@
 #include "TrackingTools/TrajectoryParametrization/interface/GlobalTrajectoryParameters.h"
 #include "TrackingTools/TrajectoryState/interface/FreeTrajectoryState.h"
 #include "TrackingTools/TrajectoryState/interface/TrajectoryStateOnSurface.h"
-
 #include "TrackingTools/TrackAssociator/interface/DetIdAssociator.h"
 #include "TrackingTools/Records/interface/DetIdAssociatorRecord.h"
 
 #include "TrackPropagation/SteppingHelixPropagator/interface/SteppingHelixPropagator.h"
-#include "DataFormats/GeometrySurface/interface/PlaneBuilder.h"
 
+#include "DataFormats/GeometrySurface/interface/PlaneBuilder.h"
 #include "DataFormats/GeometrySurface/interface/RectangularPlaneBounds.h"
 #include "DataFormats/GeometrySurface/interface/TrapezoidalPlaneBounds.h"
 
@@ -153,12 +152,13 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
 
   for ( std::vector<pat::Muon>::const_iterator t = collection->begin(), tEnd = collection->end(); 
         t != tEnd; ++t )
-  {   
-      
+  {       
     if ( t->track().isNonnull() ) // Tracker
     {
-      reco::TrackRef track = t->muonBestTrack();
+      if ( t->pt() < ptMin_ )
+	continue;
 
+      reco::TrackRef track = t->muonBestTrack();
       IgCollectionItem imuon = trackerMuonCollection.create();
       
       imuon[T_PT] = (*track).pt();
@@ -263,12 +263,6 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
         // Use the outerMomentum from this later for the full propagation in which 
         // we record all the steps. A bit convoluted and complicated perhaps but
         // good-enough.
-        
-        double minR = sqrt(
-          outerPoint.x()*outerPoint.x() + 
-          outerPoint.y()*outerPoint.y()
-          );
-        
         double minZ = outerPoint.z();
         
         GlobalPoint trackP((*gMuon).vx(), (*gMuon).vy(), (*gMuon).vz());
@@ -276,31 +270,21 @@ void ISpyPATMuon::analyze(const edm::Event& event, const edm::EventSetup& eventS
         
         GlobalTrajectoryParameters trackParams(trackP, trackM, (*gMuon).charge(), magneticField_);
         FreeTrajectoryState trackState(trackParams);
-      
-        TrajectoryStateOnSurface tsos = propagator.propagate(
-          trackState, *Cylinder::build(minR, Surface::PositionType(0,0,0), Surface::RotationType())
-          );
-      
-        if ( tsos.isValid() && tsos.globalPosition().z() > minZ )
-        {          
-          tsos = propagator.propagate(trackState, *Plane::build(Surface::PositionType(0, 0, minZ), Surface::RotationType()));
-        }
-        else if ( tsos.isValid() && tsos.globalPosition().z() < -minZ )
-        {
-          tsos = propagator.propagate(trackState, *Plane::build(Surface::PositionType(0, 0, -minZ), Surface::RotationType()));
-        }
 
+	TrajectoryStateOnSurface tsos = propagator.propagate(trackState,
+							     *Plane::build(Surface::PositionType(0, 0, minZ),
+									   Surface::RotationType()));
         GlobalVector mVout;
 
         if ( tsos.isValid() )
-        {     
+        {  
           mVout = GlobalVector(tsos.globalMomentum().x(),
                                tsos.globalMomentum().y(),
                                tsos.globalMomentum().z());
 
         } else 
         {
-          continue;
+	  continue;
         }
                     
         GlobalPoint mPin((*gMuon).vx(),
@@ -411,7 +395,7 @@ GlobalPoint& ISpyPATMuon::getOuterPoint(std::vector<pat::Muon>::const_iterator i
   std::vector<GlobalPoint> gps;
          
   for ( std::vector<reco::MuonChamberMatch>::const_iterator dit = dets.begin(), 
-                                                               ditEnd = dets.end(); 
+							 ditEnd = dets.end(); 
         dit != ditEnd; ++dit )
   {
     if ( dit->detector() == MuonSubdetId::GEM )
@@ -428,10 +412,9 @@ GlobalPoint& ISpyPATMuon::getOuterPoint(std::vector<pat::Muon>::const_iterator i
     }
     else
       continue;
-            
+    
     GlobalPoint gp = geomDet->surface().toGlobal(LocalPoint((*dit).x, (*dit).y, 0.0));
     gps.push_back(gp);
-    
   }
   
   return gps.back();

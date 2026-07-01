@@ -163,7 +163,6 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
   {
     int charge = (*it).charge();
 
-
     if ( (*it).track().isNonnull() ) // Tracker
     {
       IgCollectionItem imuon = trackerMuonCollection.create();
@@ -216,8 +215,8 @@ void ISpyMuon::analyze(const edm::Event& event, const edm::EventSetup& eventSetu
       {
         IgCollectionItem eitem = extras.create();
         
-        if ((*it).isMatchesValid () && (gemGeomValid_ || dtGeomValid_ || cscGeomValid_)) 
-          addChambers(it);
+        //if ((*it).isMatchesValid () && (gemGeomValid_ || dtGeomValid_ || cscGeomValid_)) 
+        //  addChambers(it);
 
         eitem[IPOS] = IgV3d((*it).standAloneMuon()->innerPosition().x()/100.0,      
                             (*it).standAloneMuon()->innerPosition().y()/100.0,      

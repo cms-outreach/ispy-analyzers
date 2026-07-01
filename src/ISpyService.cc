@@ -7,7 +7,9 @@
 #include "DataFormats/Provenance/interface/Timestamp.h"
 
 #include "FWCore/Framework/interface/Event.h"
-#include "FWCore/Framework/interface/ConstProductRegistry.h"
+//#include "FWCore/Framework/interface/ConstProductRegistry.h"
+#include "FWCore/Framework/interface/SignallingProductRegistry.h"
+
 #include "FWCore/ParameterSet/interface/ParameterSet.h"
 #include "FWCore/ServiceRegistry/interface/ServiceMaker.h"
 #include "FWCore/ServiceRegistry/interface/ActivityRegistry.h"

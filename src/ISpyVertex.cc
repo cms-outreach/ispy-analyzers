@@ -69,10 +69,16 @@ void ISpyVertex::analyze(const edm::Event& event, const edm::EventSetup& eventSe
     IgProperty CHI2 = vertices.addProperty("chi2", 0.0);
     IgProperty NDOF = vertices.addProperty("ndof", 0.0);
 
+    std::cout<< priCollection->size() <<" primary vertices"<<std::endl;
+    int nv = 0;
+    
     for ( VertexCollection::const_iterator it = priCollection->begin(), itEnd = priCollection->end(); it != itEnd; ++it )
     {
       IgCollectionItem v = vertices.create();
+      nv += 1;
 
+      std::cout<<"Vertex "<< nv <<": chi2/ndf | isvalid | is fake, "<< (*it).chi2()/(*it).ndof() <<" | "<< (*it).isValid() <<" | "<< (*it).isFake() <<std::endl;
+      
       v[ISV] = static_cast<int>((*it).isValid());
       v[ISF] = static_cast<int>((*it).isFake());
 

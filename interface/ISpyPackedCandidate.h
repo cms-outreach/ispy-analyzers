@@ -8,6 +8,8 @@
 #include "MagneticField/Records/interface/IdealMagneticFieldRecord.h"
 
 class MagneticField;
+class CaloGeometry;
+class CaloGeometryRecord;
 
 class ISpyPackedCandidate : public edm::one::EDAnalyzer<>
 {
@@ -24,6 +26,10 @@ private:
   
   edm::ESGetToken<MagneticField, IdealMagneticFieldRecord> magneticFieldToken_;    
   const MagneticField* magneticField_;
+  
+  edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeometryToken_;
+  const CaloGeometry* caloGeom_;  
 
+  int findArea(std::vector<std::array<RhoEtaPhi, 8> >&, double, double);
 };
 #endif // ANALYZER_ISPY_PACKEDCANDIDATE_H

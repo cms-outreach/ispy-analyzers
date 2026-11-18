@@ -15,6 +15,7 @@
 
 #include "Geometry/CaloGeometry/interface/CaloCellGeometry.h"
 #include "Geometry/CaloGeometry/interface/CaloGeometry.h"
+#include "Geometry/CaloGeometry/interface/CaloSubdetectorGeometry.h"
 #include "Geometry/Records/interface/CaloGeometryRecord.h"
 
 #include <iostream>
@@ -85,6 +86,8 @@ ISpyEERecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
     IgProperty BACK_2  = recHits.addProperty("back_2",  IgV3d());
     IgProperty BACK_3  = recHits.addProperty("back_3",  IgV3d());
     IgProperty BACK_4  = recHits.addProperty("back_4",  IgV3d());
+    IgProperty DELTAETA = recHits.addProperty("deltaEta", 0.0);
+    IgProperty DELTAPHI = recHits.addProperty("deltaPhi", 0.0);
 
     for (std::vector<EcalRecHit>::const_iterator it=collection->begin(), itEnd=collection->end(); it!=itEnd; ++it)
     {
@@ -95,6 +98,9 @@ ISpyEERecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
       float time = (*it).time ();
       float eta = pos.eta ();
       float phi = pos.phi ();
+      const CaloSubdetectorGeometry* caloSubdetectorGeometry = geom->getSubdetectorGeometry((*it).detid());
+      float deltaEta = caloSubdetectorGeometry->deltaEta((*it).detid());
+      float deltaPhi = caloSubdetectorGeometry->deltaPhi((*it).detid());
 
       IgCollectionItem irechit = recHits.create();
       irechit[E] = static_cast<double>(energy);
@@ -102,6 +108,8 @@ ISpyEERecHit::analyze( const edm::Event& event, const edm::EventSetup& eventSetu
       irechit[PHI] = static_cast<double>(phi);
       irechit[TIME] = static_cast<double>(time);
       irechit[DETID] = static_cast<int>((*it).detid ());
+      irechit[DELTAETA] = static_cast<double>(deltaEta);
+      irechit[DELTAPHI] = static_cast<double>(deltaPhi);
 
       assert(corners.size() == 8);
 
